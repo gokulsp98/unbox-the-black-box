@@ -159,12 +159,12 @@
   <p>Every CPU has a fixed set of commands it understands — this is called its <span class="highlight">instruction set</span>. Think of it as a vocabulary:</p>
 
   <div class="code-block">
-    <pre><span class="code-keyword">ADD</span>    <span class="code-comment">— add two numbers</span>
-<span class="code-keyword">MOV</span>    <span class="code-comment">— move data from one place to another</span>
-<span class="code-keyword">CMP</span>    <span class="code-comment">— compare two values</span>
-<span class="code-keyword">JMP</span>    <span class="code-comment">— jump to another instruction</span>
-<span class="code-keyword">LOAD</span>   <span class="code-comment">— read from memory</span>
-<span class="code-keyword">STORE</span>  <span class="code-comment">— write to memory</span></pre>
+    <pre><span class="code-keyword">ADD</span>       <span class="code-comment">— add two numbers</span>
+<span class="code-keyword">MOV</span>       <span class="code-comment">— move data from one place to another</span>
+<span class="code-keyword">CMP</span>       <span class="code-comment">— compare two values</span>
+<span class="code-keyword">JMP</span>       <span class="code-comment">— jump to another instruction</span>
+<span class="code-keyword">LOAD</span>      <span class="code-comment">— read from memory</span>
+<span class="code-keyword">STORE</span>     <span class="code-comment">— write to memory</span></pre>
   </div>
 
   <p>Every program you've ever used — from web browsers to video games — is just a long sequence of these simple commands, running billions of times per second.</p>
@@ -190,10 +190,10 @@
 
   <div class="code-block">
     <pre><span class="code-comment">// x86_64 instruction set</span>
-<span class="code-keyword">Base instructions</span> (1999)  <span class="code-arrow">←</span> <span class="code-string">every chip supports these</span>
-<span class="code-keyword">SSE4</span> (2006)               <span class="code-arrow">←</span> <span class="code-string">most chips have it</span>
-<span class="code-keyword">AVX</span>  (2011)               <span class="code-arrow">←</span> <span class="code-string">optional, common</span>
-<span class="code-keyword">AVX-512</span> (2017)            <span class="code-arrow">←</span> <span class="code-string">optional, only some chips</span></pre>
+<span class="code-keyword">Base instructions</span> (1999)    <span class="code-arrow">←</span>  <span class="code-string">every chip supports these</span>
+<span class="code-keyword">SSE4</span> (2006)                 <span class="code-arrow">←</span>  <span class="code-string">most chips have it</span>
+<span class="code-keyword">AVX</span>  (2011)                 <span class="code-arrow">←</span>  <span class="code-string">optional, common</span>
+<span class="code-keyword">AVX-512</span> (2017)              <span class="code-arrow">←</span>  <span class="code-string">optional, only some chips</span></pre>
   </div>
 
   <p>Compilers use the base instructions by default, so the binary runs on <em>any</em> x86_64 chip — old or new. Newer extensions are opt-in. That's why a program compiled in 2010 still works on a chip from 2025.</p>
@@ -229,11 +229,11 @@
   <div class="code-block">
     <pre><span class="code-comment">// OS + instruction set = 1 binary</span>
 
-<span class="code-keyword">Linux</span>   + x86_64  <span class="code-arrow">→</span> <span class="code-string">1 binary</span>  <span class="code-comment">(all Intel/AMD servers)</span>
-<span class="code-keyword">Linux</span>   + ARM64   <span class="code-arrow">→</span> <span class="code-string">1 binary</span>  <span class="code-comment">(cloud servers, Raspberry Pi)</span>
-<span class="code-keyword">macOS</span>   + ARM64   <span class="code-arrow">→</span> <span class="code-string">1 binary</span>  <span class="code-comment">(all modern Macs)</span>
-<span class="code-keyword">macOS</span>   + x86_64  <span class="code-arrow">→</span> <span class="code-string">1 binary</span>  <span class="code-comment">(older Intel Macs)</span>
-<span class="code-keyword">Windows</span> + x86_64  <span class="code-arrow">→</span> <span class="code-string">1 binary</span>  <span class="code-comment">(all Windows PCs)</span>
+<span class="code-keyword">Linux</span>     + x86_64   <span class="code-arrow">→</span>  <span class="code-string">1 binary</span>   <span class="code-comment">(all Intel/AMD servers)</span>
+<span class="code-keyword">Linux</span>     + ARM64    <span class="code-arrow">→</span>  <span class="code-string">1 binary</span>   <span class="code-comment">(cloud servers, Raspberry Pi)</span>
+<span class="code-keyword">macOS</span>     + ARM64    <span class="code-arrow">→</span>  <span class="code-string">1 binary</span>   <span class="code-comment">(all modern Macs)</span>
+<span class="code-keyword">macOS</span>     + x86_64   <span class="code-arrow">→</span>  <span class="code-string">1 binary</span>   <span class="code-comment">(older Intel Macs)</span>
+<span class="code-keyword">Windows</span>   + x86_64   <span class="code-arrow">→</span>  <span class="code-string">1 binary</span>   <span class="code-comment">(all Windows PCs)</span>
 
 <span class="code-comment">Just 5 binaries cover 99% of machines on Earth.</span></pre>
   </div>
