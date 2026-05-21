@@ -9,18 +9,18 @@
 /* ── PAGE-SPECIFIC: CPU Art ── */
 .cpu-hero{background:linear-gradient(135deg,#a29bfe 0%,#6c5ce7 40%,#0984e3 100%)}
 
-.cpu-art{margin:40px auto 0;position:relative;width:200px;height:200px;animation:fadeInUp 1.5s ease}
-.cpu-chip{width:120px;height:120px;background:linear-gradient(145deg,#2d3436,#636e72);border-radius:12px;position:absolute;top:40px;left:40px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(0,0,0,0.3);z-index:2}
+.cpu-art{margin:2.5rem auto 0;position:relative;width:12.5rem;height:12.5rem;animation:fadeInUp 1.5s ease}
+.cpu-chip{width:7.5rem;height:7.5rem;background:linear-gradient(145deg,#2d3436,#636e72);border-radius:0.75rem;position:absolute;top:2.5rem;left:2.5rem;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(0,0,0,0.3);z-index:2}
 .cpu-chip::after{content:'CPU';font-family:'Fira Code',monospace;font-size:1.1rem;color:#dfe6e9;font-weight:700;letter-spacing:3px}
 .cpu-pin{position:absolute;background:#ffd32a;border-radius:2px}
-.pin-top,.pin-bottom{width:4px;height:16px}
-.pin-left,.pin-right{width:16px;height:4px}
-.pin-top{top:24px}.pin-bottom{bottom:24px}.pin-left{left:24px}.pin-right{right:24px}
-.pt1{left:55px}.pt2{left:75px}.pt3{left:95px}.pt4{left:115px}
-.pb1{left:55px}.pb2{left:75px}.pb3{left:95px}.pb4{left:115px}
-.pl1{top:55px}.pl2{top:75px}.pl3{top:95px}.pl4{top:115px}
-.pr1{top:55px}.pr2{top:75px}.pr3{top:95px}.pr4{top:115px}
-.cpu-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(108,92,231,0.4) 0%,transparent 70%);animation:cpuPulse 3s ease-in-out infinite;z-index:1}
+.pin-top,.pin-bottom{width:4px;height:1rem}
+.pin-left,.pin-right{width:1rem;height:4px}
+.pin-top{top:1.5rem}.pin-bottom{bottom:1.5rem}.pin-left{left:1.5rem}.pin-right{right:1.5rem}
+.pt1{left:3.4375rem}.pt2{left:4.6875rem}.pt3{left:5.9375rem}.pt4{left:7.1875rem}
+.pb1{left:3.4375rem}.pb2{left:4.6875rem}.pb3{left:5.9375rem}.pb4{left:7.1875rem}
+.pl1{top:3.4375rem}.pl2{top:4.6875rem}.pl3{top:5.9375rem}.pl4{top:7.1875rem}
+.pr1{top:3.4375rem}.pr2{top:4.6875rem}.pr3{top:5.9375rem}.pr4{top:7.1875rem}
+.cpu-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:11.25rem;height:11.25rem;border-radius:50%;background:radial-gradient(circle,rgba(108,92,231,0.4) 0%,transparent 70%);animation:cpuPulse 3s ease-in-out infinite;z-index:1}
 @keyframes cpuPulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.5}50%{transform:translate(-50%,-50%) scale(1.2);opacity:0.8}}
 .cpu-pin{animation:pinBlink 2s ease-in-out infinite alternate}
 .pt1,.pl1,.pb3,.pr3{animation-delay:0s}
@@ -28,28 +28,28 @@
 .pt3,.pl3,.pb1,.pr1{animation-delay:0.6s}
 .pt4,.pl4,.pb4,.pr4{animation-delay:0.9s}
 @keyframes pinBlink{0%{opacity:0.4;background:#ffd32a}100%{opacity:1;background:#55efc4}}
-.cpu-info{position:absolute;font-family:'Fira Code',monospace;font-size:0.55rem;font-weight:700;padding:4px 8px;border-radius:6px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.85);white-space:nowrap;z-index:3;opacity:0;animation:infoFade 8s ease-in-out infinite}
-.ci-1{top:10px;right:-40px;animation-delay:0s}
-.ci-2{bottom:10px;left:-36px;animation-delay:2s}
-.ci-3{top:10px;left:-30px;animation-delay:4s}
-.ci-4{bottom:10px;right:-44px;animation-delay:6s}
+.cpu-info{position:absolute;font-family:'Fira Code',monospace;font-size:0.55rem;font-weight:700;padding:0.25rem 0.5rem;border-radius:0.375rem;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.85);white-space:nowrap;z-index:3;opacity:0;animation:infoFade 8s ease-in-out infinite}
+.ci-1{top:0.625rem;right:-2.5rem;animation-delay:0s}
+.ci-2{bottom:0.625rem;left:-2.25rem;animation-delay:2s}
+.ci-3{top:0.625rem;left:-1.875rem;animation-delay:4s}
+.ci-4{bottom:0.625rem;right:-2.75rem;animation-delay:6s}
 @keyframes infoFade{0%,8%{opacity:0;transform:translateY(6px)}12%,30%{opacity:1;transform:translateY(0)}38%,100%{opacity:0;transform:translateY(-6px)}}
 
 /* ── PAGE-SPECIFIC: World/Chip Section ── */
-.world-section{background:linear-gradient(135deg,#0c2461,#0a3d62);padding:80px 24px;color:#fff;text-align:center;position:relative;overflow:hidden}
+.world-section{background:linear-gradient(135deg,#0c2461,#0a3d62);padding:5rem 1.5rem;color:#fff;text-align:center;position:relative;overflow:hidden}
 .world-section h2{color:#fff}
 .world-section p{color:rgba(255,255,255,0.8)}
-.chip-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;max-width:800px;margin:40px auto 0}
-.chip-card{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:16px;padding:24px;text-align:left;transition:all 0.3s}
+.chip-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(13.75rem,1fr));gap:1.25rem;max-width:50rem;margin:2.5rem auto 0}
+.chip-card{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:1rem;padding:1.5rem;text-align:left;transition:all 0.3s}
 .chip-card:hover{background:rgba(255,255,255,0.14);transform:translateY(-4px)}
-.chip-card .label{font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;display:block}
-.chip-card h4{font-size:1.2rem;font-weight:800;margin-bottom:8px}
+.chip-card .label{font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;margin-bottom:0.5rem;display:block}
+.chip-card h4{font-size:1.2rem;font-weight:800;margin-bottom:0.5rem}
 .chip-card p{font-size:0.9rem;line-height:1.6;color:rgba(255,255,255,0.7)}
 .label-blue{color:#74b9ff}
 .label-green{color:#55efc4}
 .label-orange{color:#ffeaa7}
 
-@media(max-width:600px){
+@media(max-width:37.5rem){
 .chip-grid{grid-template-columns:1fr}
 }
 </style>
@@ -138,7 +138,7 @@
 </section>
 
 <!-- FLOW: SOURCE → BINARY -->
-<div class="reveal" style="max-width:800px;margin:0 auto;padding:0 24px">
+<div class="reveal" style="max-width:50rem;margin:0 auto;padding:0 1.5rem">
   <div class="flow">
     <div class="flow-box fb-purple">Your Code<br><small>human readable</small></div>
     <div class="flow-arrow">&#10132;</div>
@@ -223,7 +223,7 @@
   <p>A binary compiled for x86_64 <span class="highlight-orange">won't run</span> on an ARM64 chip, and vice versa. They speak different languages. That's why software often needs to be compiled separately for each.</p>
   <p>Together, these two instruction sets cover <span class="highlight">99% of all computing devices</span> in the world.</p>
 
-  <h3 style="margin-top:40px;font-size:1.4rem;color:#6c5ce7">So how many versions of software do you need?</h3>
+  <h3 style="margin-top:2.5rem;font-size:1.4rem;color:#6c5ce7">So how many versions of software do you need?</h3>
   <p>A binary needs two things to match: the <span class="highlight">instruction set</span> and the <span class="highlight-orange">operating system</span>. Combine them, and you get one binary per combination:</p>
 
   <div class="code-block">
@@ -240,22 +240,22 @@
 
   <p>That's it. Not hundreds. Not one per chip model. Just one per OS + instruction set pair.</p>
 
-  <h3 style="margin-top:40px;font-size:1.4rem;color:#00b894">What about the other 1%?</h3>
+  <h3 style="margin-top:2.5rem;font-size:1.4rem;color:#00b894">What about the other 1%?</h3>
   <p>Other instruction sets exist, but they serve niche roles:</p>
 
-  <div style="display:grid;gap:12px;margin-top:16px">
-    <div style="background:#e8f8f5;padding:18px 24px;border-radius:14px;border-left:4px solid #00b894">
+  <div style="display:grid;gap:0.75rem;margin-top:1rem">
+    <div style="background:#e8f8f5;padding:1.125rem 1.5rem;border-radius:0.875rem;border-left:4px solid #00b894">
       <strong style="color:#00b894">RISC-V</strong> — the rising star. Fully open source — anyone can build a RISC-V chip with zero fees. Growing fast, especially in China and IoT devices. We'll cover this more in Episode 2.
     </div>
-    <div style="background:#f0efff;padding:18px 24px;border-radius:14px;border-left:4px solid #6c5ce7">
+    <div style="background:#f0efff;padding:1.125rem 1.5rem;border-radius:0.875rem;border-left:4px solid #6c5ce7">
       <strong style="color:#6c5ce7">MIPS</strong> — once popular in routers and gaming consoles (PlayStation 1 &amp; 2). Mostly fading out now.
     </div>
-    <div style="background:#fef5e7;padding:18px 24px;border-radius:14px;border-left:4px solid #e17055">
+    <div style="background:#fef5e7;padding:1.125rem 1.5rem;border-radius:0.875rem;border-left:4px solid #e17055">
       <strong style="color:#e17055">POWER</strong> — IBM's instruction set for mainframes and supercomputers. Powerful but rare outside enterprise.
     </div>
   </div>
 
-  <p style="margin-top:16px">For now, if you're using a computer, phone, or server — it's almost certainly running x86_64 or ARM64.</p>
+  <p style="margin-top:1rem">For now, if you're using a computer, phone, or server — it's almost certainly running x86_64 or ARM64.</p>
 </section>
 
 <!-- SECTION 5: WHY x86_64 -->
@@ -265,7 +265,7 @@
   <p>Both "x86_64" and "ARM64" sound like random codes. But each name tells a story. Let's start with x86_64:</p>
 </section>
 
-<div class="timeline reveal" style="max-width:700px;margin:40px auto;padding:0 24px 0 64px">
+<div class="timeline reveal" style="max-width:43.75rem;margin:2.5rem auto;padding:0 1.5rem 0 4rem">
   <div class="timeline-item">
     <div class="timeline-year">1978</div>
     <div class="timeline-text">Intel releases the <strong>8086</strong> processor — the original ancestor</div>
@@ -290,7 +290,7 @@
     <div class="timeline-year">1995</div>
     <div class="timeline-text">Intel <strong>Pentium</strong> — stopped using numbers, but the instruction set stayed "x86"</div>
   </div>
-  <div class="timeline-item" style="margin-top:40px">
+  <div class="timeline-item" style="margin-top:2.5rem">
     <div class="timeline-year">2003 — The Plot Twist</div>
     <div class="timeline-text"><strong>AMD</strong> (not Intel!) extends x86 to 64-bit and calls it <strong>AMD64</strong>. Intel had to adopt AMD's design. <span class="timeline-chip">ironic</span></div>
   </div>
@@ -299,7 +299,7 @@
 <section class="section reveal">
   <p>So <span class="highlight">x86_64</span> literally means: the x86 family, extended to 64-bit. You'll also see it called <strong>amd64</strong> — same thing, named after the company that created the 64-bit extension.</p>
 
-  <h3 style="margin-top:40px;font-size:1.4rem;color:#e17055">And what about ARM64?</h3>
+  <h3 style="margin-top:2.5rem;font-size:1.4rem;color:#e17055">And what about ARM64?</h3>
   <p><strong>ARM</strong> stands for <span class="highlight-orange">Advanced RISC Machines</span>. It was created in 1985 by a small British company called Acorn Computers — originally named the <em>Acorn RISC Machine</em>.</p>
   <p>The "64" simply means it's the 64-bit version of the ARM architecture. You'll also see it called <strong>aarch64</strong> (short for "ARM architecture 64-bit") — same thing, different name.</p>
   <p>Unlike x86 which only Intel and AMD can build, ARM Holdings <span class="highlight">licenses</span> their design to anyone willing to pay. That's why dozens of companies — from phone makers to cloud providers — build their own ARM chips.</p>
@@ -308,8 +308,8 @@
 <!-- SECTION 6: WHO MAKES CHIPS -->
 <section class="world-section reveal">
   <span class="section-num" style="background:rgba(255,255,255,0.15);color:#74b9ff">06</span>
-  <h2 style="margin-top:16px">Who Makes These Chips?</h2>
-  <p style="max-width:600px;margin:0 auto 8px">The instruction set is the language. The chip is the physical hardware. Here's who builds them:</p>
+  <h2 style="margin-top:1rem">Who Makes These Chips?</h2>
+  <p style="max-width:37.5rem;margin:0 auto 0.5rem">The instruction set is the language. The chip is the physical hardware. Here's who builds them:</p>
 
   <div class="chip-grid">
     <div class="chip-card">
@@ -344,7 +344,7 @@
     </div>
   </div>
 
-  <p style="margin-top:32px;font-size:0.95rem;opacity:0.7">Notice: only <strong>2 companies</strong> make x86 chips, but <strong>many companies</strong> make ARM chips.<br>We'll explore why in Episode 2.</p>
+  <p style="margin-top:2rem;font-size:0.95rem;opacity:0.7">Notice: only <strong>2 companies</strong> make x86 chips, but <strong>many companies</strong> make ARM chips.<br>We'll explore why in Episode 2.</p>
 </section>
 
 <!-- RECAP -->
@@ -352,17 +352,17 @@
   <span class="section-num">RECAP</span>
   <h2>What We Learned</h2>
 
-  <div style="display:grid;gap:16px;margin-top:20px">
-    <div style="background:#f0efff;padding:20px 24px;border-radius:14px;border-left:4px solid #6c5ce7">
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #6c5ce7">
       <strong style="color:#6c5ce7">The CPU</strong> is a tiny chip that follows billions of simple instructions every second.
     </div>
-    <div style="background:#e8f8f5;padding:20px 24px;border-radius:14px;border-left:4px solid #00b894">
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #00b894">
       <strong style="color:#00b894">A compiler</strong> translates human-readable code into binary — the only language a CPU understands.
     </div>
-    <div style="background:#fef5e7;padding:20px 24px;border-radius:14px;border-left:4px solid #e17055">
+    <div style="background:#fef5e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #e17055">
       <strong style="color:#e17055">An instruction set</strong> is the vocabulary of commands a CPU knows. Two dominate the world: x86_64 and ARM64.
     </div>
-    <div style="background:#ffeef7;padding:20px 24px;border-radius:14px;border-left:4px solid #e84393">
+    <div style="background:#ffeef7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #e84393">
       <strong style="color:#e84393">A binary</strong> is compiled for a specific instruction set + operating system. It won't work on a different combination.
     </div>
   </div>
@@ -376,7 +376,7 @@
 </section>
 
 <footer class="footer">
-  <p>Unbox the Black Box — from confusion to clarity. Built with ❤️ by <strong>Gokul</strong>.</p>
+  <p>Unbox the Black Box - from confusion to clarity.<br>Built with ❤️ by <strong>Gokul</strong>.</p>
 </footer>
 
 <script>

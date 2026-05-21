@@ -13,64 +13,64 @@
 .part7-num{color:#6c5ce7;background:#f0efff}
 
 /* ── Hero Art: 4 Language Orbits ── */
-.orbit-art{margin:40px auto 0;position:relative;width:200px;height:200px;animation:fadeInUp 1.5s ease}
-.orbit-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Fira Code',monospace;font-size:0.8rem;font-weight:700;color:#fff;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.3);width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;letter-spacing:1px}
+.orbit-art{margin:2.5rem auto 0;position:relative;width:12.5rem;height:12.5rem;animation:fadeInUp 1.5s ease}
+.orbit-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Fira Code',monospace;font-size:0.8rem;font-weight:700;color:#fff;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.3);width:3.5rem;height:3.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;letter-spacing:1px}
 .orbit-ring{position:absolute;top:50%;left:50%;border:1.5px solid rgba(255,255,255,0.12);border-radius:50%}
-.orbit-ring-1{width:130px;height:130px;margin:-65px 0 0 -65px;animation:orbitSpin 12s linear infinite}
-.orbit-ring-2{width:180px;height:180px;margin:-90px 0 0 -90px;animation:orbitSpin 16s linear infinite reverse}
-.orbit-dot{position:absolute;font-family:'Fira Code',monospace;font-size:0.6rem;font-weight:700;color:#fff;background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.35);padding:4px 8px;border-radius:6px;white-space:nowrap}
+.orbit-ring-1{width:8.125rem;height:8.125rem;margin:-4.0625rem 0 0 -4.0625rem;animation:orbitSpin 12s linear infinite}
+.orbit-ring-2{width:11.25rem;height:11.25rem;margin:-5.625rem 0 0 -5.625rem;animation:orbitSpin 16s linear infinite reverse}
+.orbit-dot{position:absolute;font-family:'Fira Code',monospace;font-size:0.6rem;font-weight:700;color:#fff;background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.35);padding:0.25rem 0.5rem;border-radius:0.375rem;white-space:nowrap}
 .orbit-ring-1 .orbit-dot:nth-child(1){top:-10px;left:50%;transform:translateX(-50%)}
 .orbit-ring-1 .orbit-dot:nth-child(2){bottom:-10px;left:50%;transform:translateX(-50%)}
 .orbit-ring-2 .orbit-dot:nth-child(1){top:-10px;left:50%;transform:translateX(-50%)}
 .orbit-ring-2 .orbit-dot:nth-child(2){bottom:-10px;left:50%;transform:translateX(-50%)}
 @keyframes orbitSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.hero-subtitle{font-family:'Fira Code',monospace;font-size:0.8rem;color:rgba(255,255,255,0.6);letter-spacing:2px;text-align:center;margin-top:16px}
+.hero-subtitle{font-family:'Fira Code',monospace;font-size:0.8rem;color:rgba(255,255,255,0.6);letter-spacing:2px;text-align:center;margin-top:1rem}
 
 /* ── 4-Language Cards ── */
-.lang-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;max-width:900px;margin:32px auto;padding:0 24px}
-.lang-card{border-radius:16px;padding:24px;text-align:center;transition:all 0.3s;position:relative;overflow:hidden}
+.lang-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(13.75rem,1fr));gap:1.25rem;max-width:56.25rem;margin:2rem auto;padding:0 1.5rem}
+.lang-card{border-radius:1rem;padding:1.5rem;text-align:center;transition:all 0.3s;position:relative;overflow:hidden}
 .lang-card:hover{transform:translateY(-4px)}
-.lang-card h4{font-size:1.1rem;font-weight:800;margin-bottom:6px}
-.lang-card .lang-when{font-family:'Fira Code',monospace;font-size:0.7rem;margin-bottom:12px;opacity:0.8}
-.lang-card .lang-flow{font-family:'Fira Code',monospace;font-size:0.65rem;line-height:1.8;text-align:left;background:rgba(0,0,0,0.06);border-radius:10px;padding:12px 14px;margin-top:8px}
+.lang-card h4{font-size:1.1rem;font-weight:800;margin-bottom:0.375rem}
+.lang-card .lang-when{font-family:'Fira Code',monospace;font-size:0.7rem;margin-bottom:0.75rem;opacity:0.8}
+.lang-card .lang-flow{font-family:'Fira Code',monospace;font-size:0.65rem;line-height:1.8;text-align:left;background:rgba(0,0,0,0.06);border-radius:0.625rem;padding:0.75rem 0.875rem;margin-top:0.5rem}
 .lc-c{background:#e8f8f5;border:2px solid #b8f0e0}
 .lc-java{background:#f0efff;border:2px solid #d5ccff}
 .lc-python{background:#fef5e7;border:2px solid #fdd9b5}
 .lc-js{background:#e3f2fd;border:2px solid #90caf9}
 
 /* ── Install Grid ── */
-.install-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;max-width:800px;margin:32px auto;padding:0 24px}
-.install-card{background:#2d3436;border-radius:14px;padding:20px;text-align:center;border:2px solid #636e72;transition:all 0.3s}
+.install-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(12.5rem,1fr));gap:1rem;max-width:50rem;margin:2rem auto;padding:0 1.5rem}
+.install-card{background:#2d3436;border-radius:0.875rem;padding:1.25rem;text-align:center;border:2px solid #636e72;transition:all 0.3s}
 .install-card:hover{transform:translateY(-4px)}
-.install-icon{font-size:2rem;margin-bottom:8px;display:block}
-.install-lang{font-family:'Fira Code',monospace;font-size:0.85rem;font-weight:700;color:#fff;margin-bottom:6px}
-.install-need{font-size:0.75rem;color:#00b894;font-weight:700;padding:4px 12px;border-radius:8px;background:rgba(0,184,148,0.1);display:inline-block}
+.install-icon{font-size:2rem;margin-bottom:0.5rem;display:block}
+.install-lang{font-family:'Fira Code',monospace;font-size:0.85rem;font-weight:700;color:#fff;margin-bottom:0.375rem}
+.install-need{font-size:0.75rem;color:#00b894;font-weight:700;padding:0.25rem 0.75rem;border-radius:0.5rem;background:rgba(0,184,148,0.1);display:inline-block}
 .install-none{color:#ff6b6b;background:rgba(255,107,107,0.1)}
-.c-binary-art{display:flex;align-items:center;justify-content:center;gap:8px;margin:10px auto 4px}
-.c-file{width:28px;height:34px;background:linear-gradient(135deg,#00b894,#00cec9);border-radius:4px 8px 4px 4px;position:relative;display:flex;align-items:center;justify-content:center}
+.c-binary-art{display:flex;align-items:center;justify-content:center;gap:0.5rem;margin:0.625rem auto 0.25rem}
+.c-file{width:1.75rem;height:2.125rem;background:linear-gradient(135deg,#00b894,#00cec9);border-radius:0.25rem 0.5rem 0.25rem 0.25rem;position:relative;display:flex;align-items:center;justify-content:center}
 .c-file::after{content:'01';font-family:'Fira Code',monospace;font-size:0.45rem;font-weight:700;color:#fff}
-.c-file::before{content:'';position:absolute;top:0;right:0;width:8px;height:8px;background:#2d3436;border-radius:0 0 0 4px}
+.c-file::before{content:'';position:absolute;top:0;right:0;width:0.5rem;height:0.5rem;background:#2d3436;border-radius:0 0 0 0.25rem}
 .c-arrow-run{font-size:0.7rem;color:rgba(255,255,255,0.4);animation:arrowPulse 2s ease infinite}
-.c-cpu-tiny{font-family:'Fira Code',monospace;font-size:0.5rem;font-weight:700;color:#55efc4;background:rgba(85,239,196,0.15);border:1px solid rgba(85,239,196,0.3);padding:3px 6px;border-radius:4px}
+.c-cpu-tiny{font-family:'Fira Code',monospace;font-size:0.5rem;font-weight:700;color:#55efc4;background:rgba(85,239,196,0.15);border:1px solid rgba(85,239,196,0.3);padding:3px 6px;border-radius:0.25rem}
 
 /* ── Why Grid ── */
-.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;max-width:900px;margin:32px auto;padding:0 24px}
-.why-card{border-radius:16px;padding:24px;transition:all 0.3s}
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1.25rem;max-width:56.25rem;margin:2rem auto;padding:0 1.5rem}
+.why-card{border-radius:1rem;padding:1.5rem;transition:all 0.3s}
 .why-card:hover{transform:translateY(-4px)}
-.why-card h4{font-size:1rem;font-weight:800;margin-bottom:8px}
+.why-card h4{font-size:1rem;font-weight:800;margin-bottom:0.5rem}
 .why-card p{font-size:0.85rem;line-height:1.6}
-.why-card .why-lang{font-family:'Fira Code',monospace;font-size:0.75rem;font-weight:700;margin-bottom:8px;display:inline-block;padding:4px 12px;border-radius:8px}
+.why-card .why-lang{font-family:'Fira Code',monospace;font-size:0.75rem;font-weight:700;margin-bottom:0.5rem;display:inline-block;padding:0.25rem 0.75rem;border-radius:0.5rem}
 .wc-green{background:#e8f8f5;border:2px solid #b8f0e0}
 .wc-purple{background:#f0efff;border:2px solid #d5ccff}
 .wc-blue{background:#e3f2fd;border:2px solid #90caf9}
 .wc-amber{background:#fef5e7;border:2px solid #fdd9b5}
 
 /* ── Finale Banner ── */
-.finale-banner{background:linear-gradient(135deg,#6c5ce7,#0984e3,#00b894);padding:80px 24px;text-align:center;color:#fff;position:relative;overflow:hidden}
-.finale-banner::before{content:'';position:absolute;width:400px;height:400px;border-radius:50%;background:rgba(255,255,255,0.04);top:-100px;right:-100px;animation:float 8s ease-in-out infinite}
-.finale-banner h2{color:#fff;font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:12px}
-.finale-banner p{color:rgba(255,255,255,0.9);max-width:550px;margin:0 auto 28px;font-size:1.05rem}
-.finale-badge{display:inline-block;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);padding:8px 20px;border-radius:30px;font-size:0.85rem;font-weight:700;letter-spacing:1px;margin-bottom:20px}
+.finale-banner{background:linear-gradient(135deg,#6c5ce7,#0984e3,#00b894);padding:5rem 1.5rem;text-align:center;color:#fff;position:relative;overflow:hidden}
+.finale-banner::before{content:'';position:absolute;width:25rem;height:25rem;border-radius:50%;background:rgba(255,255,255,0.04);top:-6.25rem;right:-6.25rem;animation:float 8s ease-in-out infinite}
+.finale-banner h2{color:#fff;font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:0.75rem}
+.finale-banner p{color:rgba(255,255,255,0.9);max-width:34.375rem;margin:0 auto 1.75rem;font-size:1.05rem}
+.finale-badge{display:inline-block;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);padding:0.5rem 1.25rem;border-radius:1.875rem;font-size:0.85rem;font-weight:700;letter-spacing:1px;margin-bottom:1.25rem}
 </style>
 </head>
 <body>
@@ -206,25 +206,25 @@
     </div>
     <div class="install-lang">C</div>
     <span class="install-need install-none">Nothing needed</span>
-    <p style="font-size:0.7rem;color:#b2bec3;margin-top:8px;margin-bottom:0">The binary IS the program</p>
+    <p style="font-size:0.7rem;color:#b2bec3;margin-top:0.5rem;margin-bottom:0">The binary IS the program</p>
   </div>
   <div class="install-card">
     <span class="install-icon">&#9749;</span>
     <div class="install-lang">Java</div>
     <span class="install-need">JVM required</span>
-    <p style="font-size:0.7rem;color:#b2bec3;margin-top:8px;margin-bottom:0">Without JVM, .class is useless</p>
+    <p style="font-size:0.7rem;color:#b2bec3;margin-top:0.5rem;margin-bottom:0">Without JVM, .class is useless</p>
   </div>
   <div class="install-card">
     <span class="install-icon">&#128013;</span>
     <div class="install-lang">Python</div>
     <span class="install-need">Interpreter required</span>
-    <p style="font-size:0.7rem;color:#b2bec3;margin-top:8px;margin-bottom:0">Without it, .py is just text</p>
+    <p style="font-size:0.7rem;color:#b2bec3;margin-top:0.5rem;margin-bottom:0">Without it, .py is just text</p>
   </div>
   <div class="install-card">
     <span class="install-icon">&#127760;</span>
     <div class="install-lang">JavaScript</div>
     <span class="install-need">A browser</span>
-    <p style="font-size:0.7rem;color:#b2bec3;margin-top:8px;margin-bottom:0">Every computer already has one</p>
+    <p style="font-size:0.7rem;color:#b2bec3;margin-top:0.5rem;margin-bottom:0">Every computer already has one</p>
   </div>
 </div>
 
@@ -294,17 +294,17 @@
   <span class="section-num">RECAP</span>
   <h2>The Complete Journey</h2>
 
-  <div style="display:grid;gap:16px;margin-top:20px">
-    <div style="background:#e8f8f5;padding:20px 24px;border-radius:14px;border-left:4px solid #00b894">
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #00b894">
       <strong style="color:#00b894">Everything becomes binary</strong> — the CPU only understands binary. This hasn't changed since Episode 1. Every language must produce it.
     </div>
-    <div style="background:#fef5e7;padding:20px 24px;border-radius:14px;border-left:4px solid #e17055">
+    <div style="background:#fef5e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #e17055">
       <strong style="color:#e17055">C</strong> compiles before running. <strong style="color:#6c5ce7">Java</strong> compiles at runtime via JVM. <strong style="color:#e17055">Python</strong> interprets line by line. <strong style="color:#0984e3">JavaScript</strong> lets the browser handle everything.
     </div>
-    <div style="background:#e3f2fd;padding:20px 24px;border-radius:14px;border-left:4px solid #0984e3">
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #0984e3">
       <strong style="color:#0984e3">Python is a glue language</strong> — the heavy work runs in C libraries at native binary speed. Python just orchestrates it.
     </div>
-    <div style="background:#f0efff;padding:20px 24px;border-radius:14px;border-left:4px solid #6c5ce7">
+    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #6c5ce7">
       <strong style="color:#6c5ce7">The tradeoff</strong> — speed vs portability vs developer time. No language wins all three. Each picks a different balance.
     </div>
   </div>
@@ -319,7 +319,7 @@
 </section>
 
 <footer class="footer">
-  <p>Unbox the Black Box — from confusion to clarity. Built with &#10084;&#65039; by <strong>Gokul</strong>.</p>
+  <p>Unbox the Black Box - from confusion to clarity.<br>Built with ❤️ by <strong>Gokul</strong>.</p>
 </footer>
 
 <script>

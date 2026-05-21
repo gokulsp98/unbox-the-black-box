@@ -13,9 +13,9 @@
 .part3-num{color:#00b894;background:#e8f8f5}
 
 /* ── PAGE-SPECIFIC: Code-to-Binary Hero Art ── */
-.code-binary-art{margin:40px auto 0;position:relative;display:flex;align-items:center;justify-content:center;gap:24px;animation:fadeInUp 1.5s ease}
+.code-binary-art{margin:2.5rem auto 0;position:relative;display:flex;align-items:center;justify-content:center;gap:1.5rem;animation:fadeInUp 1.5s ease}
 .code-symbol{font-family:'Fira Code',monospace;font-size:3rem;font-weight:700;color:#fff;opacity:0.9;text-shadow:0 4px 20px rgba(0,0,0,0.2);position:relative}
-.code-symbol::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.08);z-index:-1}
+.code-symbol::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:5rem;height:5rem;border-radius:50%;background:rgba(255,255,255,0.08);z-index:-1}
 .binary-symbol{font-family:'Fira Code',monospace;font-size:2.4rem;font-weight:700;color:#55efc4;text-shadow:0 4px 20px rgba(85,239,196,0.3);animation:binaryPulse 2s ease infinite}
 .code-arrow-art{display:flex;flex-direction:column;align-items:center;gap:4px}
 .code-arrow-art span{font-size:1.5rem;color:rgba(255,255,255,0.6);animation:arrowFlow 2s ease infinite}
@@ -77,7 +77,7 @@
   <p>And that "when" is what separates every programming language into three groups.</p>
 </section>
 
-<div class="reveal" style="max-width:800px;margin:0 auto;padding:0 24px">
+<div class="reveal" style="max-width:50rem;margin:0 auto;padding:0 1.5rem">
   <div class="flow">
     <div class="flow-box fb-purple">Your Code<br><small>human readable</small></div>
     <div class="flow-arrow">&#10132;</div>
@@ -96,7 +96,7 @@
   <p>C takes the most direct path. You write code, a <span class="highlight-orange">compiler</span> translates it into binary, and that binary file sits on your disk — ready to run anytime.</p>
 </section>
 
-<div class="reveal" style="max-width:800px;margin:0 auto;padding:0 24px">
+<div class="reveal" style="max-width:50rem;margin:0 auto;padding:0 1.5rem">
   <div class="flow">
     <div class="flow-box fb-purple">hello.c<br><small>source code</small></div>
     <div class="flow-arrow">&#10132;</div>
@@ -137,17 +137,17 @@
   <span class="section-num">RECAP</span>
   <h2>What We Learned</h2>
 
-  <div style="display:grid;gap:16px;margin-top:20px">
-    <div style="background:#e8f8f5;padding:20px 24px;border-radius:14px;border-left:4px solid #00b894">
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #00b894">
       <strong style="color:#00b894">Everything becomes binary</strong> — the CPU only understands binary. This hasn't changed since Episode 1. Every language must produce it. The question is when.
     </div>
-    <div style="background:#fef5e7;padding:20px 24px;border-radius:14px;border-left:4px solid #e17055">
+    <div style="background:#fef5e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #e17055">
       <strong style="color:#e17055">C creates binary before you run it</strong> — a compiler translates your code into a permanent binary file on disk. The CPU runs it directly — no middleman, maximum speed.
     </div>
-    <div style="background:#f0efff;padding:20px 24px;border-radius:14px;border-left:4px solid #6c5ce7">
+    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #6c5ce7">
       <strong style="color:#6c5ce7">No runtime needed</strong> — the binary IS the program. No JVM, no interpreter — just double-click and the CPU runs it.
     </div>
-    <div style="background:#ffeef7;padding:20px 24px;border-radius:14px;border-left:4px solid #e84393">
+    <div style="background:#ffeef7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #e84393">
       <strong style="color:#e84393">The catch</strong> — a binary compiled on Linux won't run on macOS. Want 5 platforms? Compile 5 separate binaries. By the 1990s, this became a real problem.
     </div>
   </div>
@@ -161,7 +161,7 @@
 </section>
 
 <footer class="footer">
-  <p>Unbox the Black Box — from confusion to clarity. Built with ❤️ by <strong>Gokul</strong>.</p>
+  <p>Unbox the Black Box - from confusion to clarity.<br>Built with ❤️ by <strong>Gokul</strong>.</p>
 </footer>
 
 <script>
