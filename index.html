@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unbox the Black Box — From confusion to clarity</title>
+<link rel="stylesheet" href="style.css">
+<style>
+/* ── HOMEPAGE HERO ── */
+.home-hero{background:linear-gradient(135deg,#2d3436 0%,#0c2461 50%,#6c5ce7 100%);position:relative}
+.home-hero h1{font-size:clamp(2.8rem,7vw,5rem);margin-bottom:24px}
+.home-hero h1 span{display:block;background:linear-gradient(90deg,#a29bfe,#74b9ff,#55efc4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.home-hero p{max-width:520px;color:rgba(255,255,255,0.95);font-size:clamp(1rem,2.5vw,1.2rem)}
+.home-hero .hero-label{font-family:'Fira Code',monospace;font-size:0.8rem;color:#a29bfe;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;animation:fadeInDown 0.8s ease}
+
+/* ── SCROLL CUE ── */
+.scroll-cue{margin-top:40px;animation:softBounce 2.5s ease infinite}
+.scroll-cue svg{opacity:0.4;transition:opacity 0.3s}
+.scroll-cue:hover svg{opacity:0.7}
+@keyframes softBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+
+/* ── SERIES SECTION ── */
+.series-section{padding:80px 24px;max-width:900px;margin:0 auto}
+.series-section h2{text-align:center;margin-bottom:8px}
+.series-section>p{text-align:center;max-width:500px;margin:0 auto 48px;color:#888;font-size:1rem}
+
+.series-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:28px}
+
+.series-card{background:#fff;border-radius:20px;overflow:hidden;transition:all 0.4s cubic-bezier(0.25,0.46,0.45,0.94);border:1px solid #eee;text-decoration:none;color:#2d3436;display:flex;flex-direction:column}
+.series-card:hover{transform:translateY(-8px);box-shadow:0 24px 60px rgba(0,0,0,0.08);border-color:transparent}
+
+.card-banner{height:180px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.card-banner .card-icon{font-size:3.5rem;z-index:2;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.15))}
+.card-banner::after{content:'';position:absolute;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,0.08);bottom:-40px;right:-40px}
+
+.card-body{padding:24px 28px;flex:1;display:flex;flex-direction:column}
+.card-series-label{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
+.card-body h3{font-size:1.25rem;font-weight:800;margin-bottom:8px;line-height:1.3}
+.card-body p{font-size:0.9rem;color:#777;line-height:1.7;flex:1}
+.card-meta{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.card-tag{font-size:0.7rem;font-weight:700;padding:4px 12px;border-radius:20px;background:#f5f5f5;color:#888}
+
+/* ── ABOUT SECTION ── */
+.about-section{background:#fafafa;padding:80px 24px;border-top:1px solid #f0f0f0}
+.about-inner{max-width:600px;margin:0 auto;text-align:center}
+.about-inner h2{margin-bottom:12px;font-size:1.6rem}
+.about-inner p{color:#888;font-size:0.95rem;line-height:1.8}
+
+/* ── STATS ── */
+.stats{display:flex;justify-content:center;gap:56px;margin-top:36px;flex-wrap:wrap}
+.stat{text-align:center}
+.stat-num{font-size:2.2rem;font-weight:900;color:#6c5ce7;display:block}
+.stat-label{font-size:0.8rem;color:#aaa;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+
+/* ── CONTACT SECTION ── */
+.contact-section{padding:32px 24px;text-align:center;background:#fafafa;border-top:1px solid #f0f0f0}
+.contact-inner{max-width:500px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap}
+.contact-inner p{color:#888;font-size:0.9rem;margin-bottom:0}
+.contact-btn{font-weight:700;font-size:0.85rem;color:#6c5ce7;text-decoration:none;padding:6px 20px;border:2px solid #6c5ce7;border-radius:20px;transition:all 0.3s}
+.contact-btn:hover{background:#6c5ce7;color:#fff}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-title">Unbox the Black Box</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero home-hero">
+  <div class="hero-label">A learning journal</div>
+  <h1><span>Unbox the Black Box</span></h1>
+  <p>Complex topics broken down into simple, visual, and memorable stories. No jargon. No prerequisites.</p>
+
+  <a href="#series" class="scroll-cue" style="text-decoration:none">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M7 10l5 5 5-5"/></svg>
+  </a>
+</section>
+
+<!-- SERIES -->
+<section class="series-section" id="series">
+  <h2>Learning Series</h2>
+  <p>Each series takes one big topic and breaks it into digestible parts.</p>
+
+  <div class="series-grid">
+
+    <!-- CPU SERIES -->
+    <a href="cpu/part1.html" class="series-card">
+      <div class="card-banner" style="background:linear-gradient(135deg,#6c5ce7,#0984e3)">
+        <span class="card-icon">&#129504;</span>
+      </div>
+      <div class="card-body">
+        <div class="card-series-label" style="color:#6c5ce7">SERIES 01</div>
+        <h3>How Computers Think</h3>
+        <p>CPUs, instruction sets, binaries, 32 vs 64-bit, CPU vs GPU — the fundamentals of how every device works.</p>
+        <div class="card-meta">
+          <span class="card-tag">2 Episodes</span>
+          <span class="card-tag">15 min read</span>
+          <span class="card-tag">Beginner</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about-section">
+  <div class="about-inner">
+    <h2>What is Unbox the Black Box?</h2>
+    <p>A personal learning journal where complex tech topics become visual, story-driven explanations. Every article starts from zero — no assumed knowledge — and builds to a clear understanding.</p>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-num">1</span>
+        <span class="stat-label">Series</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">2</span>
+        <span class="stat-label">Episodes</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">12</span>
+        <span class="stat-label">Concepts</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section">
+  <div class="contact-inner">
+    <p>Got feedback or a topic suggestion?</p>
+    <a href="mailto:gokul@example.com" class="contact-btn">Send an Email</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <p>Unbox the Black Box — from confusion to clarity. Built with ❤️ by <strong>Gokul</strong>.</p>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

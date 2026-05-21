@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Computers Think — Part 2: The Bigger Picture | Unbox the Black Box</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+/* ── PAGE-SPECIFIC: Part 2 accent color ── */
+::selection{background:#e17055;color:#fff}
+
+.part2-hero{background:linear-gradient(135deg,#e17055 0%,#d63031 40%,#6c5ce7 100%)}
+
+.part2-num{color:#e17055;background:#fef5e7}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="../index.html" class="nav-title">Unbox the Black Box</a>
+  <div class="nav-links">
+    <span class="nav-series">How Computers Think</span>
+    <a href="part1.html">Episode 1</a>
+    <a href="part2.html" class="active">Episode 2</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero part2-hero">
+  <div class="hero-badge">Episode 2 of 2</div>
+  <h1>The Bigger<br>Picture</h1>
+  <p style="color:rgba(255,255,255,0.95)">32-bit vs 64-bit, CPU vs GPU, open source vs proprietary — and why it all matters more than you think.</p>
+</section>
+
+<!-- SECTION 1: 32-bit vs 64-bit -->
+<section class="section reveal">
+  <span class="section-num part2-num">07</span>
+  <h2>32-bit vs 64-bit</h2>
+  <p>In Episode 1, we learned that CPUs follow instructions, and that there are two main instruction sets: x86_64 and ARM64. But when you download software, you often see another choice: <strong>"32-bit or 64-bit?"</strong></p>
+  <p>What does that actually mean?</p>
+  <p>It refers to the <span class="highlight">width of the data highway</span> inside the CPU — how much information it can process in a single step.</p>
+</section>
+
+<div class="analogy reveal">
+  <p>Imagine a <strong>road</strong>. A 32-bit CPU is like a 2-lane road — only a few cars can pass at once. A 64-bit CPU is like a massive 8-lane highway — far more data flows through at the same time.</p>
+</div>
+
+<section class="section reveal">
+  <p>The biggest real-world difference? <span class="highlight-orange">Memory.</span> How much RAM your computer can use:</p>
+</section>
+
+<div class="bar-chart reveal">
+  <div class="bar-row">
+    <span class="bar-label">32-bit</span>
+    <div class="bar" style="width:30%;background:linear-gradient(90deg,#e17055,#d63031)">4 GB max</div>
+  </div>
+  <div class="bar-row">
+    <span class="bar-label">64-bit</span>
+    <div class="bar" style="width:95%;background:linear-gradient(90deg,#6c5ce7,#0984e3)">16 billion GB (theoretical)</div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>By the mid-2000s, computers were hitting the <span class="highlight-orange">4 GB wall</span>. Programs needed more memory, but 32-bit simply couldn't address it. The industry moved to 64-bit to shatter that ceiling.</p>
+  <p>Today, virtually every computer, phone, and server runs 64-bit. The transition is complete:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// The death of 32-bit</span>
+<span class="code-keyword">2019</span> — macOS dropped 32-bit app support
+<span class="code-keyword">2021</span> — Ubuntu dropped 32-bit downloads
+<span class="code-keyword">2023</span> — Google Play requires 64-bit apps
+<span class="code-keyword">2025</span> — most Linux distros stopped 32-bit builds</pre>
+  </div>
+</section>
+
+<section class="section reveal">
+  <h3 style="font-size:1.4rem;color:#6c5ce7">Can 64-bit run 32-bit software?</h3>
+  <p><span class="highlight-green">Yes</span> — most 64-bit CPUs have a <strong>compatibility mode</strong> that lets them run older 32-bit code. Think of it like a 6-lane highway that can still handle 3-lane traffic.</p>
+  <p>But this backward compatibility is being dropped:</p>
+
+  <div style="display:grid;gap:12px;margin-top:16px">
+    <div style="background:#e8f8f5;padding:16px 24px;border-radius:14px;border-left:4px solid #00b894">
+      <strong style="color:#00b894">Windows 64-bit</strong> — still runs 32-bit apps (via a layer called WoW64)
+    </div>
+    <div style="background:#e8f8f5;padding:16px 24px;border-radius:14px;border-left:4px solid #00b894">
+      <strong style="color:#00b894">Linux 64-bit</strong> — can run 32-bit apps if you install extra libraries
+    </div>
+    <div style="background:#ffe0e0;padding:16px 24px;border-radius:14px;border-left:4px solid #d63031">
+      <strong style="color:#d63031">macOS (2019+)</strong> — dropped 32-bit support completely. No compatibility mode.
+    </div>
+  </div>
+
+  <p style="margin-top:16px">The reverse, however, is <span class="highlight-orange">impossible</span>: a 32-bit CPU can never run 64-bit code. It simply doesn't have the hardware to understand it.</p>
+</section>
+
+<!-- SECTION 2: WHY NO 128-BIT -->
+<section class="section reveal">
+  <span class="section-num part2-num">08</span>
+  <h2>So Why Not 128-bit?</h2>
+  <p>If 64-bit was better than 32-bit, surely 128-bit would be even better, right?</p>
+  <p>Not really. Here's why:</p>
+</section>
+
+<div class="reveal" style="max-width:700px;margin:0 auto;padding:0 24px">
+  <div class="flow" style="flex-direction:column;gap:20px;align-items:stretch">
+    <div class="flow-box fb-orange" style="text-align:left;min-width:auto">
+      <strong>8-bit</strong> (1970s) — could address <strong>256 bytes</strong> of RAM<br><small>Atari, Nintendo NES. Ran out quickly.</small>
+    </div>
+    <div class="flow-box fb-orange" style="text-align:left;min-width:auto">
+      <strong>16-bit</strong> (1980s) — could address <strong>64 KB</strong> of RAM<br><small>Super Nintendo. Still tight.</small>
+    </div>
+    <div class="flow-box fb-red" style="text-align:left;min-width:auto">
+      <strong>32-bit</strong> (1990s–2000s) — could address <strong>4 GB</strong> of RAM<br><small>Hit the wall around 2005. Forced the upgrade.</small>
+    </div>
+    <div class="flow-box fb-purple" style="text-align:left;min-width:auto">
+      <strong>64-bit</strong> (2003–now) — could address <strong>16 billion GB</strong> of RAM<br><small>We're using 0.0000001% of this. No wall in sight.</small>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>Each jump happened because we <span class="highlight-orange">ran out of space</span>. The move from 32-bit to 64-bit solved a real problem — the 4 GB memory limit.</p>
+  <p>But 64-bit can theoretically address <span class="highlight">16 exabytes</span> of memory. The largest server in the world today uses about 12 TB — that's still less than 0.0001% of what 64-bit allows.</p>
+  <p>There's simply <span class="highlight-green">no problem to solve</span>. Building a 128-bit CPU would be more complex, use more power, and solve a problem that won't exist for centuries.</p>
+</section>
+
+<!-- SECTION 3: PROPRIETARY VS OPEN SOURCE -->
+<section class="dark-section reveal">
+  <span class="section-num" style="background:rgba(255,255,255,0.15);color:#ffeaa7">09</span>
+  <h2 style="margin-top:16px">Who Owns the Language?</h2>
+  <p>Remember instruction sets — the language CPUs speak? Here's the twist: <strong>some languages are locked behind patents, and some are free.</strong></p>
+</section>
+
+<div class="info-grid reveal">
+  <div class="info-card ic-orange">
+    <h4>x86_64 — Proprietary</h4>
+    <p><strong>Owned by:</strong> Intel &amp; AMD (patents)</p>
+    <p>You <strong>cannot</strong> manufacture an x86 chip without their permission. That's why only 2 companies in the world make them.</p>
+    <p style="margin-top:8px;font-size:0.8rem;color:#e17055;font-weight:700">Closed club. No entry.</p>
+  </div>
+  <div class="info-card ic-purple">
+    <h4>ARM64 — Licensed</h4>
+    <p><strong>Owned by:</strong> ARM Holdings (UK company)</p>
+    <p>You <strong>can</strong> make an ARM chip, but you must <strong>pay a licensing fee</strong> to ARM. Apple, Qualcomm, Samsung, Amazon — they all pay.</p>
+    <p style="margin-top:8px;font-size:0.8rem;color:#6c5ce7;font-weight:700">Open door, but you pay to enter.</p>
+  </div>
+  <div class="info-card ic-green">
+    <h4>RISC-V — Open Source</h4>
+    <p><strong>Owned by:</strong> Nobody. Free for everyone.</p>
+    <p><strong>Anyone</strong> can design and build a RISC-V chip with zero fees, zero permission. It's growing fast — China is investing heavily.</p>
+    <p style="margin-top:8px;font-size:0.8rem;color:#00b894;font-weight:700">Fully free. No gates.</p>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>Here's the key distinction many people miss: the instruction set documentation is public — Intel publishes 5,000-page manuals explaining every x86 instruction. <span class="highlight">Anyone can write software</span> that runs on x86.</p>
+  <p>But <span class="highlight-orange">manufacturing a physical chip</span> that executes those instructions? That's where the patents block you. Writing software for x86 is free. Building an x86 CPU will get you sued.</p>
+</section>
+
+<div class="analogy reveal">
+  <p><strong>Speaking English</strong> is free — anyone can do it. But if someone copyrighted the English dictionary and you tried to print your own dictionary, you'd be sued. That's the difference between using an instruction set (free) and implementing one in silicon (patented).</p>
+</div>
+
+<!-- SECTION 4: CPU VS GPU -->
+<section class="section reveal">
+  <span class="section-num part2-num">10</span>
+  <h2>CPU vs GPU</h2>
+  <p>So far, everything we've discussed — instruction sets, 32-bit vs 64-bit, proprietary vs open — has been about the <span class="highlight">CPU</span>. But there's another chip sitting right next to it on your computer's board: the <span class="highlight-orange">GPU</span>.</p>
+  <p>GPUs are in gaming PCs, they power AI, and Nvidia became a trillion-dollar company because of them. But what makes them different from CPUs?</p>
+</section>
+
+<div class="compare reveal">
+  <div class="compare-card cc-blue">
+    <span class="emoji">&#129504;</span>
+    <h3>CPU</h3>
+    <p><strong>A math professor</strong></p>
+    <p>Few cores (4–24), each extremely smart. Can solve any problem — algebra, logic, complex decisions.</p>
+    <p>Works on one complex task at a time, very fast.</p>
+  </div>
+  <div class="compare-card cc-red">
+    <span class="emoji">&#128101;</span>
+    <h3>GPU</h3>
+    <p><strong>10,000 students</strong></p>
+    <p>Thousands of tiny cores, each can only do simple math. But all 10,000 work at the same time.</p>
+    <p>Same simple task, millions of times in parallel.</p>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>Here's what each is good at:</p>
+  <div class="code-block">
+    <pre><span class="code-comment">// CPU: complex decisions, step by step</span>
+<span class="code-keyword">if</span> user is logged in
+  <span class="code-keyword">check</span> permissions
+    <span class="code-keyword">if</span> admin → load dashboard
+    <span class="code-keyword">else</span> → load profile
+      <span class="code-keyword">fetch</span> from database
+        <span class="code-keyword">format</span> response
+
+<span class="code-comment">Each step depends on the previous one.</span>
+<span class="code-comment">GPU can't do this well.</span></pre>
+  </div>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// GPU: same math, 8 million times</span>
+<span class="code-string">Pixel 1:</span>      multiply color x lighting
+<span class="code-string">Pixel 2:</span>      multiply color x lighting
+<span class="code-string">Pixel 3:</span>      multiply color x lighting
+<span class="code-string">...</span>
+<span class="code-string">Pixel 8,294,400:</span>  multiply color x lighting
+
+<span class="code-comment">Same operation. No dependencies.</span>
+<span class="code-comment">CPU would do this one by one — painfully slow.</span></pre>
+  </div>
+</section>
+
+<!-- GPU VISUALIZATION -->
+<div class="dark-section reveal">
+  <h2>Visualizing the Difference</h2>
+  <p style="margin-bottom:24px">A CPU has a few powerful cores. A GPU has <strong>thousands</strong> of simple ones, all blinking at once:</p>
+
+  <div style="display:flex;justify-content:center;gap:60px;flex-wrap:wrap;align-items:flex-start">
+    <div>
+      <p style="font-weight:800;margin-bottom:12px;color:#74b9ff">CPU — 12 Cores</p>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:160px;margin:0 auto">
+        <div style="width:32px;height:32px;border-radius:6px;background:#74b9ff"></div>
+        <div style="width:32px;height:32px;border-radius:6px;background:#74b9ff"></div>
+        <div style="width:32px;height:32px;border-radius:6px;background:#74b9ff"></div>
+        <div style="width:32px;height:32px;border-radius:6px;background:#74b9ff"></div>
+        <div style="width:32px;height:32px;border-radius:6px;background:#74b9ff"></div>
+        <div style="width:32px;height:32px;border-radius:6px;background:#74b9ff"></div>
+        <div style="width:32px;height:32px;border-radius:6px;background:#74b9ff"></div>
+        <div style="width:32px;height:32px;border-radius:6px;background:#74b9ff"></div>
+        <div style="width:32px;height:32px;border-radius:6px;background:#74b9ff"></div>
+        <div style="width:32px;height:32px;border-radius:6px;background:#74b9ff"></div>
+        <div style="width:32px;height:32px;border-radius:6px;background:#74b9ff"></div>
+        <div style="width:32px;height:32px;border-radius:6px;background:#74b9ff"></div>
+      </div>
+      <p style="font-size:0.8rem;margin-top:8px;color:rgba(255,255,255,0.6)">Each one: powerful, smart</p>
+    </div>
+    <div>
+      <p style="font-weight:800;margin-bottom:12px;color:#55efc4">GPU — Thousands of Cores</p>
+      <div class="gpu-grid"></div>
+      <p style="font-size:0.8rem;margin-top:8px;color:rgba(255,255,255,0.6)">Each one: simple, but many</p>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 5: WHY GPU POWERS AI -->
+<section class="section reveal">
+  <span class="section-num part2-num">11</span>
+  <h2>Why GPUs Power AI</h2>
+  <p>Artificial intelligence — deep learning, neural networks, ChatGPT — is built on one core operation: <span class="highlight">matrix multiplication</span>.</p>
+  <p>That sounds scary, but it's just this: multiply and add, multiply and add, multiply and add — <span class="highlight-orange">billions of times</span>.</p>
+</section>
+
+<div class="analogy reveal">
+  <p>Training an AI model is like grading <strong>10 million exam papers</strong>. Each paper needs the same simple steps: check answer, mark score, add it up. A professor (CPU) could do it, but it would take years. 10,000 students (GPU) finish in a day — because every paper is independent.</p>
+</div>
+
+<section class="section reveal">
+  <p>This is why <span class="highlight">Nvidia</span> became one of the most valuable companies in history. Their GPUs — combined with their <strong>CUDA</strong> software platform — dominate AI training:</p>
+
+  <div style="display:grid;gap:12px;margin-top:20px">
+    <div style="background:#f0efff;padding:18px 24px;border-radius:14px;display:flex;align-items:center;gap:16px">
+      <span style="font-size:2rem">&#128994;</span>
+      <div><strong style="color:#6c5ce7">Nvidia GPU + CUDA</strong> — ~90% of AI training market. Proprietary software lock-in.</div>
+    </div>
+    <div style="background:#e8f8f5;padding:18px 24px;border-radius:14px;display:flex;align-items:center;gap:16px">
+      <span style="font-size:2rem">&#128993;</span>
+      <div><strong style="color:#00b894">AMD GPU + ROCm</strong> — Open source alternative. Growing, but still catching up.</div>
+    </div>
+    <div style="background:#fef5e7;padding:18px 24px;border-radius:14px;display:flex;align-items:center;gap:16px">
+      <span style="font-size:2rem">&#128992;</span>
+      <div><strong style="color:#e17055">Google TPU</strong> — Custom chip designed purely for AI. Only available on Google Cloud.</div>
+    </div>
+  </div>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>The Complete Picture</h2>
+
+  <div style="display:grid;gap:16px;margin-top:20px">
+    <div style="background:#f0efff;padding:20px 24px;border-radius:14px;border-left:4px solid #6c5ce7">
+      <strong style="color:#6c5ce7">32-bit vs 64-bit</strong> — determines how much memory a CPU can address. 32-bit topped out at 4 GB. 64-bit can handle billions of GB. No need for 128-bit anytime soon.
+    </div>
+    <div style="background:#fef5e7;padding:20px 24px;border-radius:14px;border-left:4px solid #e17055">
+      <strong style="color:#e17055">Instruction set ownership</strong> — x86 is locked (Intel/AMD patents), ARM is licensed (pay a fee), RISC-V is fully open and free for anyone.
+    </div>
+    <div style="background:#e8f8f5;padding:20px 24px;border-radius:14px;border-left:4px solid #00b894">
+      <strong style="color:#00b894">CPU vs GPU</strong> — CPUs are a few smart cores for complex tasks. GPUs are thousands of simple cores for parallel tasks. AI training is massively parallel — that's why GPUs dominate.
+    </div>
+    <div style="background:#ffeef7;padding:20px 24px;border-radius:14px;border-left:4px solid #e84393">
+      <strong style="color:#e84393">Open source matters</strong> — RISC-V proves that open instruction sets can compete. The tension between proprietary control and open collaboration shapes the entire industry.
+    </div>
+  </div>
+</section>
+
+<!-- END -->
+<section class="next-part" style="background:linear-gradient(135deg,#00b894,#00cec9)">
+  <h2>You Made It!</h2>
+  <p>You now understand the fundamentals of how CPUs work, what instruction sets are, and why the world of computing is shaped the way it is.</p>
+  <a href="part1.html" class="btn btn-white" style="color:#00b894">&#10094; Back to Episode 1</a>
+</section>
+
+<footer class="footer">
+  <p>Unbox the Black Box — from confusion to clarity. Built with ❤️ by <strong>Gokul</strong>.</p>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+const grid = document.querySelector('.gpu-grid');
+if (grid) {
+  for (let i = 0; i < 100; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'gpu-dot';
+    dot.style.animationDelay = (Math.random() * 2).toFixed(2) + 's';
+    grid.appendChild(dot);
+  }
+}
+</script>
+</body>
+</html>
