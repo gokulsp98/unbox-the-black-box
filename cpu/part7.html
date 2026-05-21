@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Your Code Runs — Episode 7: The Full Picture | Unbox the Black Box</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+::selection{background:#6c5ce7;color:#fff}
+
+.part7-hero{background:linear-gradient(135deg,#6c5ce7 0%,#0984e3 40%,#00b894 100%)}
+
+.part7-num{color:#6c5ce7;background:#f0efff}
+
+/* ── Hero Art: 4 Language Orbits ── */
+.orbit-art{margin:40px auto 0;position:relative;width:200px;height:200px;animation:fadeInUp 1.5s ease}
+.orbit-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Fira Code',monospace;font-size:0.8rem;font-weight:700;color:#fff;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.3);width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;letter-spacing:1px}
+.orbit-ring{position:absolute;top:50%;left:50%;border:1.5px solid rgba(255,255,255,0.12);border-radius:50%}
+.orbit-ring-1{width:130px;height:130px;margin:-65px 0 0 -65px;animation:orbitSpin 12s linear infinite}
+.orbit-ring-2{width:180px;height:180px;margin:-90px 0 0 -90px;animation:orbitSpin 16s linear infinite reverse}
+.orbit-dot{position:absolute;font-family:'Fira Code',monospace;font-size:0.6rem;font-weight:700;color:#fff;background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.35);padding:4px 8px;border-radius:6px;white-space:nowrap}
+.orbit-ring-1 .orbit-dot:nth-child(1){top:-10px;left:50%;transform:translateX(-50%)}
+.orbit-ring-1 .orbit-dot:nth-child(2){bottom:-10px;left:50%;transform:translateX(-50%)}
+.orbit-ring-2 .orbit-dot:nth-child(1){top:-10px;left:50%;transform:translateX(-50%)}
+.orbit-ring-2 .orbit-dot:nth-child(2){bottom:-10px;left:50%;transform:translateX(-50%)}
+@keyframes orbitSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.hero-subtitle{font-family:'Fira Code',monospace;font-size:0.8rem;color:rgba(255,255,255,0.6);letter-spacing:2px;text-align:center;margin-top:16px}
+
+/* ── 4-Language Cards ── */
+.lang-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;max-width:900px;margin:32px auto;padding:0 24px}
+.lang-card{border-radius:16px;padding:24px;text-align:center;transition:all 0.3s;position:relative;overflow:hidden}
+.lang-card:hover{transform:translateY(-4px)}
+.lang-card h4{font-size:1.1rem;font-weight:800;margin-bottom:6px}
+.lang-card .lang-when{font-family:'Fira Code',monospace;font-size:0.7rem;margin-bottom:12px;opacity:0.8}
+.lang-card .lang-flow{font-family:'Fira Code',monospace;font-size:0.65rem;line-height:1.8;text-align:left;background:rgba(0,0,0,0.06);border-radius:10px;padding:12px 14px;margin-top:8px}
+.lc-c{background:#e8f8f5;border:2px solid #b8f0e0}
+.lc-java{background:#f0efff;border:2px solid #d5ccff}
+.lc-python{background:#fef5e7;border:2px solid #fdd9b5}
+.lc-js{background:#e3f2fd;border:2px solid #90caf9}
+
+/* ── Install Grid ── */
+.install-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;max-width:800px;margin:32px auto;padding:0 24px}
+.install-card{background:#2d3436;border-radius:14px;padding:20px;text-align:center;border:2px solid #636e72;transition:all 0.3s}
+.install-card:hover{transform:translateY(-4px)}
+.install-icon{font-size:2rem;margin-bottom:8px;display:block}
+.install-lang{font-family:'Fira Code',monospace;font-size:0.85rem;font-weight:700;color:#fff;margin-bottom:6px}
+.install-need{font-size:0.75rem;color:#00b894;font-weight:700;padding:4px 12px;border-radius:8px;background:rgba(0,184,148,0.1);display:inline-block}
+.install-none{color:#ff6b6b;background:rgba(255,107,107,0.1)}
+
+/* ── Why Grid ── */
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;max-width:900px;margin:32px auto;padding:0 24px}
+.why-card{border-radius:16px;padding:24px;transition:all 0.3s}
+.why-card:hover{transform:translateY(-4px)}
+.why-card h4{font-size:1rem;font-weight:800;margin-bottom:8px}
+.why-card p{font-size:0.85rem;line-height:1.6}
+.why-card .why-lang{font-family:'Fira Code',monospace;font-size:0.75rem;font-weight:700;margin-bottom:8px;display:inline-block;padding:4px 12px;border-radius:8px}
+.wc-green{background:#e8f8f5;border:2px solid #b8f0e0}
+.wc-purple{background:#f0efff;border:2px solid #d5ccff}
+.wc-blue{background:#e3f2fd;border:2px solid #90caf9}
+.wc-amber{background:#fef5e7;border:2px solid #fdd9b5}
+
+/* ── Finale Banner ── */
+.finale-banner{background:linear-gradient(135deg,#6c5ce7,#0984e3,#00b894);padding:80px 24px;text-align:center;color:#fff;position:relative;overflow:hidden}
+.finale-banner::before{content:'';position:absolute;width:400px;height:400px;border-radius:50%;background:rgba(255,255,255,0.04);top:-100px;right:-100px;animation:float 8s ease-in-out infinite}
+.finale-banner h2{color:#fff;font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:12px}
+.finale-banner p{color:rgba(255,255,255,0.9);max-width:550px;margin:0 auto 28px;font-size:1.05rem}
+.finale-badge{display:inline-block;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);padding:8px 20px;border-radius:30px;font-size:0.85rem;font-weight:700;letter-spacing:1px;margin-bottom:20px}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="../index.html" class="nav-title"><span class="nav-title-sub">Gokul's Learning Journal</span><span class="nav-title-main">Unbox the Black Box</span></a>
+  <div class="nav-ep" onclick="this.classList.toggle('open')">
+    <div class="nav-ep-text">
+      <span class="nav-series-name">How Your Code Runs</span>
+      <span class="nav-ep-current">Ep 7 of 7</span>
+    </div>
+    <div class="nav-progress"><div class="nav-progress-fill" style="width:100%"></div></div>
+    <span class="nav-ep-arrow">&#9660;</span>
+    <div class="nav-dropdown">
+      <a href="part1.html"><span class="ep-num">01</span> The Brain of Your Computer</a>
+      <a href="part2.html"><span class="ep-num">02</span> The Bigger Picture</a>
+      <a href="part3.html"><span class="ep-num">03</span> C: The Journey to Binary</a>
+      <a href="part4.html"><span class="ep-num">04</span> Java: Binary While Running</a>
+      <a href="part5.html"><span class="ep-num">05</span> Python: Binary One Line At A Time</a>
+      <a href="part6.html"><span class="ep-num">06</span> JavaScript: Binary In Your Browser</a>
+      <a href="part7.html" class="active"><span class="ep-num">07</span> The Full Picture</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero part7-hero">
+  <div class="hero-badge">Episode 7 of 7 &mdash; Finale</div>
+  <h1>The Full<br>Picture</h1>
+  <p style="color:rgba(255,255,255,0.95)">Four languages. Four paths to binary. One CPU that only understands ones and zeros. Now let's see them all side by side.</p>
+
+  <div class="orbit-art">
+    <div class="orbit-center">CPU</div>
+    <div class="orbit-ring orbit-ring-1">
+      <span class="orbit-dot">C</span>
+      <span class="orbit-dot">Java</span>
+    </div>
+    <div class="orbit-ring orbit-ring-2">
+      <span class="orbit-dot">Python</span>
+      <span class="orbit-dot">JS</span>
+    </div>
+  </div>
+  <div class="hero-subtitle">every path leads to binary</div>
+</section>
+
+<!-- SECTION 18: THE FULL PICTURE -->
+<section class="section reveal">
+  <span class="section-num part7-num">18</span>
+  <h2>Four Paths, One Destination</h2>
+  <p>Every one of these languages produces binary — the CPU demands it. But the journey is completely different:</p>
+</section>
+
+<!-- 4-LANGUAGE CARDS -->
+<div class="lang-cards reveal">
+  <div class="lang-card lc-c">
+    <h4 style="color:#00b894">C</h4>
+    <div class="lang-when">Binary: before you run it</div>
+    <p style="font-size:0.85rem;color:#555">Compiled once. Saved to disk. CPU runs it directly. Fastest.</p>
+    <div class="lang-flow">
+      hello.c<br>
+      &darr; gcc (compiler)<br>
+      &darr; hello (binary on disk)<br>
+      &darr; CPU runs it directly
+    </div>
+  </div>
+  <div class="lang-card lc-java">
+    <h4 style="color:#6c5ce7">Java</h4>
+    <div class="lang-when">Binary: while it's running (JVM)</div>
+    <p style="font-size:0.85rem;color:#555">Bytecode on disk. JVM creates binary at runtime. JIT makes it fast.</p>
+    <div class="lang-flow">
+      Hello.java<br>
+      &darr; javac &rarr; .class (bytecode)<br>
+      &darr; JVM (with JIT)<br>
+      &darr; binary in memory &rarr; CPU
+    </div>
+  </div>
+  <div class="lang-card lc-python">
+    <h4 style="color:#e17055">Python</h4>
+    <div class="lang-when">Binary: one line at a time</div>
+    <p style="font-size:0.85rem;color:#555">Bytecode cached as .pyc. Interpreter reads it line by line. Slowest.</p>
+    <div class="lang-flow">
+      hello.py<br>
+      &darr; CPython &rarr; .pyc (bytecode)<br>
+      &darr; CPython interpreter<br>
+      &darr; binary one line at a time
+    </div>
+  </div>
+  <div class="lang-card lc-js">
+    <h4 style="color:#0984e3">JavaScript</h4>
+    <div class="lang-when">Binary: inside your browser</div>
+    <p style="font-size:0.85rem;color:#555">Source shipped to browser. V8 JIT compiles. No install needed.</p>
+    <div class="lang-flow">
+      app.js<br>
+      &darr; V8 engine (in browser)<br>
+      &darr; bytecode &rarr; JIT<br>
+      &darr; binary in memory &rarr; CPU
+    </div>
+  </div>
+</div>
+
+<!-- COMPARISON TABLE -->
+<section class="section reveal">
+  <div class="code-block">
+    <pre><span class="code-comment">             When binary?          Saved to disk?      Speed</span>
+<span class="code-comment">─────────────────────────────────────────────────────────────</span>
+<span class="code-keyword">C</span>            Before you run it     <span class="code-string">Yes (permanent)</span>     <span class="code-string">Fastest</span>
+
+<span class="code-keyword">Java</span>         While running (JVM)   <span class="code-string">No (in memory)</span>      <span class="code-string">Fast (after warm-up)</span>
+
+<span class="code-keyword">JavaScript</span>   While running (V8)    <span class="code-string">No (in browser)</span>     <span class="code-string">Fast (V8 JIT)</span>
+
+<span class="code-keyword">Python</span>       While running          <span class="code-string">No (forgotten)</span>      <span class="code-string">Slowest</span>
+             (one line at a time)</pre>
+  </div>
+</section>
+
+<!-- WHAT YOU NEED INSTALLED -->
+<section class="section reveal">
+  <h3 style="font-size:1.3rem;color:#6c5ce7">What You Need Installed to Run Each</h3>
+  <p>This is something people overlook. A C binary runs on its own — you just double-click it. But Java, Python, and JavaScript need a <span class="highlight">runtime</span> installed on the machine:</p>
+</section>
+
+<div class="install-grid reveal">
+  <div class="install-card">
+    <span class="install-icon">&#9881;</span>
+    <div class="install-lang">C</div>
+    <span class="install-need install-none">Nothing needed</span>
+    <p style="font-size:0.7rem;color:#b2bec3;margin-top:8px;margin-bottom:0">The binary IS the program</p>
+  </div>
+  <div class="install-card">
+    <span class="install-icon">&#9749;</span>
+    <div class="install-lang">Java</div>
+    <span class="install-need">JVM required</span>
+    <p style="font-size:0.7rem;color:#b2bec3;margin-top:8px;margin-bottom:0">Without JVM, .class is useless</p>
+  </div>
+  <div class="install-card">
+    <span class="install-icon">&#128013;</span>
+    <div class="install-lang">Python</div>
+    <span class="install-need">Interpreter required</span>
+    <p style="font-size:0.7rem;color:#b2bec3;margin-top:8px;margin-bottom:0">Without it, .py is just text</p>
+  </div>
+  <div class="install-card">
+    <span class="install-icon">&#127760;</span>
+    <div class="install-lang">JavaScript</div>
+    <span class="install-need">A browser</span>
+    <p style="font-size:0.7rem;color:#b2bec3;margin-top:8px;margin-bottom:0">Every computer already has one</p>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>C binaries are self-contained — send the file, it runs. Java and Python need the user to install something first. JavaScript sidesteps this entirely because <span class="highlight-green">every computer already has a browser</span>.</p>
+</section>
+
+<!-- PORTABILITY TABLE -->
+<section class="section reveal">
+  <div class="code-block">
+    <pre><span class="code-comment">             Portability              What to install      Dev Speed</span>
+<span class="code-comment">────────────────────────────────────────────────────────────────────</span>
+<span class="code-keyword">C</span>            Compile per platform     <span class="code-string">Nothing</span>              Slow
+
+<span class="code-keyword">Java</span>         One file, any platform   <span class="code-string">JVM</span>                  Medium
+
+<span class="code-keyword">JavaScript</span>   Runs in any browser      <span class="code-string">A browser</span>            Fast
+
+<span class="code-keyword">Python</span>       Runs on any platform     <span class="code-string">Python interpreter</span>   Fastest
+             with Python installed</pre>
+  </div>
+</section>
+
+<div class="analogy reveal">
+  <p>The spectrum is always the same tradeoff: <strong>speed vs portability vs ease of use</strong>. No language wins all three. Each one picks a different balance.</p>
+</div>
+
+<!-- SECTION 19: WHY THEY ALL EXIST -->
+<section class="section reveal">
+  <span class="section-num part7-num">19</span>
+  <h2>Why They All Exist</h2>
+  <p>If one language could do everything, the others would disappear. But each solves a different problem:</p>
+</section>
+
+<div class="why-grid reveal">
+  <div class="why-card wc-green">
+    <span class="why-lang" style="background:#e8f8f5;color:#00b894">C / Rust</span>
+    <h4>OS, game engine, embedded system?</h4>
+    <p>Maximum speed and hardware control. Binary created once at compile time. CPU runs it directly with zero overhead. Nothing is faster. No runtime needed.</p>
+  </div>
+  <div class="why-card wc-purple">
+    <span class="why-lang" style="background:#f0efff;color:#6c5ce7">Java</span>
+    <h4>Banking, enterprise, Android?</h4>
+    <p>Portability, reliability, and good performance. JVM creates binary at runtime, JIT makes it nearly as fast as C. One codebase runs everywhere.</p>
+  </div>
+  <div class="why-card wc-blue">
+    <span class="why-lang" style="background:#e3f2fd;color:#0984e3">JavaScript</span>
+    <h4>Website or web app?</h4>
+    <p>The only language browsers understand natively. No installation, no compilation — the browser handles everything. V8's JIT makes it surprisingly fast.</p>
+  </div>
+  <div class="why-card wc-amber">
+    <span class="why-lang" style="background:#fef5e7;color:#e17055">Python</span>
+    <h4>Automation, data, AI prototype?</h4>
+    <p>Build fast. Runtime speed doesn't matter because the heavy math runs in C libraries underneath. You wrote the entire program in an afternoon.</p>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p style="text-align:center;font-size:1.2rem;font-weight:800;color:#6c5ce7">The choice is never about which language is "best."<br>It's about which tradeoff fits the problem.</p>
+</section>
+
+<!-- FINAL RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>The Complete Journey</h2>
+
+  <div style="display:grid;gap:16px;margin-top:20px">
+    <div style="background:#e8f8f5;padding:20px 24px;border-radius:14px;border-left:4px solid #00b894">
+      <strong style="color:#00b894">Everything becomes binary</strong> — the CPU only understands binary. This hasn't changed since Episode 1. Every language must produce it.
+    </div>
+    <div style="background:#fef5e7;padding:20px 24px;border-radius:14px;border-left:4px solid #e17055">
+      <strong style="color:#e17055">C</strong> compiles before running. <strong style="color:#6c5ce7">Java</strong> compiles at runtime via JVM. <strong style="color:#e17055">Python</strong> interprets line by line. <strong style="color:#0984e3">JavaScript</strong> lets the browser handle everything.
+    </div>
+    <div style="background:#e3f2fd;padding:20px 24px;border-radius:14px;border-left:4px solid #0984e3">
+      <strong style="color:#0984e3">Python is a glue language</strong> — the heavy work runs in C libraries at native binary speed. Python just orchestrates it.
+    </div>
+    <div style="background:#f0efff;padding:20px 24px;border-radius:14px;border-left:4px solid #6c5ce7">
+      <strong style="color:#6c5ce7">The tradeoff</strong> — speed vs portability vs developer time. No language wins all three. Each picks a different balance.
+    </div>
+  </div>
+</section>
+
+<!-- FINALE BANNER -->
+<section class="finale-banner">
+  <div class="finale-badge">SERIES COMPLETE</div>
+  <h2>You Made It!</h2>
+  <p>You've covered the complete journey: from what a CPU is, to how the computing world is structured, to how every programming language gets its code running on that CPU.</p>
+  <a href="part1.html" class="btn btn-white" style="color:#6c5ce7">Back to Episode 1 &#10132;</a>
+</section>
+
+<footer class="footer">
+  <p>Unbox the Black Box — from confusion to clarity. Built with &#10084;&#65039; by <strong>Gokul</strong>.</p>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+document.addEventListener('click', e => { if (!e.target.closest('.nav-ep')) document.querySelectorAll('.nav-ep').forEach(n => n.classList.remove('open')); });
+</script>
+</body>
+</html>

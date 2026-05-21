@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Your Code Runs — Episode 5: Python — Binary One Line At A Time | Unbox the Black Box</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+::selection{background:#fdcb6e;color:#2d3436}
+
+.part5-hero{background:linear-gradient(135deg,#fdcb6e 0%,#e17055 50%,#d63031 100%)}
+
+.part5-num{color:#e17055;background:#fef5e7}
+
+/* ── Hero Art: Python Snake ── */
+.python-art{margin:40px auto 0;display:flex;flex-direction:column;align-items:center;gap:12px;animation:fadeInUp 1.5s ease}
+.snake-body{display:flex;align-items:center;gap:4px}
+.snake-segment{width:20px;height:20px;border-radius:6px;background:rgba(255,255,255,0.25);border:2px solid rgba(255,255,255,0.4)}
+.snake-segment:nth-child(1){border-radius:10px 6px 6px 10px;width:28px;background:rgba(255,255,255,0.35)}
+.snake-segment:nth-child(1)::after{content:'';display:inline-block}
+.snake-segment:nth-child(odd){animation:snakeWave 2s ease infinite}
+.snake-segment:nth-child(even){animation:snakeWave 2s ease 0.3s infinite}
+@keyframes snakeWave{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.python-label{font-family:'Fira Code',monospace;font-size:0.85rem;color:rgba(255,255,255,0.8);letter-spacing:2px}
+
+/* ── Interpreter Line-by-Line Animation ── */
+.interp-demo{max-width:500px;margin:32px auto;padding:0 24px}
+.interp-box{background:#2d3436;border-radius:16px;padding:20px 24px;font-family:'Fira Code',monospace;font-size:0.8rem;line-height:2.2;color:#dfe6e9;position:relative;overflow:hidden}
+.interp-line{position:relative;padding-left:16px;opacity:0.4;transition:opacity 0.5s}
+.interp-line.active{opacity:1}
+.interp-line.active::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:4px;border-radius:2px;background:#fdcb6e;animation:interpGlow 1.5s ease infinite}
+@keyframes interpGlow{0%,100%{opacity:0.5}50%{opacity:1}}
+.interp-arrow{color:#fdcb6e;margin-left:8px;font-size:0.7rem}
+.interp-result{color:#00b894;margin-left:8px;font-size:0.7rem}
+.interp-caption{text-align:center;margin-top:12px;font-size:0.8rem;color:#888;font-weight:700}
+
+/* ── Pyc Compare ── */
+.pyc-compare{max-width:700px;margin:32px auto;padding:0 24px}
+.pyc-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.pyc-card{border-radius:16px;padding:24px;text-align:center}
+.pyc-card h4{font-size:1rem;font-weight:800;margin-bottom:8px}
+.pyc-card p{font-size:0.85rem;line-height:1.6}
+.pyc-card .pyc-flow{font-family:'Fira Code',monospace;font-size:0.7rem;margin-top:12px;padding:12px;background:rgba(0,0,0,0.05);border-radius:10px;line-height:1.8}
+.pyc-java{background:#f0efff;border:2px solid #d5ccff}
+.pyc-python{background:#fef5e7;border:2px solid #fdd9b5}
+@media(max-width:600px){.pyc-grid{grid-template-columns:1fr}}
+
+/* ── Glue Language Illustration ── */
+.glue-visual{max-width:500px;margin:32px auto;padding:0 24px}
+.glue-box{background:linear-gradient(145deg,#1e1e2e,#2d3436);border-radius:20px;padding:28px;text-align:center;position:relative;box-shadow:0 12px 40px rgba(0,0,0,0.3)}
+.glue-layers{display:flex;flex-direction:column;gap:12px;align-items:center}
+.glue-layer{padding:12px 28px;border-radius:12px;font-family:'Fira Code',monospace;font-size:0.8rem;font-weight:700;width:80%;max-width:280px;position:relative}
+.glue-py{background:linear-gradient(90deg,#fdcb6e,#e17055);color:#fff}
+.glue-arrow-down{color:rgba(255,255,255,0.4);font-size:1.2rem}
+.glue-c{background:linear-gradient(90deg,#00b894,#0984e3);color:#fff}
+.glue-cpu{background:rgba(255,255,255,0.08);color:#b2bec3;border:1px solid rgba(255,255,255,0.15)}
+.glue-label{font-size:0.65rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:2px;margin-top:8px}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="../index.html" class="nav-title"><span class="nav-title-sub">Gokul's Learning Journal</span><span class="nav-title-main">Unbox the Black Box</span></a>
+  <div class="nav-ep" onclick="this.classList.toggle('open')">
+    <div class="nav-ep-text">
+      <span class="nav-series-name">How Your Code Runs</span>
+      <span class="nav-ep-current">Ep 5 of 7</span>
+    </div>
+    <div class="nav-progress"><div class="nav-progress-fill" style="width:71%"></div></div>
+    <span class="nav-ep-arrow">&#9660;</span>
+    <div class="nav-dropdown">
+      <a href="part1.html"><span class="ep-num">01</span> The Brain of Your Computer</a>
+      <a href="part2.html"><span class="ep-num">02</span> The Bigger Picture</a>
+      <a href="part3.html"><span class="ep-num">03</span> C: The Journey to Binary</a>
+      <a href="part4.html"><span class="ep-num">04</span> Java: Binary While Running</a>
+      <a href="part5.html" class="active"><span class="ep-num">05</span> Python: Binary One Line At A Time</a>
+      <a href="part6.html"><span class="ep-num">06</span> JavaScript: Binary In Your Browser</a>
+      <a href="part7.html"><span class="ep-num">07</span> The Full Picture</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero part5-hero">
+  <div class="hero-badge">Episode 5 of 7</div>
+  <h1>Python: Binary One<br>Line At A Time</h1>
+  <p style="color:rgba(255,255,255,0.95)">No compile step. No bytecode you ever see. Python reads your code line by line, translates each to binary, and immediately forgets it.</p>
+
+  <div class="python-art">
+    <div class="snake-body">
+      <div class="snake-segment"></div>
+      <div class="snake-segment"></div>
+      <div class="snake-segment"></div>
+      <div class="snake-segment"></div>
+      <div class="snake-segment"></div>
+      <div class="snake-segment"></div>
+      <div class="snake-segment"></div>
+    </div>
+    <div class="python-label">line by line</div>
+  </div>
+</section>
+
+<!-- SECTION 16: PYTHON -->
+<section class="section reveal">
+  <span class="section-num part5-num">16</span>
+  <h2>The Simplest Path (and the Slowest)</h2>
+  <p>In Episode 3, we saw how C compiles to binary before you run the program. In Episode 4, Java compiles to bytecode, then the JVM creates binary at runtime. Python takes a third approach — the simplest, and the slowest.</p>
+  <p>There's no compile step you ever see. You just run your code directly:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">python</span> hello.py
+
+<span class="code-comment">That's it. No gcc. No javac. Just run.</span></pre>
+  </div>
+
+  <p>A program called the <span class="highlight-orange">interpreter</span> reads your source code line by line, translates each line to binary, the CPU executes it, and then it moves to the next line.</p>
+</section>
+
+<!-- FLOW DIAGRAM -->
+<div class="reveal" style="max-width:900px;margin:0 auto;padding:0 24px">
+  <div class="flow">
+    <div class="flow-box fb-purple">hello.py<br><small>source</small></div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-orange">CPython<br><small>compiler</small></div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-purple">.pyc<br><small>bytecode</small></div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-dark">Interpreter<br><small>line by line</small></div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-green">CPU<br><small>one line at a time</small></div>
+  </div>
+</div>
+
+<!-- INTERPRETER DEMO -->
+<div class="interp-demo reveal">
+  <div class="interp-box">
+    <div class="interp-line active">
+      name = "Gokul"
+      <span class="interp-arrow">&#10132;</span>
+      <span class="interp-result">CPU stores "Gokul" in memory</span>
+    </div>
+    <div class="interp-line">
+      print("Hello " + name)
+      <span class="interp-arrow">&#10132;</span>
+      <span class="interp-result">CPU prints "Hello Gokul"</span>
+    </div>
+    <div class="interp-line">
+      <span style="color:#636e72">Done. No binary file created.</span>
+    </div>
+  </div>
+  <div class="interp-caption">The interpreter translates &amp; forgets — one line at a time</div>
+</div>
+
+<section class="section reveal">
+  <p><strong>So when does Python code become binary?</strong> One instruction at a time, while running — and the binary is immediately forgotten after each line executes. It's never saved, never cached, never reused.</p>
+  <p>And just like Java needs the JVM, Python needs the <span class="highlight-orange">Python interpreter</span> installed on the machine. Without it, <code>.py</code> files are just text files — the computer doesn't know what to do with them.</p>
+</section>
+
+<!-- .PYC SECTION -->
+<section class="section reveal">
+  <h3 style="font-size:1.3rem;color:#e17055">Wait — What About .pyc Files?</h3>
+  <p>If you've used Python, you may have noticed a <code>__pycache__</code> folder with <code>.pyc</code> files appearing next to your code. That looks like compilation — and it is, partially.</p>
+  <p>When you run <code>hello.py</code>, Python actually does a hidden step first: it compiles your source code into <span class="highlight">bytecode</span> — similar to what Java does. This bytecode is saved as a <code>.pyc</code> file.</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">hello.py</span> <span class="code-arrow">→</span> <span class="code-string">Python compiler</span> <span class="code-arrow">→</span> <span class="code-string">hello.cpython-312.pyc</span> <span class="code-comment">(bytecode)</span></pre>
+  </div>
+
+  <p>Sound familiar? It's the same idea as Java's <code>.class</code> files. But here's the critical difference:</p>
+</section>
+
+<!-- PYC vs JAVA COMPARE -->
+<div class="pyc-compare reveal">
+  <div class="pyc-grid">
+    <div class="pyc-card pyc-java">
+      <h4 style="color:#6c5ce7">Java</h4>
+      <p>bytecode &rarr; JVM with JIT &rarr; <strong>native binary</strong> (fast, cached)</p>
+      <div class="pyc-flow">
+        .class &rarr; JVM<br>
+        &darr;<br>
+        JIT compiles hot paths<br>
+        &darr;<br>
+        <span style="color:#00b894">native binary &rarr; CPU</span>
+      </div>
+    </div>
+    <div class="pyc-card pyc-python">
+      <h4 style="color:#e17055">Python</h4>
+      <p>bytecode &rarr; CPython interpreter &rarr; <strong>reads line by line</strong> (slow, no JIT)</p>
+      <div class="pyc-flow">
+        .pyc &rarr; CPython<br>
+        &darr;<br>
+        interprets one by one<br>
+        &darr;<br>
+        <span style="color:#e17055">no native binary</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>Java's JVM takes bytecode and <span class="highlight">compiles hot paths into native binary</span> that the CPU runs directly. Python's interpreter (called CPython) just <span class="highlight-orange">reads the bytecode instructions one by one</span> and executes them — no JIT, no native binary compilation.</p>
+  <p>So the <code>.pyc</code> file saves Python from re-parsing your source code every time — that's a small speedup. But the actual execution is still interpreted line by line. The bytecode never becomes native binary.</p>
+</section>
+
+<div class="analogy reveal">
+  <p>It's like translating a book from English to a simpler English — it's easier to read, but you're still reading it <strong>word by word</strong> instead of memorizing it.</p>
+</div>
+
+<section class="section reveal">
+  <p>That's why Python is still much slower than Java, despite both having a bytecode step. This makes Python the <span class="highlight-orange">slowest</span> of the four languages we're covering.</p>
+</section>
+
+<!-- WHY USE PYTHON -->
+<section class="section reveal">
+  <h3 style="font-size:1.3rem;color:#00b894">So Why Would Anyone Use It?</h3>
+  <p>Because writing Python is <span class="highlight-green">incredibly fast for humans</span>:</p>
+</section>
+
+<div class="compare reveal">
+  <div class="compare-card cc-blue">
+    <span class="emoji">&#9881;</span>
+    <h3>C (read a file)</h3>
+    <div style="text-align:left;font-family:'Fira Code',monospace;font-size:0.7rem;line-height:1.8;margin-top:12px;color:#2d3436">
+      FILE *f = fopen("data.txt", "r");<br>
+      if (f == NULL) { return 1; }<br>
+      char buffer[1024];<br>
+      while (fgets(buffer, 1024, f)) {<br>
+      &nbsp;&nbsp;printf("%s", buffer);<br>
+      }<br>
+      fclose(f);
+    </div>
+    <p style="margin-top:12px;font-weight:800;color:#636e72">7 lines</p>
+  </div>
+  <div class="compare-card cc-red">
+    <span class="emoji">&#128013;</span>
+    <h3>Python (same thing)</h3>
+    <div style="text-align:left;font-family:'Fira Code',monospace;font-size:0.85rem;line-height:1.8;margin-top:32px;color:#2d3436">
+      print(open("data.txt").read())
+    </div>
+    <p style="margin-top:32px;font-weight:800;color:#636e72">1 line</p>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>What takes 7 lines in C takes 1 line in Python. For web apps, data analysis, automation scripts — <span class="highlight">developer time matters more than CPU time</span>.</p>
+</section>
+
+<!-- GLUE LANGUAGE -->
+<section class="section reveal">
+  <h3 style="font-size:1.3rem;color:#6c5ce7">The Hidden Truth: Python Is a Glue Language</h3>
+  <p>Here's something most beginners don't realize: when Python does heavy work, <span class="highlight-orange">it's not actually Python doing the work</span>. The heavy lifting happens in libraries written in C.</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">import</span> numpy <span class="code-keyword">as</span> np
+data = np.array([1, 2, 3])
+result = data * 2
+
+<span class="code-comment">That multiplication doesn't run in Python.</span>
+<span class="code-comment">NumPy is written in C.</span>
+<span class="code-comment">Python calls the C code → binary → CPU runs at full speed.</span></pre>
+  </div>
+</section>
+
+<!-- GLUE ILLUSTRATION -->
+<div class="glue-visual reveal">
+  <div class="glue-box">
+    <div class="glue-layers">
+      <div class="glue-layer glue-py">Python &mdash; writes the logic</div>
+      <span class="glue-arrow-down">&darr; calls</span>
+      <div class="glue-layer glue-c">C / CUDA &mdash; does the math</div>
+      <span class="glue-arrow-down">&darr; binary</span>
+      <div class="glue-layer glue-cpu">CPU / GPU &mdash; runs at full speed</div>
+    </div>
+    <div class="glue-label">Python is the glue holding it together</div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>That's why AI and machine learning use Python — you write training loops in Python, but the actual matrix multiplications run in C/CUDA libraries at full binary speed on GPUs. <span class="highlight">Python is just the glue</span> holding it all together.</p>
+</section>
+
+<!-- PYTHON GETTING FASTER -->
+<div class="analogy reveal">
+  <p><strong>Python is getting faster.</strong> Python 3.13+ introduced an experimental <span class="highlight">JIT compiler</span> — just like Java's. It watches for hot code paths and compiles them to binary. It's early, but the speed gap between Python and Java is starting to close.</p>
+</div>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+
+  <div style="display:grid;gap:16px;margin-top:20px">
+    <div style="background:#fef5e7;padding:20px 24px;border-radius:14px;border-left:4px solid #e17055">
+      <strong style="color:#e17055">Python interprets line by line</strong> — the interpreter translates each bytecode instruction to binary, executes it, and immediately forgets it. No JIT, no cached binary.
+    </div>
+    <div style="background:#f0efff;padding:20px 24px;border-radius:14px;border-left:4px solid #6c5ce7">
+      <strong style="color:#6c5ce7">.pyc files exist but don't help much</strong> — they save re-parsing time, but execution is still interpreted. Both Java and Python compile to bytecode — the difference is what happens next.
+    </div>
+    <div style="background:#e8f8f5;padding:20px 24px;border-radius:14px;border-left:4px solid #00b894">
+      <strong style="color:#00b894">Python is a glue language</strong> — the heavy work runs in C libraries at native binary speed. Python just orchestrates it. That's why AI uses Python.
+    </div>
+    <div style="background:#ffeef7;padding:20px 24px;border-radius:14px;border-left:4px solid #e84393">
+      <strong style="color:#e84393">Slowest to run, fastest to write</strong> — developer time matters more than CPU time for most tasks. And Python 3.13+ is experimenting with JIT to close the gap.
+    </div>
+  </div>
+</section>
+
+<!-- NEXT EPISODE -->
+<section class="next-part" style="background:linear-gradient(135deg,#fdcb6e,#e17055)">
+  <h2>Ready for Episode 6?</h2>
+  <p>JavaScript takes the most unique path of all — it ships source code directly to your browser. And we'll see all four languages side by side for the complete picture.</p>
+  <a href="part6.html" class="btn btn-white" style="color:#e17055">Continue to Episode 6 &#10132;</a>
+</section>
+
+<footer class="footer">
+  <p>Unbox the Black Box — from confusion to clarity. Built with &#10084;&#65039; by <strong>Gokul</strong>.</p>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+document.addEventListener('click', e => { if (!e.target.closest('.nav-ep')) document.querySelectorAll('.nav-ep').forEach(n => n.classList.remove('open')); });
+
+let currentLine = 0;
+const lines = document.querySelectorAll('.interp-line');
+if (lines.length) {
+  setInterval(() => {
+    lines.forEach(l => l.classList.remove('active'));
+    lines[currentLine].classList.add('active');
+    currentLine = (currentLine + 1) % lines.length;
+  }, 2000);
+}
+</script>
+</body>
+</html>

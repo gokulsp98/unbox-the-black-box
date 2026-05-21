@@ -1,8 +1,8 @@
 ---
 title: "The Brain of Your Computer"
-series: "How Computers Think"
+series: "How Your Code Runs"
 episode: 1
-totalEpisodes: 2
+totalEpisodes: 7
 description: "Ever wondered what really happens inside that little chip? CPUs, instruction sets, compilers, x86_64 vs ARM64 — broken down so anyone can understand."
 tags: ["cpu", "instruction-set", "binary", "compiler", "x86", "arm"]
 author: "Gokul"

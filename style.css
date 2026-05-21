@@ -8,7 +8,30 @@ body{font-family:'Nunito',sans-serif;color:#2d3436;overflow-x:hidden;background:
 
 /* ── NAV ── */
 .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:2px solid #dfe6e9;padding:12px 24px;display:flex;justify-content:space-between;align-items:center}
-.nav-title{font-weight:900;font-size:1rem;color:#6c5ce7;text-decoration:none;letter-spacing:-0.3px}
+.nav-title{display:flex;flex-direction:column;text-decoration:none;line-height:1.2}
+.nav-title-sub{font-family:'Fira Code',monospace;font-size:0.55rem;font-weight:500;color:#636e72;letter-spacing:1.5px;text-transform:uppercase}
+.nav-title-main{font-weight:900;font-size:1rem;color:#6c5ce7;letter-spacing:-0.3px;background:linear-gradient(90deg,#6c5ce7,#0984e3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* ── NAV: Episode Progress Bar ── */
+.nav-ep{display:flex;align-items:center;gap:10px;position:relative;cursor:pointer;user-select:none}
+.nav-ep-text{font-size:0.85rem;font-weight:700;color:#555;white-space:nowrap}
+.nav-ep-text .nav-series-name{color:#888}
+.nav-ep-text .nav-ep-current{color:#6c5ce7;margin-left:4px}
+.nav-progress{width:80px;height:4px;background:#eee;border-radius:4px;overflow:hidden}
+.nav-progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#6c5ce7,#0984e3);transition:width 0.4s ease}
+.nav-ep-arrow{font-size:0.6rem;color:#aaa;transition:transform 0.3s}
+.nav-ep.open .nav-ep-arrow{transform:rotate(180deg)}
+
+/* ── NAV: Episode Dropdown ── */
+.nav-dropdown{position:absolute;top:calc(100% + 12px);right:0;background:#fff;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,0.12);border:1px solid #eee;padding:8px;min-width:260px;opacity:0;visibility:hidden;transform:translateY(-8px);transition:all 0.3s ease;z-index:200}
+.nav-ep.open .nav-dropdown{opacity:1;visibility:visible;transform:translateY(0)}
+.nav-dropdown a{display:flex;align-items:center;gap:10px;text-decoration:none;padding:10px 14px;border-radius:10px;transition:background 0.2s;color:#555;font-size:0.85rem;font-weight:600}
+.nav-dropdown a:hover{background:#f8f8f8}
+.nav-dropdown a.active{background:#f0efff;color:#6c5ce7;font-weight:800}
+.nav-dropdown .ep-num{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#aaa;min-width:24px}
+.nav-dropdown a.active .ep-num{color:#6c5ce7}
+
+/* ── NAV: Legacy link styles (homepage) ── */
 .nav-links{display:flex;gap:8px;align-items:center}
 .nav-series{font-size:0.8rem;font-weight:700;color:#888;margin-right:4px;padding-right:12px;border-right:2px solid #eee}
 .nav-links a{text-decoration:none;font-weight:700;font-size:0.85rem;padding:6px 16px;border-radius:20px;transition:all 0.3s;color:#6c5ce7;border:2px solid transparent}
@@ -126,8 +149,8 @@ p{font-size:1.1rem;line-height:1.85;color:#555;margin-bottom:16px}
 .next-part p{color:rgba(255,255,255,0.9);max-width:500px;margin:0 auto 28px;font-size:1.05rem}
 
 /* ── FOOTER ── */
-.footer{background:linear-gradient(135deg,#0c2461,#6c5ce7);color:#fff;text-align:center;padding:28px;font-size:1rem}
-.footer p{color:#fff;font-weight:600;font-size:1rem;margin-bottom:0}
+.footer{background:linear-gradient(135deg,#0c2461,#6c5ce7);color:#fff;text-align:center;padding:14px;font-size:0.85rem}
+.footer p{color:#fff;font-weight:600;font-size:0.85rem;margin-bottom:0}
 .footer a{color:#74b9ff;text-decoration:none}
 
 /* ── GPU DOTS ── */
@@ -140,9 +163,14 @@ p{font-size:1.1rem;line-height:1.85;color:#555;margin-bottom:16px}
 .compare{grid-template-columns:1fr}
 .flow{flex-direction:column}
 .flow-arrow{transform:rotate(90deg)}
-.nav-title{font-size:0.9rem}
+.nav-title-main{font-size:0.85rem}
+.nav-title-sub{font-size:0.48rem;letter-spacing:1px}
 .info-grid{grid-template-columns:1fr}
 .gpu-grid{grid-template-columns:repeat(8,1fr)}
 .nav-series{font-size:0.7rem;margin-right:2px;padding-right:8px}
-.nav-links a{font-size:0.75rem;padding:4px 10px}
+.nav-links a{font-size:0.75rem;padding:4px 10px;white-space:nowrap}
+.nav-ep-text{font-size:0.7rem}
+.nav-progress{width:50px}
+.nav-ep-text .nav-series-name{display:none}
+.nav-dropdown{min-width:220px}
 }

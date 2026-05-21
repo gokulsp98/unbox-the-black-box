@@ -1,8 +1,8 @@
 ---
 title: "The Bigger Picture"
-series: "How Computers Think"
+series: "How Your Code Runs"
 episode: 2
-totalEpisodes: 2
+totalEpisodes: 7
 description: "32-bit vs 64-bit, CPU vs GPU, open source vs proprietary — and why it all matters more than you think."
 tags: ["cpu", "gpu", "32-bit", "64-bit", "risc-v", "nvidia", "ai"]
 author: "Gokul"

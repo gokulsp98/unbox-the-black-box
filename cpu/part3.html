@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Your Code Runs — Episode 3: The Journey to Binary | Unbox the Black Box</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+::selection{background:#00b894;color:#fff}
+
+.part3-hero{background:linear-gradient(135deg,#00b894 0%,#0984e3 50%,#6c5ce7 100%)}
+
+.part3-num{color:#00b894;background:#e8f8f5}
+
+/* ── PAGE-SPECIFIC: Code-to-Binary Hero Art ── */
+.code-binary-art{margin:40px auto 0;position:relative;display:flex;align-items:center;justify-content:center;gap:24px;animation:fadeInUp 1.5s ease}
+.code-symbol{font-family:'Fira Code',monospace;font-size:3rem;font-weight:700;color:#fff;opacity:0.9;text-shadow:0 4px 20px rgba(0,0,0,0.2);position:relative}
+.code-symbol::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.08);z-index:-1}
+.binary-symbol{font-family:'Fira Code',monospace;font-size:2.4rem;font-weight:700;color:#55efc4;text-shadow:0 4px 20px rgba(85,239,196,0.3);animation:binaryPulse 2s ease infinite}
+.code-arrow-art{display:flex;flex-direction:column;align-items:center;gap:4px}
+.code-arrow-art span{font-size:1.5rem;color:rgba(255,255,255,0.6);animation:arrowFlow 2s ease infinite}
+.code-arrow-art span:nth-child(2){animation-delay:0.3s}
+.code-arrow-art span:nth-child(3){animation-delay:0.6s}
+@keyframes binaryPulse{0%,100%{opacity:0.7;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}
+@keyframes arrowFlow{0%,100%{opacity:0.3}50%{opacity:0.8}}
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="../index.html" class="nav-title"><span class="nav-title-sub">Gokul's Learning Journal</span><span class="nav-title-main">Unbox the Black Box</span></a>
+  <div class="nav-ep" onclick="this.classList.toggle('open')">
+    <div class="nav-ep-text">
+      <span class="nav-series-name">How Your Code Runs</span>
+      <span class="nav-ep-current">Ep 3 of 7</span>
+    </div>
+    <div class="nav-progress"><div class="nav-progress-fill" style="width:42%"></div></div>
+    <span class="nav-ep-arrow">&#9660;</span>
+    <div class="nav-dropdown">
+      <a href="part1.html"><span class="ep-num">01</span> The Brain of Your Computer</a>
+      <a href="part2.html"><span class="ep-num">02</span> The Bigger Picture</a>
+      <a href="part3.html" class="active"><span class="ep-num">03</span> C: The Journey to Binary</a>
+      <a href="part4.html"><span class="ep-num">04</span> Java: Binary While Running</a>
+      <a href="part5.html"><span class="ep-num">05</span> Python: Binary One Line At A Time</a>
+      <a href="part6.html"><span class="ep-num">06</span> JavaScript: Binary In Your Browser</a>
+      <a href="part7.html"><span class="ep-num">07</span> The Full Picture</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero part3-hero">
+  <div class="hero-badge">Episode 3 of 7</div>
+  <h1>The Journey<br>to Binary</h1>
+  <p style="color:rgba(255,255,255,0.95)">Every language must produce binary for the CPU. C takes the most direct path — it creates binary before you even run the program.</p>
+
+  <div class="code-binary-art">
+    <div class="code-symbol">{ }</div>
+    <div class="code-arrow-art">
+      <span>&#10132;</span>
+      <span>&#10132;</span>
+      <span>&#10132;</span>
+    </div>
+    <div class="binary-symbol">01</div>
+  </div>
+</section>
+
+<!-- SECTION 12: THE ONE RULE -->
+<section class="section reveal">
+  <span class="section-num part3-num">12</span>
+  <h2>The One Rule</h2>
+  <p>In Episode 1, we learned that the CPU only understands <span class="highlight">binary</span> — a stream of ones and zeros. No exceptions. Every app, every website, every AI model — it all becomes binary before the CPU can run it.</p>
+  <p>So if you write code in C, Java, or Python, it <span class="highlight-orange">must</span> become binary at some point. The CPU doesn't care what language you used — it only sees binary.</p>
+  <p>The real question isn't <em>whether</em> your code becomes binary. It's <span class="highlight">when</span>.</p>
+  <p>And that "when" is what separates every programming language into three groups.</p>
+</section>
+
+<div class="reveal" style="max-width:800px;margin:0 auto;padding:0 24px">
+  <div class="flow">
+    <div class="flow-box fb-purple">Your Code<br><small>human readable</small></div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-orange">???<br><small>when &amp; how?</small></div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-dark">Binary<br><small>CPU readable</small></div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-green">CPU<br><small>executes</small></div>
+  </div>
+</div>
+
+<!-- SECTION 13: C -->
+<section class="section reveal">
+  <span class="section-num part3-num">13</span>
+  <h2>C: Binary Before You Run It</h2>
+  <p>C takes the most direct path. You write code, a <span class="highlight-orange">compiler</span> translates it into binary, and that binary file sits on your disk — ready to run anytime.</p>
+</section>
+
+<div class="reveal" style="max-width:800px;margin:0 auto;padding:0 24px">
+  <div class="flow">
+    <div class="flow-box fb-purple">hello.c<br><small>source code</small></div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-orange">gcc<br><small>compiler</small></div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-dark">binary<br><small>on disk</small></div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-green">CPU<br><small>runs directly</small></div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <div class="code-block">
+    <pre><span class="code-comment">// You compile once:</span>
+<span class="code-keyword">gcc</span> hello.c <span class="code-arrow">→</span> <span class="code-string">hello</span> <span class="code-comment">(binary file on disk)</span>
+
+<span class="code-comment">// You run it:</span>
+<span class="code-keyword">./hello</span> <span class="code-arrow">→</span> <span class="code-string">CPU reads binary instructions directly</span>
+
+<span class="code-comment">No translator. No middleman. Maximum speed.</span></pre>
+  </div>
+
+  <p>The binary is a permanent file. Compile once, run it a million times — no translation ever again. The CPU reads the instructions directly, exactly like we described in Episode 1: <span class="highlight">MOV, ADD, CMP, JMP</span> — billions per second.</p>
+  <p>This is the fastest way to run code. Nothing sits between your program and the CPU. That's why operating systems, game engines, and embedded systems are written in C.</p>
+  <p>And because the binary IS the program, you don't need anything else installed to run it. <span class="highlight-green">No runtime, no virtual machine</span> — just double-click the binary and the CPU runs it directly.</p>
+</section>
+
+<div class="analogy reveal">
+  <p>But there's a catch — one we hinted at in Episode 1. Remember how a binary is compiled for a <strong>specific instruction set + operating system</strong>? That means a binary compiled on Linux x86_64 won't run on macOS ARM64. Want to run on 5 platforms? Compile 5 separate binaries, test each one, fix platform-specific bugs in each one.</p>
+</div>
+
+<section class="section reveal">
+  <p>By the 1990s, this became a real problem.</p>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+
+  <div style="display:grid;gap:16px;margin-top:20px">
+    <div style="background:#e8f8f5;padding:20px 24px;border-radius:14px;border-left:4px solid #00b894">
+      <strong style="color:#00b894">Everything becomes binary</strong> — the CPU only understands binary. This hasn't changed since Episode 1. Every language must produce it. The question is when.
+    </div>
+    <div style="background:#fef5e7;padding:20px 24px;border-radius:14px;border-left:4px solid #e17055">
+      <strong style="color:#e17055">C creates binary before you run it</strong> — a compiler translates your code into a permanent binary file on disk. The CPU runs it directly — no middleman, maximum speed.
+    </div>
+    <div style="background:#f0efff;padding:20px 24px;border-radius:14px;border-left:4px solid #6c5ce7">
+      <strong style="color:#6c5ce7">No runtime needed</strong> — the binary IS the program. No JVM, no interpreter — just double-click and the CPU runs it.
+    </div>
+    <div style="background:#ffeef7;padding:20px 24px;border-radius:14px;border-left:4px solid #e84393">
+      <strong style="color:#e84393">The catch</strong> — a binary compiled on Linux won't run on macOS. Want 5 platforms? Compile 5 separate binaries. By the 1990s, this became a real problem.
+    </div>
+  </div>
+</section>
+
+<!-- NEXT EPISODE -->
+<section class="next-part" style="background:linear-gradient(135deg,#00b894,#0984e3)">
+  <h2>Ready for Episode 4?</h2>
+  <p>C's portability problem, memory bugs, and slow development created the demand for something new. Java answered with a brilliant idea.</p>
+  <a href="part4.html" class="btn btn-white" style="color:#00b894">Continue to Episode 4 &#10132;</a>
+</section>
+
+<footer class="footer">
+  <p>Unbox the Black Box — from confusion to clarity. Built with ❤️ by <strong>Gokul</strong>.</p>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+document.addEventListener('click', e => { if (!e.target.closest('.nav-ep')) document.querySelectorAll('.nav-ep').forEach(n => n.classList.remove('open')); });
+</script>
+</body>
+</html>
