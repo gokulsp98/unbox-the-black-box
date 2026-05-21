@@ -127,7 +127,7 @@ p{font-size:1.1rem;line-height:1.85;color:#555;margin-bottom:16px}
 .reveal.visible{opacity:1;transform:translateY(0)}
 
 /* ── HERO (shared base) ── */
-.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;color:#fff;padding:100px 24px 60px;position:relative;overflow:hidden}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;color:#fff;padding:80px 24px 80px;position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:rgba(255,255,255,0.04);top:-150px;right:-150px;animation:float 8s ease-in-out infinite}
 .hero::after{content:'';position:absolute;width:350px;height:350px;border-radius:50%;background:rgba(255,255,255,0.03);bottom:-80px;left:-80px;animation:float 6s ease-in-out infinite reverse}
 @keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-30px) rotate(5deg)}}
