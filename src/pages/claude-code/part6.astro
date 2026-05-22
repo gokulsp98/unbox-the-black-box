@@ -1,0 +1,420 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { claudeCodeSeries } from '../../data/series';
+const inlineStyle = `
+::selection{background:#4682b4;color:#fff}
+
+.cc6-hero{background:linear-gradient(135deg,#4682b4 0%,#7b68ee 100%)}
+
+.cc6-num{color:#4682b4;background:#e4eff6}
+
+/* ── Hero Art: Gauge ── */
+.gauge-art{margin:2.5rem auto 0;animation:fadeInUp 1.5s ease;max-width:10rem;text-align:center}
+.gauge-circle{width:7rem;height:7rem;border-radius:50%;border:0.25rem solid rgba(255,255,255,0.15);position:relative;margin:0 auto 0.75rem;display:flex;align-items:center;justify-content:center}
+.gauge-svg{position:absolute;inset:-0.25rem;width:calc(100% + 0.5rem);height:calc(100% + 0.5rem);transform:rotate(-90deg)}
+.gauge-bg{fill:none;stroke:rgba(255,255,255,0.1);stroke-width:3}
+.gauge-progress{fill:none;stroke:#e17055;stroke-width:3;stroke-linecap:round;stroke-dasharray:207;stroke-dashoffset:207;animation:gaugeFill 2s ease-out 0.8s forwards}
+@keyframes gaugeFill{to{stroke-dashoffset:10.35}}
+.gauge-pct{font-family:'Fira Code',monospace;font-size:1.4rem;font-weight:900;color:#fff;opacity:0;animation:fadeInUp 0.6s ease 2s forwards}
+.gauge-label{font-family:'Fira Code',monospace;font-size:0.65rem;color:rgba(255,255,255,0.7);letter-spacing:0.125rem;opacity:0;animation:fadeInUp 0.6s ease 2.2s forwards}
+.gauge-pulse{position:absolute;inset:-0.5rem;border-radius:50%;border:0.125rem solid rgba(225,112,85,0.3);animation:gaugePulse 2s ease-in-out 2.5s infinite}
+@keyframes gaugePulse{0%,100%{transform:scale(1);opacity:0.5}50%{transform:scale(1.08);opacity:0}}
+
+/* ── Context Fill Meter ── */
+.ctx-fill{max-width:36rem;margin:2rem auto;padding:0 1.5rem}
+.cf-box{background:#1e272e;border-radius:1rem;padding:1.5rem;border:0.0625rem solid #485460}
+.cf-title{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#b2bec3;letter-spacing:0.125rem;text-align:center;margin-bottom:1.25rem}
+.cf-bar{height:2rem;background:rgba(255,255,255,0.04);border-radius:0.375rem;overflow:hidden;display:flex;margin-bottom:0.75rem}
+.cf-segment{height:100%;display:flex;align-items:center;justify-content:center}
+.cf-sys{background:rgba(162,155,254,0.4);border-right:0.0625rem solid #1e272e}
+.cf-msgs{background:rgba(116,185,255,0.4);border-right:0.0625rem solid #1e272e}
+.cf-tools{background:rgba(225,112,85,0.4);border-right:0.0625rem solid #1e272e}
+.cf-free{background:rgba(255,255,255,0.03)}
+.cf-seg-text{font-family:'Fira Code',monospace;font-size:0.55rem;font-weight:700;color:rgba(255,255,255,0.8);white-space:nowrap;overflow:hidden}
+.cf-legend{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.cf-legend-item{display:flex;align-items:center;gap:0.375rem}
+.cf-legend-dot{width:0.5rem;height:0.5rem;border-radius:0.125rem}
+.cf-legend-text{font-family:'Fira Code',monospace;font-size:0.6rem;color:#b2bec3}
+.cf-dot-sys{background:#a29bfe}.cf-dot-msgs{background:#4682b4}.cf-dot-tools{background:#e17055}.cf-dot-free{background:rgba(255,255,255,0.1)}
+
+/* ── Compaction Before/After ── */
+.compact-vis{max-width:40rem;margin:2rem auto;padding:0 1.5rem}
+.cv-box{background:#1e272e;border-radius:1rem;padding:1.5rem;border:0.0625rem solid #485460}
+.cv-title{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#b2bec3;letter-spacing:0.125rem;text-align:center;margin-bottom:1.25rem}
+.cv-cols{display:grid;grid-template-columns:1fr auto 1fr;gap:0.75rem;align-items:center}
+.cv-col{border-radius:0.75rem;padding:1rem}
+.cv-before{background:rgba(225,112,85,0.15);border:0.0625rem solid rgba(225,112,85,0.3)}
+.cv-after{background:rgba(85,239,196,0.15);border:0.0625rem solid rgba(85,239,196,0.3)}
+.cv-col-title{font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.0625rem;margin-bottom:0.75rem;text-align:center}
+.cv-before .cv-col-title{color:#e17055}
+.cv-after .cv-col-title{color:#55efc4}
+.cv-item{font-family:'Fira Code',monospace;font-size:0.6rem;padding:0.25rem 0.5rem;border-radius:0.25rem;margin-bottom:0.25rem}
+.cv-item-sys{background:rgba(162,155,254,0.2);color:#a29bfe;border:0.0625rem solid rgba(162,155,254,0.3)}
+.cv-item-msgs{background:rgba(116,185,255,0.2);color:#4682b4;border:0.0625rem solid rgba(116,185,255,0.3)}
+.cv-item-summary{background:rgba(85,239,196,0.2);color:#55efc4;border:0.0625rem solid rgba(85,239,196,0.3)}
+.cv-item-recent{background:rgba(253,203,110,0.2);color:#feca57;border:0.0625rem solid rgba(253,203,110,0.3)}
+.cv-item-tokens{font-family:'Fira Code',monospace;font-size:0.55rem;color:#636e72;text-align:right;margin-top:0.125rem}
+.cv-arrow{font-size:1.5rem;color:#636e72}
+.cv-total{font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;text-align:center;margin-top:0.5rem;padding-top:0.5rem;border-top:0.0625rem solid rgba(255,255,255,0.1)}
+.cv-before .cv-total{color:#e17055}
+.cv-after .cv-total{color:#55efc4}
+@media(max-width:37.5rem){.cv-cols{grid-template-columns:1fr}.cv-arrow{transform:rotate(90deg);text-align:center}}
+
+/* ── Preserved vs Lost ── */
+.pv-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;max-width:44rem;margin:2rem auto;padding:0 1.5rem}
+.pv-card{border-radius:1rem;padding:1.25rem 1.5rem}
+.pv-card h4{font-size:1rem;font-weight:800;margin-bottom:0.75rem}
+.pv-list{list-style:none;padding:0;margin:0}
+.pv-list li{font-size:0.85rem;padding:0.375rem 0;padding-left:1.25rem;position:relative;color:#555;line-height:1.5}
+.pv-list li::before{content:'';position:absolute;left:0;top:0.7rem;width:0.375rem;height:0.375rem;border-radius:50%}
+.pv-keep{background:#e8f8f5;border:0.125rem solid #b8f0e0}
+.pv-keep h4{color:#00b894}
+.pv-keep .pv-list li::before{background:#00b894}
+.pv-lose{background:#fef5e7;border:0.125rem solid #fdd9b5}
+.pv-lose h4{color:#e17055}
+.pv-lose .pv-list li::before{background:#e17055}
+@media(max-width:37.5rem){.pv-grid{grid-template-columns:1fr}}
+
+/* ── Acceleration Factors ── */
+.accel-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;max-width:44rem;margin:2rem auto;padding:0 1.5rem}
+.accel-card{border-radius:1rem;padding:1.125rem 1.25rem;background:#e4eff6;border:0.125rem solid #d5ccff}
+.accel-card h4{color:#4682b4;font-size:0.9rem;font-weight:800;margin-bottom:0.25rem}
+.accel-card p{color:#555;font-size:0.8rem;line-height:1.5}
+@media(max-width:37.5rem){.accel-grid{grid-template-columns:1fr}}
+
+/* ── Quiz theming: Episode 6 ── */
+.quiz-ep6 .quiz-q-num{color:#4682b4;background:#e4eff6}
+.quiz-ep6 .quiz-reveal-btn{color:#4682b4}
+.quiz-ep6 .quiz-opt-letter{color:#4682b4}
+.quiz-ep6 .quiz-option:hover{border-color:#4682b4;background:#f8f7ff}
+.quiz-ep6 .quiz-answer-highlight{background:#e4eff6;border-left:0.25rem solid #4682b4}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero cc6-hero">
+  <div class="hero-badge">Episode 6 of 7</div>
+  <h1>Context Limits<br>&amp; Compaction</h1>
+  <p style="color:rgba(255,255,255,0.95)">Every model has a maximum context window. Long conversations fill it. What happens then?</p>
+
+  <div class="gauge-art">
+    <div class="gauge-circle">
+      <svg class="gauge-svg" viewBox="0 0 72 72">
+        <circle class="gauge-bg" cx="36" cy="36" r="33"/>
+        <circle class="gauge-progress" cx="36" cy="36" r="33"/>
+      </svg>
+      <div class="gauge-pulse"></div>
+      <span class="gauge-pct">95%</span>
+    </div>
+    <span class="gauge-label">context window full</span>
+  </div>
+</section>
+
+<!-- SECTION 01: WHAT FILLS IT -->
+<section class="section reveal">
+  <span class="section-num cc6-num">01</span>
+  <h2>What Fills the Context Window</h2>
+  <p>The context window holds <span class="highlight">everything</span> the model needs to see:</p>
+
+  <div style="display:grid;gap:0.75rem;margin-top:1rem">
+    <div style="background:#e4eff6;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #4682b4">
+      <strong style="color:#4682b4">System prompt</strong> — instructions that tell Claude how to behave (~2K-5K tokens)
+    </div>
+    <div style="background:#e3f2fd;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">Your messages + Claude's responses</strong> — every exchange in the conversation
+    </div>
+    <div style="background:#fef5e7;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Tool results</strong> — file contents, command outputs, search results (the biggest consumers)
+    </div>
+    <div style="background:#e0fafa;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00cec9">
+      <strong style="color:#00cec9">Tool definitions</strong> — descriptions of available tools (~2K-4K tokens)
+    </div>
+  </div>
+</section>
+
+<!-- CONTEXT FILL METER -->
+<div class="ctx-fill reveal">
+  <div class="cf-box">
+    <div class="cf-title">WHAT FILLS A TYPICAL SESSION (AFTER 30 MESSAGES)</div>
+    <div class="cf-bar">
+      <div class="cf-segment cf-sys" style="width:3%"><span class="cf-seg-text"></span></div>
+      <div class="cf-segment cf-msgs" style="width:25%"><span class="cf-seg-text">Messages</span></div>
+      <div class="cf-segment cf-tools" style="width:52%"><span class="cf-seg-text">Tool Results (files, commands)</span></div>
+      <div class="cf-segment cf-free" style="width:20%"><span class="cf-seg-text">Free</span></div>
+    </div>
+    <div class="cf-legend">
+      <div class="cf-legend-item"><span class="cf-legend-dot cf-dot-sys"></span><span class="cf-legend-text">System (3%)</span></div>
+      <div class="cf-legend-item"><span class="cf-legend-dot cf-dot-msgs"></span><span class="cf-legend-text">Messages (25%)</span></div>
+      <div class="cf-legend-item"><span class="cf-legend-dot cf-dot-tools"></span><span class="cf-legend-text">Tool Results (52%)</span></div>
+      <div class="cf-legend-item"><span class="cf-legend-dot cf-dot-free"></span><span class="cf-legend-text">Free (20%)</span></div>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>In a Claude Code session, tool results are the biggest consumers. Reading a single 200-line code file can add <span class="highlight-orange">2,000-4,000 tokens</span>. Read 10 files? That's 20K-40K tokens just from file contents.</p>
+</section>
+
+<!-- SECTION 02: SIZES -->
+<section class="section reveal">
+  <span class="section-num cc6-num">02</span>
+  <h2>Context Window Sizes</h2>
+  <p>Each model has a different capacity:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">Opus 4.7</span>    <span class="code-string">1,000,000 tokens</span>  <span class="code-comment">~750,000 words</span>
+<span class="code-keyword">Sonnet 4.6</span>  <span class="code-string">1,000,000 tokens</span>  <span class="code-comment">~750,000 words</span>
+<span class="code-keyword">Haiku 4.5</span>   <span class="code-string">  200,000 tokens</span>  <span class="code-comment">~150,000 words</span></pre>
+  </div>
+
+  <p>1 million tokens sounds enormous — roughly <span class="highlight">10 full novels</span>. But in a real Claude Code session with file reads, edits, test outputs, and discussion, it fills up. A heavy session might use 200K-400K tokens within 30-40 messages.</p>
+</section>
+
+<!-- SECTION 03: COMPACTION -->
+<section class="section reveal">
+  <span class="section-num cc6-num">03</span>
+  <h2>What Happens at ~95% Full</h2>
+  <p>When the context window reaches approximately <span class="highlight-orange">95% capacity</span>, Claude Code triggers <strong>compaction</strong>. This isn't a hard threshold at exactly 95% — the trigger is based on total token count approaching the model's limit.</p>
+  <p>Compaction is a two-step process:</p>
+
+  <div style="display:grid;gap:0.75rem;margin-top:1rem">
+    <div style="background:#e3f2fd;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">Step 1 — Detection (client-side)</strong> — Claude Code monitors the token count of the conversation. When it detects the context is nearly full, it initiates compaction.
+    </div>
+    <div style="background:#e4eff6;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #4682b4">
+      <strong style="color:#4682b4">Step 2 — Summarization (server-side)</strong> — Claude Code sends the conversation to the API with a special instruction: "Summarize this conversation." The model generates a summary — this requires a server round-trip.
+    </div>
+  </div>
+
+  <p style="margin-top:1.5rem">The summary replaces the old messages. Instead of 40 detailed messages with tool results, you get a concise summary (~2K-5K tokens) plus the most recent messages.</p>
+</section>
+
+<!-- SECTION 04: BEFORE AND AFTER -->
+<section class="section reveal">
+  <span class="section-num cc6-num">04</span>
+  <h2>Before and After Compaction</h2>
+</section>
+
+<!-- COMPACTION VISUALIZATION -->
+<div class="compact-vis reveal">
+  <div class="cv-box">
+    <div class="cv-title">COMPACTION IN ACTION</div>
+    <div class="cv-cols">
+      <div class="cv-col cv-before">
+        <div class="cv-col-title">BEFORE (~95% FULL)</div>
+        <div class="cv-item cv-item-sys">System prompt<div class="cv-item-tokens">3K tokens</div></div>
+        <div class="cv-item cv-item-msgs">Messages 1-10<div class="cv-item-tokens">80K tokens</div></div>
+        <div class="cv-item cv-item-msgs">Messages 11-20<div class="cv-item-tokens">120K tokens</div></div>
+        <div class="cv-item cv-item-msgs">Messages 21-30<div class="cv-item-tokens">100K tokens</div></div>
+        <div class="cv-item cv-item-msgs">Messages 31-40<div class="cv-item-tokens">150K tokens</div></div>
+        <div class="cv-total">Total: ~453K tokens</div>
+      </div>
+      <div class="cv-arrow">&#10132;</div>
+      <div class="cv-col cv-after">
+        <div class="cv-col-title">AFTER COMPACTION</div>
+        <div class="cv-item cv-item-sys">System prompt<div class="cv-item-tokens">3K tokens</div></div>
+        <div class="cv-item cv-item-summary">Summary of msgs 1-30<div class="cv-item-tokens">3K tokens</div></div>
+        <div class="cv-item cv-item-recent">Recent msgs 31-40<div class="cv-item-tokens">50K tokens</div></div>
+        <div class="cv-total">Total: ~56K tokens</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>The conversation continues seamlessly. Claude can still reference earlier work through the summary. But detailed information from old messages — exact file contents, specific error messages, intermediate reasoning — <span class="highlight-orange">is lost</span>.</p>
+</section>
+
+<!-- SECTION 05: TRADEOFF -->
+<section class="section reveal">
+  <span class="section-num cc6-num">05</span>
+  <h2>The Compaction Tradeoff</h2>
+  <p>Compaction is a necessary compromise:</p>
+</section>
+
+<div class="pv-grid reveal">
+  <div class="pv-card pv-keep">
+    <h4>&#10003; Preserved</h4>
+    <ul class="pv-list">
+      <li>Key decisions and approaches</li>
+      <li>What files were modified and why</li>
+      <li>Current task state and progress</li>
+      <li>Important constraints and requirements</li>
+    </ul>
+  </div>
+  <div class="pv-card pv-lose">
+    <h4>&#10007; Lost</h4>
+    <ul class="pv-list">
+      <li>Exact file contents from early reads</li>
+      <li>Specific error messages and stack traces</li>
+      <li>Detailed intermediate reasoning</li>
+      <li>Exact wording of earlier messages</li>
+    </ul>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p><strong>Impact on cache:</strong> Compaction <span class="highlight-orange">invalidates the prompt cache</span>. The summarized conversation has a completely different token sequence, so the prefix no longer matches. The next request after compaction triggers a fresh cache write.</p>
+</section>
+
+<div class="analogy reveal">
+  <p>Compaction is like <strong>writing meeting notes</strong> and throwing away the recording. The notes capture decisions and action items, but if someone asks "what exact words did Sarah use when she described the bug?" — that detail is gone. You traded completeness for space.</p>
+</div>
+
+<!-- SECTION 06: FREQUENCY -->
+<section class="section reveal">
+  <span class="section-num cc6-num">06</span>
+  <h2>Compaction Frequency</h2>
+  <p>How often compaction happens depends on the <span class="highlight">token accumulation rate</span>, not the number of messages. A conversation where every message reads large files fills up faster than one with short text-only exchanges.</p>
+  <p>Factors that accelerate compaction:</p>
+</section>
+
+<div class="accel-grid reveal">
+  <div class="accel-card">
+    <h4>&#128196; Many/large file reads</h4>
+    <p>Each 200-line file adds 2K-4K tokens to the context.</p>
+  </div>
+  <div class="accel-card">
+    <h4>&#128221; Long model responses</h4>
+    <p>Detailed code and explanations consume output and input tokens.</p>
+  </div>
+  <div class="accel-card">
+    <h4>&#128295; Many tool calls per turn</h4>
+    <p>Each tool result adds tokens — reading 5 files in one turn can add 15K+ tokens.</p>
+  </div>
+  <div class="accel-card">
+    <h4>&#128190; Large command outputs</h4>
+    <p>Test results, build logs, and search results can be token-heavy.</p>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>You might hit compaction after <span class="highlight-orange">20 messages</span> in a file-heavy session, or after <span class="highlight">100+ messages</span> in a lightweight conversation.</p>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#fef5e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">The context window holds everything</strong> — system prompt, messages, responses, tool results. File reads are the biggest consumers.
+    </div>
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">Context sizes</strong> — Opus and Sonnet: 1M tokens. Haiku: 200K. Large but finite.
+    </div>
+    <div style="background:#e4eff6;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #4682b4">
+      <strong style="color:#4682b4">Compaction triggers at ~95% full</strong> — detection is client-side, summarization requires a server round-trip.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">Old messages become a summary</strong> — key decisions preserved, detailed information lost. Cache is invalidated.
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep6">
+  <span class="section-num cc6-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <!-- Q1 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 01</span>
+    </div>
+    <p class="quiz-question">What's the biggest consumer of context window space in a Claude Code session?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>The system prompt</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Your messages</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Tool results (file contents, command outputs)</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Tool definitions</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">&#9662;</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(C) Tool results</strong></div>
+        <p class="quiz-answer-text">File contents and command outputs from tool calls are the biggest context consumers. A single 200-line file adds 2,000-4,000 tokens. Reading 10 files can consume 20K-40K tokens.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 02</span>
+    </div>
+    <p class="quiz-question">Where does the summarization step of compaction happen?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Entirely client-side in Claude Code</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Detection is client-side, but summarization requires a server round-trip</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Entirely server-side — the API decides when to compact</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>In the local session file using a local model</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">&#9662;</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(B) Detection is client-side, summarization is server-side</strong></div>
+        <p class="quiz-answer-text">Claude Code monitors the token count locally and decides when to compact. But creating the summary requires sending the conversation to the API — the model generates the summary, which is a server round-trip.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 03</span>
+    </div>
+    <p class="quiz-question">What determines how often compaction happens?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>A fixed interval of every 20-80 messages</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>The token accumulation rate — how fast the context fills up</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>A timer that triggers every 30 minutes</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>The user manually triggers it</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">&#9662;</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(B) The token accumulation rate</strong></div>
+        <p class="quiz-answer-text">Compaction frequency is token-count-driven, not message-count or time-driven. A file-heavy session might compact after 20 messages, while a lightweight conversation could go 100+ messages without compacting.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 04</span>
+    </div>
+    <p class="quiz-question">What happens to the prompt cache after compaction?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>The cache is preserved — the summary matches the old prefix</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>The cache is invalidated — the new token sequence doesn't match</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Only the summary portion is cached</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>The old cache is merged with the new summary</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">&#9662;</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(B) Cache is invalidated</strong></div>
+        <p class="quiz-answer-text">Compaction replaces detailed messages with a summary, creating a completely different token sequence. Since prompt caching is prefix-based, the old prefix no longer matches, and the next request starts a fresh cache write.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- NEXT EPISODE -->
+<section class="next-part" style="background:linear-gradient(135deg,#4682b4,#7b68ee)">
+  <h2>Ready for Episode 7?</h2>
+  <p>You now understand all the pieces: tokens, sessions, caching, and compaction. Episode 7 puts it all together — the complete lifecycle of a Claude Code conversation.</p>
+  <a href="part7.html" class="btn btn-white" style="color:#4682b4">Continue to Episode 7 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How Claude Code Works — Episode 6: Context Limits & Compaction | Unbox the Black Box" inlineStyle={inlineStyle} series={claudeCodeSeries} episodeNum={6} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

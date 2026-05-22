@@ -1,0 +1,473 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { claudeCodeSeries } from '../../data/series';
+const inlineStyle = `
+::selection{background:#3d9e91;color:#fff}
+
+.cc5-hero{background:linear-gradient(135deg,#3d9e91 0%,#4682b4 100%)}
+
+.cc5-num{color:#3d9e91;background:#e2f3f0}
+
+/* ── Hero Art: Cache Hit ── */
+.cache-art{margin:2.5rem auto 0;animation:fadeInUp 1.5s ease;max-width:16rem;text-align:center}
+.cache-icon{font-size:3rem;margin-bottom:0.5rem;display:block;animation:cachePop 2s ease infinite}
+@keyframes cachePop{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.cache-label{font-family:'Fira Code',monospace;font-size:0.7rem;color:rgba(255,255,255,0.7);letter-spacing:0.125rem}
+
+/* ── Prefix Match Diagram ── */
+.prefix-match{max-width:40rem;margin:2rem auto;padding:0 1.5rem}
+.pm-box{background:#1e272e;border-radius:1rem;padding:1.5rem;border:0.0625rem solid #485460}
+.pm-title{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#b2bec3;letter-spacing:0.125rem;text-align:center;margin-bottom:1.25rem}
+.pm-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem}
+.pm-label{font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;color:#636e72;min-width:3rem;text-align:right}
+.pm-tokens{display:flex;gap:0.25rem;flex:1;flex-wrap:wrap}
+.pm-token{font-family:'Fira Code',monospace;font-size:0.6rem;font-weight:700;padding:0.25rem 0.5rem;border-radius:0.25rem}
+.pm-cached{background:rgba(85,239,196,0.25);color:#55efc4;border:0.0625rem solid rgba(85,239,196,0.5)}
+.pm-new{background:rgba(253,203,110,0.25);color:#feca57;border:0.0625rem solid rgba(253,203,110,0.5)}
+.pm-status{font-family:'Fira Code',monospace;font-size:0.6rem;font-weight:700;min-width:5rem;text-align:right}
+.pm-hit{color:#55efc4}
+.pm-write{color:#feca57}
+.pm-note{font-family:'Fira Code',monospace;font-size:0.6rem;color:#636e72;text-align:center;margin-top:0.75rem}
+
+/* ── Cost Comparison Table ── */
+.cost-compare{max-width:36rem;margin:2rem auto;padding:0 1.5rem}
+.cc-box{background:#1e272e;border-radius:1rem;padding:1.5rem;border:0.0625rem solid #485460}
+.cc-title{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#b2bec3;letter-spacing:0.125rem;text-align:center;margin-bottom:1rem}
+.cc-grid{display:grid;grid-template-columns:6rem repeat(3,1fr);gap:0}
+.cc-cell{font-family:'Fira Code',monospace;font-size:0.7rem;padding:0.625rem 0.5rem;border-bottom:0.0625rem solid rgba(255,255,255,0.06);display:flex;align-items:center}
+.cc-header{color:#636e72;font-weight:700;letter-spacing:0.0625rem;font-size:0.6rem}
+.cc-row-label{color:#b2bec3;font-weight:700}
+.cc-val{justify-content:center;color:#dfe6e9}
+.cc-val-fresh{color:#e17055}
+.cc-val-write{color:#feca57}
+.cc-val-read{color:#55efc4}
+@media(max-width:37.5rem){.cc-grid{grid-template-columns:4.5rem repeat(3,1fr)}.cc-cell{font-size:0.6rem;padding:0.5rem 0.25rem}}
+
+/* ── TTL Timeline ── */
+.ttl-timeline{max-width:36rem;margin:2rem auto;padding:0 1.5rem}
+.ttl-box{background:#1e272e;border-radius:1rem;padding:1.5rem;border:0.0625rem solid #485460}
+.ttl-title{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#b2bec3;letter-spacing:0.125rem;text-align:center;margin-bottom:1.25rem}
+.ttl-track{position:relative;height:2rem;background:rgba(255,255,255,0.04);border-radius:0.375rem;margin-bottom:1rem;overflow:hidden}
+.ttl-fill{position:absolute;top:0;left:0;height:100%;border-radius:0.375rem;display:flex;align-items:center;padding-left:0.5rem}
+.ttl-fill-active{background:linear-gradient(90deg,#55efc4,#3d9e91);width:100%}
+.ttl-fill-expired{background:linear-gradient(90deg,#636e72,#485460);width:100%}
+.ttl-fill-text{font-family:'Fira Code',monospace;font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.9)}
+.ttl-events{display:flex;flex-direction:column;gap:0.5rem}
+.ttl-event{display:flex;align-items:center;gap:0.5rem}
+.ttl-event-dot{width:0.5rem;height:0.5rem;border-radius:50%;flex-shrink:0}
+.ttl-dot-green{background:#55efc4}
+.ttl-dot-yellow{background:#feca57}
+.ttl-dot-red{background:#e17055}
+.ttl-event-text{font-family:'Fira Code',monospace;font-size:0.65rem;color:#dfe6e9}
+.ttl-event-time{font-family:'Fira Code',monospace;font-size:0.6rem;color:#636e72;margin-left:auto}
+
+/* ── Savings Comparison ── */
+.savings{max-width:40rem;margin:2rem auto;padding:0 1.5rem}
+.sav-box{background:#1e272e;border-radius:1rem;padding:1.5rem;border:0.0625rem solid #485460}
+.sav-title{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#b2bec3;letter-spacing:0.125rem;text-align:center;margin-bottom:1.25rem}
+.sav-cols{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.sav-col{border-radius:0.75rem;padding:1rem}
+.sav-col-title{font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.0625rem;margin-bottom:0.75rem;text-align:center}
+.sav-no{background:rgba(225,112,85,0.15);border:0.0625rem solid rgba(225,112,85,0.3)}
+.sav-no .sav-col-title{color:#e17055}
+.sav-yes{background:rgba(85,239,196,0.15);border:0.0625rem solid rgba(85,239,196,0.3)}
+.sav-yes .sav-col-title{color:#55efc4}
+.sav-row{display:flex;justify-content:space-between;padding:0.25rem 0;font-family:'Fira Code',monospace;font-size:0.65rem}
+.sav-row-label{color:#b2bec3}
+.sav-row-val{font-weight:700}
+.sav-no .sav-row-val{color:#e17055}
+.sav-yes .sav-row-val{color:#55efc4}
+.sav-total{margin-top:0.5rem;padding-top:0.5rem;border-top:0.0625rem solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;font-family:'Fira Code',monospace;font-size:0.75rem;font-weight:700}
+.sav-no .sav-total{color:#e17055}
+.sav-yes .sav-total{color:#55efc4}
+.sav-badge{text-align:center;margin-top:1rem;font-family:'Fira Code',monospace;font-size:0.85rem;font-weight:700;color:#55efc4}
+@media(max-width:37.5rem){.sav-cols{grid-template-columns:1fr}}
+
+/* ── Cache Break Cards ── */
+.break-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;max-width:44rem;margin:2rem auto;padding:0 1.5rem}
+.break-card{border-radius:1rem;padding:1.25rem 1.5rem;background:#fef5e7;border:0.125rem solid #fdd9b5}
+.break-card h4{color:#e17055;font-size:0.9rem;font-weight:800;margin-bottom:0.375rem}
+.break-card p{color:#555;font-size:0.8rem;line-height:1.5}
+@media(max-width:37.5rem){.break-grid{grid-template-columns:1fr}}
+
+/* ── Quiz theming: Episode 5 ── */
+.quiz-ep5 .quiz-q-num{color:#3d9e91;background:#e2f3f0}
+.quiz-ep5 .quiz-reveal-btn{color:#3d9e91}
+.quiz-ep5 .quiz-opt-letter{color:#3d9e91}
+.quiz-ep5 .quiz-option:hover{border-color:#3d9e91;background:#f0fdf9}
+.quiz-ep5 .quiz-answer-highlight{background:#e2f3f0;border-left:0.25rem solid #3d9e91}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero cc5-hero">
+  <div class="hero-badge">Episode 5 of 7</div>
+  <h1>Prompt<br>Caching</h1>
+  <p style="color:rgba(255,255,255,0.95)">Every request re-sends everything — but what if the server remembered tokens it already processed? That's prompt caching.</p>
+
+  <div class="cache-art">
+    <span class="cache-icon">&#9889;</span>
+    <span class="cache-label">cache hit &#8594; 90% cheaper</span>
+  </div>
+</section>
+
+<!-- SECTION 01: KEY INSIGHT -->
+<section class="section reveal">
+  <span class="section-num cc5-num">01</span>
+  <h2>The Key Insight</h2>
+  <p>When you send message 5, <span class="highlight">90% of the tokens are identical</span> to what you sent in message 4. The system prompt, messages 1-4, and all previous responses — they haven't changed. Only the new message at the end is different.</p>
+  <p>What if the server could recognize "I've already processed these tokens" and skip the expensive computation? That's exactly what <span class="highlight-orange">prompt caching</span> does.</p>
+</section>
+
+<!-- SECTION 02: PREFIX MATCHING -->
+<section class="section reveal">
+  <span class="section-num cc5-num">02</span>
+  <h2>How It Works: Prefix Matching</h2>
+  <p>Prompt caching uses <span class="highlight">prefix-based matching</span> — not content hashing, not checksums, not any form of content fingerprinting.</p>
+  <p>Here's how it works:</p>
+  <ol style="line-height:2;color:#555">
+    <li>The server processes your request and computes internal state for each token position</li>
+    <li>These computed states are <strong>stored in a cache</strong>, keyed by the exact token sequence</li>
+    <li>On the next request, the server checks: does the <strong>beginning</strong> of this request match a cached prefix?</li>
+    <li>If yes, it <strong>skips recomputation</strong> for the matching portion and only processes new tokens at the end</li>
+  </ol>
+</section>
+
+<!-- PREFIX MATCH DIAGRAM -->
+<div class="prefix-match reveal">
+  <div class="pm-box">
+    <div class="pm-title">PREFIX MATCHING IN ACTION</div>
+    <div class="pm-row">
+      <span class="pm-label">Req 1</span>
+      <div class="pm-tokens">
+        <span class="pm-token pm-new">system</span>
+        <span class="pm-token pm-new">msg1</span>
+      </div>
+      <span class="pm-status pm-write">CACHE WRITE</span>
+    </div>
+    <div class="pm-row">
+      <span class="pm-label">Req 2</span>
+      <div class="pm-tokens">
+        <span class="pm-token pm-cached">system</span>
+        <span class="pm-token pm-cached">msg1</span>
+        <span class="pm-token pm-cached">resp1</span>
+        <span class="pm-token pm-new">msg2</span>
+      </div>
+      <span class="pm-status pm-hit">CACHE HIT</span>
+    </div>
+    <div class="pm-row">
+      <span class="pm-label">Req 3</span>
+      <div class="pm-tokens">
+        <span class="pm-token pm-cached">system</span>
+        <span class="pm-token pm-cached">msg1</span>
+        <span class="pm-token pm-cached">resp1</span>
+        <span class="pm-token pm-cached">msg2</span>
+        <span class="pm-token pm-cached">resp2</span>
+        <span class="pm-token pm-new">msg3</span>
+      </div>
+      <span class="pm-status pm-hit">CACHE HIT</span>
+    </div>
+    <div class="pm-note">Green = cached (cheap) &nbsp;&#183;&nbsp; Yellow = new (full price + cache write)</div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>The critical rule: <strong>the match must start from the very beginning.</strong> If even one token at the start differs, the entire cache misses. It's not "find matching chunks anywhere" — it's "does the <span class="highlight-orange">prefix</span> of this request match a cached prefix?"</p>
+</section>
+
+<div class="analogy reveal">
+  <p>Think of it like <strong>fast-forwarding a movie</strong>. If you watched the first 90 minutes yesterday, you can skip to minute 91 today. But if someone edited the opening scene, you'd have to rewatch the whole thing — even though 99% of it is the same.</p>
+</div>
+
+<!-- SECTION 03: READS VS WRITES -->
+<section class="section reveal">
+  <span class="section-num cc5-num">03</span>
+  <h2>Cache Reads vs Cache Writes</h2>
+  <p>There are two cost events:</p>
+
+  <div style="display:grid;gap:0.75rem;margin-top:1rem">
+    <div style="background:#fef5e7;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Cache write (first time)</strong> — costs <strong>1.25&#215;</strong> the base input price. You pay slightly MORE because the server also stores the computed results.
+    </div>
+    <div style="background:#e2f3f0;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #3d9e91">
+      <strong style="color:#3d9e91">Cache read (subsequent)</strong> — costs <strong>0.1&#215;</strong> the base input price. A 90% discount on repeated tokens.
+    </div>
+  </div>
+</section>
+
+<!-- COST TABLE -->
+<div class="cost-compare reveal">
+  <div class="cc-box">
+    <div class="cc-title">SONNET PRICING PER MILLION TOKENS</div>
+    <div class="cc-grid">
+      <div class="cc-cell cc-header"></div>
+      <div class="cc-cell cc-header" style="justify-content:center;color:#e17055">FRESH</div>
+      <div class="cc-cell cc-header" style="justify-content:center;color:#feca57">WRITE</div>
+      <div class="cc-cell cc-header" style="justify-content:center;color:#55efc4">READ</div>
+
+      <div class="cc-cell cc-row-label">Sonnet</div>
+      <div class="cc-cell cc-val cc-val-fresh">$3.00</div>
+      <div class="cc-cell cc-val cc-val-write">$3.75</div>
+      <div class="cc-cell cc-val cc-val-read">$0.30</div>
+
+      <div class="cc-cell cc-row-label">Opus</div>
+      <div class="cc-cell cc-val cc-val-fresh">$5.00</div>
+      <div class="cc-cell cc-val cc-val-write">$6.25</div>
+      <div class="cc-cell cc-val cc-val-read">$0.50</div>
+
+      <div class="cc-cell cc-row-label">Haiku</div>
+      <div class="cc-cell cc-val cc-val-fresh">$0.80</div>
+      <div class="cc-cell cc-val cc-val-write">$1.00</div>
+      <div class="cc-cell cc-val cc-val-read">$0.08</div>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>The first request in a conversation is slightly more expensive (cache write). But every subsequent request that reuses the same prefix gets a <span class="highlight">massive discount</span> on the repeated portion.</p>
+</section>
+
+<!-- SECTION 04: TTL -->
+<section class="section reveal">
+  <span class="section-num cc5-num">04</span>
+  <h2>TTL: The Cache Expiry Clock</h2>
+  <p>Cached tokens don't live forever. They have a <span class="highlight">TTL (Time To Live)</span>:</p>
+</section>
+
+<!-- TTL TIMELINE -->
+<div class="ttl-timeline reveal">
+  <div class="ttl-box">
+    <div class="ttl-title">CACHE LIFETIME</div>
+    <div class="ttl-events">
+      <div class="ttl-event">
+        <span class="ttl-event-dot ttl-dot-yellow"></span>
+        <span class="ttl-event-text">You send message 1 &#8594; cache written</span>
+        <span class="ttl-event-time">0:00</span>
+      </div>
+      <div class="ttl-event">
+        <span class="ttl-event-dot ttl-dot-green"></span>
+        <span class="ttl-event-text">Message 2 &#8594; cache hit &#8594; timer resets</span>
+        <span class="ttl-event-time">1:30</span>
+      </div>
+      <div class="ttl-event">
+        <span class="ttl-event-dot ttl-dot-green"></span>
+        <span class="ttl-event-text">Message 3 &#8594; cache hit &#8594; timer resets</span>
+        <span class="ttl-event-time">3:00</span>
+      </div>
+      <div class="ttl-event">
+        <span class="ttl-event-dot ttl-dot-green"></span>
+        <span class="ttl-event-text">Message 4 &#8594; cache hit &#8594; timer resets</span>
+        <span class="ttl-event-time">4:30</span>
+      </div>
+      <div class="ttl-event">
+        <span class="ttl-event-dot ttl-dot-red"></span>
+        <span class="ttl-event-text">&#9888; No message for 5 min &#8594; cache expires</span>
+        <span class="ttl-event-time">9:30</span>
+      </div>
+      <div class="ttl-event">
+        <span class="ttl-event-dot ttl-dot-yellow"></span>
+        <span class="ttl-event-text">Message 5 &#8594; cache miss &#8594; full rewrite</span>
+        <span class="ttl-event-time">12:00</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>During an active coding session where you're sending messages every few minutes, the cache stays warm. But if you step away for lunch and come back, you'll pay a fresh cache write.</p>
+  <p>An <span class="highlight">extended 1-hour TTL</span> is available as a paid option for workloads that need longer gaps between requests.</p>
+</section>
+
+<!-- SECTION 05: REAL EXAMPLE -->
+<section class="section reveal">
+  <span class="section-num cc5-num">05</span>
+  <h2>A Real Cost Example</h2>
+  <p>Let's revisit the 5-message conversation from Episode 4, now with caching (Sonnet):</p>
+</section>
+
+<!-- SAVINGS COMPARISON -->
+<div class="savings reveal">
+  <div class="sav-box">
+    <div class="sav-title">5-MESSAGE CONVERSATION — INPUT COSTS ONLY (SONNET)</div>
+    <div class="sav-cols">
+      <div class="sav-col sav-no">
+        <div class="sav-col-title">&#10007; WITHOUT CACHE</div>
+        <div class="sav-row"><span class="sav-row-label">Msg 1</span><span class="sav-row-val">$0.006</span></div>
+        <div class="sav-row"><span class="sav-row-label">Msg 2</span><span class="sav-row-val">$0.014</span></div>
+        <div class="sav-row"><span class="sav-row-label">Msg 3</span><span class="sav-row-val">$0.025</span></div>
+        <div class="sav-row"><span class="sav-row-label">Msg 4</span><span class="sav-row-val">$0.038</span></div>
+        <div class="sav-row"><span class="sav-row-label">Msg 5</span><span class="sav-row-val">$0.048</span></div>
+        <div class="sav-total"><span>Total</span><span>$0.131</span></div>
+      </div>
+      <div class="sav-col sav-yes">
+        <div class="sav-col-title">&#10003; WITH CACHE</div>
+        <div class="sav-row"><span class="sav-row-label">Msg 1</span><span class="sav-row-val">$0.008</span></div>
+        <div class="sav-row"><span class="sav-row-label">Msg 2</span><span class="sav-row-val">$0.008</span></div>
+        <div class="sav-row"><span class="sav-row-label">Msg 3</span><span class="sav-row-val">$0.009</span></div>
+        <div class="sav-row"><span class="sav-row-label">Msg 4</span><span class="sav-row-val">$0.011</span></div>
+        <div class="sav-row"><span class="sav-row-label">Msg 5</span><span class="sav-row-val">$0.012</span></div>
+        <div class="sav-total"><span>Total</span><span>$0.048</span></div>
+      </div>
+    </div>
+    <div class="sav-badge">&#8595; ~63% savings on input costs &#8595;</div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>The longer the conversation, the bigger the savings — because more tokens hit the cache. In a 30-message session, savings can exceed <span class="highlight">80% on input costs</span>.</p>
+</section>
+
+<!-- SECTION 06: WHAT BREAKS CACHE -->
+<section class="section reveal">
+  <span class="section-num cc5-num">06</span>
+  <h2>What Breaks the Cache</h2>
+  <p>The cache depends on <span class="highlight-orange">exact prefix matching</span>. These things break it:</p>
+</section>
+
+<div class="break-grid reveal">
+  <div class="break-card">
+    <h4>&#9888; System Prompt Changes</h4>
+    <p>Even adding a space to the system prompt invalidates the entire cache.</p>
+  </div>
+  <div class="break-card">
+    <h4>&#9888; Editing Earlier Messages</h4>
+    <p>Modifying or deleting a previous message changes the prefix.</p>
+  </div>
+  <div class="break-card">
+    <h4>&#9888; Timeout (5 min)</h4>
+    <p>No request within the TTL window causes cache expiry.</p>
+  </div>
+  <div class="break-card">
+    <h4>&#9888; Server Eviction</h4>
+    <p>Under high load, caches may be evicted early (rare).</p>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>Normal conversation flow — where you keep adding messages at the end — <span class="highlight">preserves the cache perfectly</span>. The prefix (system prompt + all previous messages) stays identical, and only new content is appended.</p>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#e2f3f0;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #3d9e91">
+      <strong style="color:#3d9e91">Prompt caching reuses previous computation</strong> — the server recognizes tokens it already processed and skips recomputation.
+    </div>
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">It's prefix-based</strong> — the match must start from the beginning. Any change at the start invalidates the entire cache.
+    </div>
+    <div style="background:#fef5e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Cache writes cost 1.25&#215;</strong> — the first request is slightly more expensive. Cache reads cost 0.1&#215; — a 90% discount.
+    </div>
+    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
+      <strong style="color:#6c5ce7">5-minute default TTL</strong> — each cache hit resets the countdown. Extended 1-hour TTL is available as a paid option.
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep5">
+  <span class="section-num cc5-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <!-- Q1 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 01</span>
+    </div>
+    <p class="quiz-question">How does prompt caching match tokens?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>By hashing the content and comparing checksums</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>By matching the exact prefix from the beginning of the request</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>By finding matching chunks anywhere in the conversation</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>By comparing embeddings for semantic similarity</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">&#9662;</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(B) Exact prefix matching</strong></div>
+        <p class="quiz-answer-text">The cache checks if the beginning of the new request matches a previously cached token sequence. The match must start from token 1 — if any early token differs, the entire cache misses.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 02</span>
+    </div>
+    <p class="quiz-question">The first request in a conversation is cheaper with caching enabled than without.</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>True — caching always saves money</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>False — the first request costs 1.25&#215; due to cache write overhead</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">&#9662;</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(B) False — cache writes cost more</strong></div>
+        <p class="quiz-answer-text">Cache writes cost 1.25× the base input price because the server stores computed results for later reuse. The savings come from subsequent requests that hit the cache at 0.1× cost.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 03</span>
+    </div>
+    <p class="quiz-question">How long does the cache last by default?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Until the session ends</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>5 minutes, resetting on each cache hit</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>1 hour</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>24 hours</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">&#9662;</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(B) 5 minutes, resetting on each hit</strong></div>
+        <p class="quiz-answer-text">The default TTL is 5 minutes. Each cache hit resets the countdown. An extended 1-hour TTL is available as a paid option for workloads with longer gaps between requests.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 04</span>
+    </div>
+    <p class="quiz-question">Which of these would break the prompt cache?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Adding a new message at the end of the conversation</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Editing a word in the system prompt</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Sending a message within 3 minutes of the last one</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>The model generating a long response</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">&#9662;</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(B) Editing the system prompt</strong></div>
+        <p class="quiz-answer-text">The cache is prefix-based. Changing anything at the start — including the system prompt — invalidates the entire cache. Adding messages at the end preserves the prefix and keeps the cache warm.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- NEXT EPISODE -->
+<section class="next-part" style="background:linear-gradient(135deg,#3d9e91,#4682b4)">
+  <h2>Ready for Episode 6?</h2>
+  <p>Caching makes re-processing cheaper. But what happens when the conversation gets so long it doesn't fit in the context window at all? Episode 6 covers compaction — how Claude Code summarizes old messages to keep going.</p>
+  <a href="part6.html" class="btn btn-white" style="color:#3d9e91">Continue to Episode 6 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How Claude Code Works — Episode 5: Prompt Caching | Unbox the Black Box" inlineStyle={inlineStyle} series={claudeCodeSeries} episodeNum={5} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

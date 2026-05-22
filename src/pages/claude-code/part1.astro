@@ -1,0 +1,498 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { claudeCodeSeries } from '../../data/series';
+const inlineStyle = `
+::selection{background:#7b68ee;color:#fff}
+
+.cc1-hero{background:linear-gradient(135deg,#7b68ee 0%,#4682b4 100%)}
+
+.cc1-num{color:#7b68ee;background:#eeeafd}
+
+/* ── Hero Art: Token Stream ── */
+.token-art{margin:2.5rem auto 0;animation:fadeInUp 1.5s ease;display:flex;flex-direction:column;align-items:center;gap:0.75rem;max-width:18rem}
+.token-stream{display:flex;gap:0.375rem;flex-wrap:wrap;justify-content:center}
+.token-chip{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;padding:0.375rem 0.625rem;border-radius:0.375rem;animation:tokenFade 3s ease infinite}
+.tc-purple{background:rgba(162,155,254,0.4);color:#fff;border:0.0625rem solid rgba(162,155,254,0.7);animation-delay:0s}
+.tc-blue{background:rgba(116,185,255,0.4);color:#fff;border:0.0625rem solid rgba(116,185,255,0.7);animation-delay:0.3s}
+.tc-teal{background:rgba(85,239,196,0.4);color:#fff;border:0.0625rem solid rgba(85,239,196,0.7);animation-delay:0.6s}
+.tc-pink{background:rgba(253,121,168,0.4);color:#fff;border:0.0625rem solid rgba(253,121,168,0.7);animation-delay:0.9s}
+@keyframes tokenFade{0%,100%{opacity:0.6;transform:translateY(0)}50%{opacity:1;transform:translateY(-0.125rem)}}
+.hero-art-label{font-family:'Fira Code',monospace;font-size:0.7rem;color:rgba(255,255,255,0.7);letter-spacing:0.125rem;text-align:center;margin-top:0.375rem}
+.hero-predict{margin-top:0.5rem;display:flex;align-items:center;gap:0.5rem;justify-content:center}
+.hero-predict-arrow{color:rgba(255,255,255,0.5);font-size:1rem;animation:arrowPulse 2s ease infinite}
+.hero-predict-box{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#55efc4;background:rgba(85,239,196,0.2);border:0.0625rem dashed rgba(85,239,196,0.6);padding:0.375rem 0.75rem;border-radius:0.375rem;animation:predictPulse 2.5s ease infinite}
+@keyframes predictPulse{0%,100%{opacity:0.5}50%{opacity:1}}
+@keyframes arrowPulse{0%,100%{opacity:0.3}50%{opacity:0.8}}
+
+/* ── Token Split Diagram ── */
+.token-split{max-width:36rem;margin:2rem auto;padding:0 1.5rem}
+.ts-box{background:#1e272e;border-radius:1rem;padding:1.5rem;border:0.0625rem solid #485460}
+.ts-title{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#b2bec3;letter-spacing:0.125rem;text-align:center;margin-bottom:1.25rem}
+.ts-row{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.875rem;flex-wrap:wrap}
+.ts-word{font-family:'Fira Code',monospace;font-size:0.8rem;color:#dfe6e9;min-width:8rem;text-align:right}
+.ts-arrow{color:#636e72;font-size:0.8rem;flex-shrink:0}
+.ts-pieces{display:flex;gap:0.25rem;flex-wrap:wrap}
+.ts-piece{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;padding:0.25rem 0.5rem;border-radius:0.25rem}
+.ts-p1{background:rgba(162,155,254,0.3);color:#7b68ee;border:0.0625rem solid rgba(162,155,254,0.5)}
+.ts-p2{background:rgba(116,185,255,0.3);color:#74b9ff;border:0.0625rem solid rgba(116,185,255,0.5)}
+.ts-p3{background:rgba(85,239,196,0.3);color:#55efc4;border:0.0625rem solid rgba(85,239,196,0.5)}
+.ts-count{font-family:'Fira Code',monospace;font-size:0.65rem;color:#636e72;margin-left:0.5rem;flex-shrink:0}
+@media(max-width:37.5rem){.ts-word{min-width:auto;text-align:left}.ts-row{gap:0.5rem}}
+
+/* ── Next Token Prediction Flow ── */
+.predict-flow{max-width:40rem;margin:2rem auto;padding:0 1.5rem}
+.pf-box{background:#1e272e;border-radius:1rem;padding:1.5rem;border:0.0625rem solid #485460}
+.pf-title{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#b2bec3;letter-spacing:0.125rem;text-align:center;margin-bottom:1.25rem}
+.pf-steps{display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap}
+.pf-step{text-align:center;padding:0.75rem 0.875rem;border-radius:0.75rem;min-width:5rem}
+.pf-step-label{font-family:'Fira Code',monospace;font-size:0.6rem;font-weight:700;letter-spacing:0.0625rem;margin-bottom:0.25rem}
+.pf-step-desc{font-family:'Fira Code',monospace;font-size:0.65rem;line-height:1.5}
+.pf-input{background:rgba(162,155,254,0.2);border:0.0625rem solid #7b68ee}
+.pf-input .pf-step-label{color:#7b68ee}
+.pf-input .pf-step-desc{color:#dfe6e9}
+.pf-model{background:rgba(116,185,255,0.2);border:0.0625rem solid #74b9ff}
+.pf-model .pf-step-label{color:#74b9ff}
+.pf-model .pf-step-desc{color:#dfe6e9}
+.pf-probs{background:rgba(253,203,110,0.2);border:0.0625rem solid #feca57}
+.pf-probs .pf-step-label{color:#feca57}
+.pf-probs .pf-step-desc{color:#dfe6e9}
+.pf-output{background:rgba(85,239,196,0.2);border:0.0625rem solid #55efc4}
+.pf-output .pf-step-label{color:#55efc4}
+.pf-output .pf-step-desc{color:#dfe6e9}
+.pf-conn{color:#636e72;font-size:0.9rem;flex-shrink:0}
+@media(max-width:37.5rem){.pf-steps{flex-direction:column}.pf-conn{transform:rotate(90deg)}}
+
+/* ── Probability Bars ── */
+.prob-bars{max-width:28rem;margin:1.5rem auto;padding:0 1.5rem}
+.pb-box{background:#1e272e;border-radius:1rem;padding:1.25rem;border:0.0625rem solid #485460}
+.pb-title{font-family:'Fira Code',monospace;font-size:0.65rem;color:#b2bec3;text-align:center;margin-bottom:1rem;letter-spacing:0.0625rem}
+.pb-row{display:flex;align-items:center;gap:0.625rem;margin-bottom:0.5rem}
+.pb-label{font-family:'Fira Code',monospace;font-size:0.7rem;color:#dfe6e9;min-width:4rem;text-align:right}
+.pb-track{flex:1;height:1.25rem;background:rgba(255,255,255,0.06);border-radius:0.25rem;overflow:hidden}
+.pb-fill{height:100%;border-radius:0.25rem;display:flex;align-items:center;padding-left:0.375rem}
+.pb-pct{font-family:'Fira Code',monospace;font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.9)}
+.pb-f1{background:linear-gradient(90deg,#55efc4,#00b894);width:62%}
+.pb-f2{background:linear-gradient(90deg,#74b9ff,#0984e3);width:20%}
+.pb-f3{background:linear-gradient(90deg,#7b68ee,#7b68ee);width:10%}
+.pb-f4{background:linear-gradient(90deg,#636e72,#485460);width:8%}
+
+/* ── Token Currency Cards ── */
+.currency-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;max-width:50rem;margin:2rem auto;padding:0 1.5rem}
+.currency-card{border-radius:1rem;padding:1.25rem 1.5rem;text-align:center;transition:transform 0.3s}
+.currency-card:hover{transform:translateY(-0.25rem)}
+.currency-icon{font-size:2rem;margin-bottom:0.625rem}
+.currency-card h4{font-size:1rem;font-weight:800;margin-bottom:0.375rem}
+.currency-card p{font-size:0.85rem;line-height:1.6;color:#555}
+.cur-cost{background:#eeeafd;border:0.125rem solid #d5ccff}
+.cur-cost h4{color:#7b68ee}
+.cur-speed{background:#e3f2fd;border:0.125rem solid #90caf9}
+.cur-speed h4{color:#0984e3}
+.cur-limits{background:#e0fafa;border:0.125rem solid #b2f5ea}
+.cur-limits h4{color:#00cec9}
+@media(max-width:37.5rem){.currency-grid{grid-template-columns:1fr}}
+
+/* ── One Model Visual ── */
+.one-model{max-width:32rem;margin:2rem auto;padding:0 1.5rem}
+.om-box{background:#1e272e;border-radius:1rem;padding:1.5rem;border:0.0625rem solid #485460;text-align:center}
+.om-title{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#b2bec3;letter-spacing:0.125rem;margin-bottom:1rem}
+.om-core{display:inline-block;background:linear-gradient(135deg,rgba(108,92,231,0.3),rgba(9,132,227,0.3));border:0.125rem solid #7b68ee;border-radius:50%;width:6rem;height:6rem;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
+.om-core-label{font-family:'Fira Code',monospace;font-size:0.75rem;font-weight:700;color:#7b68ee}
+.om-interfaces{display:flex;gap:0.625rem;justify-content:center;flex-wrap:wrap}
+.om-iface{font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;padding:0.375rem 0.75rem;border-radius:0.375rem}
+.om-web{background:rgba(85,239,196,0.2);color:#55efc4;border:0.0625rem solid rgba(85,239,196,0.5)}
+.om-mobile{background:rgba(116,185,255,0.2);color:#74b9ff;border:0.0625rem solid rgba(116,185,255,0.5)}
+.om-cli{background:rgba(253,121,168,0.2);color:#fd79a8;border:0.0625rem solid rgba(253,121,168,0.5)}
+.om-conn{font-family:'Fira Code',monospace;font-size:0.6rem;color:#636e72;margin:0.5rem 0}
+
+/* ── Quick Estimates ── */
+.estimates{max-width:30rem;margin:1.5rem auto;padding:0 1.5rem}
+.est-box{background:#eeeafd;border-radius:1rem;padding:1.25rem 1.5rem;border:0.125rem solid #d5ccff}
+.est-row{display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:0.0625rem solid #e8e5ff}
+.est-row:last-child{border-bottom:none}
+.est-label{font-size:0.85rem;color:#555}
+.est-val{font-family:'Fira Code',monospace;font-size:0.85rem;font-weight:700;color:#7b68ee}
+
+/* ── Quiz theming: Episode 1 ── */
+.quiz-ep1 .quiz-q-num{color:#7b68ee;background:#eeeafd}
+.quiz-ep1 .quiz-reveal-btn{color:#7b68ee}
+.quiz-ep1 .quiz-opt-letter{color:#7b68ee}
+.quiz-ep1 .quiz-option:hover{border-color:#7b68ee;background:#f8f7ff}
+.quiz-ep1 .quiz-answer-highlight{background:#eeeafd;border-left:0.25rem solid #7b68ee}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero cc1-hero">
+  <div class="hero-badge">Episode 1 of 7</div>
+  <h1>What is an LLM?</h1>
+  <p style="color:rgba(255,255,255,0.95)">You've used ChatGPT, Claude, or Gemini. You type a question, it types back an answer. But what's actually happening under the hood?</p>
+
+  <div class="token-art">
+    <div class="token-stream">
+      <span class="token-chip tc-purple">The</span>
+      <span class="token-chip tc-blue">cat</span>
+      <span class="token-chip tc-teal">sat</span>
+      <span class="token-chip tc-purple">on</span>
+      <span class="token-chip tc-blue">the</span>
+    </div>
+    <div class="hero-predict">
+      <span class="hero-predict-arrow">&#10132;</span>
+      <span class="hero-predict-box">mat ?</span>
+    </div>
+    <div class="hero-art-label">predicting the next token</div>
+  </div>
+</section>
+
+<!-- SECTION 01: NEXT-TOKEN PREDICTION -->
+<section class="section reveal">
+  <span class="section-num cc1-num">01</span>
+  <h2>A Next-Token Prediction Machine</h2>
+  <p>A <span class="highlight">Large Language Model (LLM)</span> is a neural network trained on massive amounts of text. Books, code, research papers, websites — billions of documents.</p>
+  <p>But here's the thing that surprises most people: an LLM doesn't "understand" your question the way a human does. It does something much simpler and much more powerful at the same time.</p>
+  <p><strong>It predicts the next token.</strong></p>
+  <p>That's it. Given everything that came before, the model calculates the probability of every possible next piece of text and picks one. Then it does it again. And again. Token by token, it builds a response.</p>
+</section>
+
+<div class="analogy reveal">
+  <p>Think of it like <strong>autocomplete on your phone</strong> — but instead of predicting the next word in a text message, it predicts the next piece of text in an entire conversation. And it's been trained on so much text that its predictions are remarkably good.</p>
+</div>
+
+<!-- PREDICTION FLOW DIAGRAM -->
+<div class="predict-flow reveal">
+  <div class="pf-box">
+    <div class="pf-title">HOW NEXT-TOKEN PREDICTION WORKS</div>
+    <div class="pf-steps">
+      <div class="pf-step pf-input">
+        <div class="pf-step-label">INPUT</div>
+        <div class="pf-step-desc">"The cat<br>sat on"</div>
+      </div>
+      <div class="pf-conn">&#10132;</div>
+      <div class="pf-step pf-model">
+        <div class="pf-step-label">MODEL</div>
+        <div class="pf-step-desc">Calculates<br>probabilities</div>
+      </div>
+      <div class="pf-conn">&#10132;</div>
+      <div class="pf-step pf-probs">
+        <div class="pf-step-label">DISTRIBUTION</div>
+        <div class="pf-step-desc">Ranks all<br>possible tokens</div>
+      </div>
+      <div class="pf-conn">&#10132;</div>
+      <div class="pf-step pf-output">
+        <div class="pf-step-label">OUTPUT</div>
+        <div class="pf-step-desc">"the"<br>(picked)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROBABILITY BARS -->
+<div class="prob-bars reveal">
+  <div class="pb-box">
+    <div class="pb-title">PROBABILITY DISTRIBUTION FOR NEXT TOKEN</div>
+    <div class="pb-row">
+      <span class="pb-label">"the"</span>
+      <div class="pb-track"><div class="pb-fill pb-f1"><span class="pb-pct">62%</span></div></div>
+    </div>
+    <div class="pb-row">
+      <span class="pb-label">"a"</span>
+      <div class="pb-track"><div class="pb-fill pb-f2"><span class="pb-pct">20%</span></div></div>
+    </div>
+    <div class="pb-row">
+      <span class="pb-label">"his"</span>
+      <div class="pb-track"><div class="pb-fill pb-f3"><span class="pb-pct">10%</span></div></div>
+    </div>
+    <div class="pb-row">
+      <span class="pb-label">other</span>
+      <div class="pb-track"><div class="pb-fill pb-f4"><span class="pb-pct">8%</span></div></div>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>The model doesn't pick a word from a dictionary. It scores <span class="highlight">every possible next token</span> — tens of thousands of candidates — and assigns each a probability. Then it samples from that distribution. That's why asking the same question twice can produce slightly different answers.</p>
+  <p>This process repeats for every single token in the response. A 200-word reply means the model ran this prediction cycle roughly <span class="highlight-orange">~260 times</span>, one token at a time.</p>
+</section>
+
+<!-- SECTION 02: WHAT IS A TOKEN -->
+<section class="section reveal">
+  <span class="section-num cc1-num">02</span>
+  <h2>What is a Token?</h2>
+  <p>A <span class="highlight">token</span> is the smallest unit of text that an LLM processes. It's not always a word. It's not always a character. It's somewhere in between.</p>
+  <p>The model has a <span class="highlight-orange">tokenizer</span> — a tool that splits text into these pieces. Common words stay whole. Uncommon words get split into smaller pieces.</p>
+</section>
+
+<!-- TOKEN SPLITTING DIAGRAM -->
+<div class="token-split reveal">
+  <div class="ts-box">
+    <div class="ts-title">HOW THE TOKENIZER SPLITS TEXT</div>
+    <div class="ts-row">
+      <span class="ts-word">"Hello world"</span>
+      <span class="ts-arrow">&#10132;</span>
+      <div class="ts-pieces">
+        <span class="ts-piece ts-p1">Hello</span>
+        <span class="ts-piece ts-p2">&nbsp;world</span>
+      </div>
+      <span class="ts-count">= 2 tokens</span>
+    </div>
+    <div class="ts-row">
+      <span class="ts-word">"Claude is great"</span>
+      <span class="ts-arrow">&#10132;</span>
+      <div class="ts-pieces">
+        <span class="ts-piece ts-p1">Claude</span>
+        <span class="ts-piece ts-p2">&nbsp;is</span>
+        <span class="ts-piece ts-p3">&nbsp;great</span>
+      </div>
+      <span class="ts-count">= 3 tokens</span>
+    </div>
+    <div class="ts-row">
+      <span class="ts-word">"Programming"</span>
+      <span class="ts-arrow">&#10132;</span>
+      <div class="ts-pieces">
+        <span class="ts-piece ts-p1">Programm</span>
+        <span class="ts-piece ts-p2">ing</span>
+      </div>
+      <span class="ts-count">= 2 tokens</span>
+    </div>
+    <div class="ts-row">
+      <span class="ts-word">"API"</span>
+      <span class="ts-arrow">&#10132;</span>
+      <div class="ts-pieces">
+        <span class="ts-piece ts-p3">API</span>
+      </div>
+      <span class="ts-count">= 1 token</span>
+    </div>
+    <div class="ts-row">
+      <span class="ts-word">"authentication"</span>
+      <span class="ts-arrow">&#10132;</span>
+      <div class="ts-pieces">
+        <span class="ts-piece ts-p1">authentic</span>
+        <span class="ts-piece ts-p2">ation</span>
+      </div>
+      <span class="ts-count">= 2 tokens</span>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>Notice the spaces. <code>" world"</code> (with a leading space) is a single token — the space is part of it. This is how most modern tokenizers work.</p>
+
+  <h3 style="margin-top:2rem;font-size:1.2rem;color:#7b68ee">Rule of Thumb</h3>
+  <p><strong>~3–4 characters ≈ 1 token</strong> (for English text). Other languages, code, and special characters tokenize differently — sometimes more efficiently, sometimes less.</p>
+</section>
+
+<!-- QUICK ESTIMATES -->
+<div class="estimates reveal">
+  <div class="est-box">
+    <div class="est-row">
+      <span class="est-label">1,000 words</span>
+      <span class="est-val">≈ 1,300 tokens</span>
+    </div>
+    <div class="est-row">
+      <span class="est-label">A typical code file (200 lines)</span>
+      <span class="est-val">≈ 2,000–4,000 tokens</span>
+    </div>
+    <div class="est-row">
+      <span class="est-label">This entire episode</span>
+      <span class="est-val">≈ ~1,500 tokens</span>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 03: WHY TOKENS MATTER -->
+<section class="section reveal">
+  <span class="section-num cc1-num">03</span>
+  <h2>Why Tokens Matter</h2>
+  <p>Tokens are the <span class="highlight">currency of AI</span>. Everything is measured in them:</p>
+</section>
+
+<div class="currency-grid reveal">
+  <div class="currency-card cur-cost">
+    <div class="currency-icon">&#128176;</div>
+    <h4>Cost</h4>
+    <p>You're charged per token processed. Input tokens (what you send) and output tokens (what the model generates) both cost money. Output tokens cost more.</p>
+  </div>
+  <div class="currency-card cur-speed">
+    <div class="currency-icon">&#9889;</div>
+    <h4>Speed</h4>
+    <p>More tokens = more time. The model generates one token at a time, so longer responses take longer.</p>
+  </div>
+  <div class="currency-card cur-limits">
+    <div class="currency-icon">&#128218;</div>
+    <h4>Limits</h4>
+    <p>Every model has a maximum number of tokens it can handle in one conversation. This is the <strong>context window</strong>.</p>
+  </div>
+</div>
+
+<div class="analogy reveal">
+  <p>Tokens are like <strong>words on a page in a notebook</strong>. The notebook has a fixed number of pages (context window). You pay for every word written (cost). And writing each word takes a moment (speed). Fill the notebook, and you need a new one — or a summary of what you've written so far.</p>
+</div>
+
+<!-- SECTION 04: ONE MODEL MANY USES -->
+<section class="section reveal">
+  <span class="section-num cc1-num">04</span>
+  <h2>One Model, Many Uses</h2>
+  <p>Here's a common misconception: there isn't a separate "text AI" and "code AI." Claude is a <span class="highlight">single general-purpose model</span>. The same model that writes poetry can also write Python, explain quantum physics, or debug your React component.</p>
+  <p>When you use Claude on the web (claude.ai), in a mobile app, or through Claude Code in your terminal — it's the <span class="highlight-orange">same underlying model</span>. The difference is the <strong>interface</strong>, not the intelligence.</p>
+</section>
+
+<!-- ONE MODEL DIAGRAM -->
+<div class="one-model reveal">
+  <div class="om-box">
+    <div class="om-title">SAME MODEL, DIFFERENT INTERFACES</div>
+    <div class="om-core">
+      <span class="om-core-label">Claude<br>Model</span>
+    </div>
+    <div class="om-conn">&#8595; powers &#8595;</div>
+    <div class="om-interfaces">
+      <span class="om-iface om-web">&#127760; Web App</span>
+      <span class="om-iface om-mobile">&#128241; Mobile App</span>
+      <span class="om-iface om-cli">&#128187; Claude Code</span>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>Claude Code gives the model access to your file system, terminal, and development tools. The model itself is identical — it just has more <span class="highlight">context</span> about your project and more <span class="highlight-orange">tools</span> to act on it.</p>
+
+  <h3 style="margin-top:2rem;font-size:1.2rem;color:#7b68ee">What Claude Can Do</h3>
+
+  <div style="display:grid;gap:0.75rem;margin-top:1rem">
+    <div style="background:#eeeafd;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #7b68ee">
+      <strong style="color:#7b68ee">Conversations</strong> — natural language dialogue, explanations, brainstorming
+    </div>
+    <div style="background:#e3f2fd;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">Code</strong> — write, debug, and explain code in 50+ languages
+    </div>
+    <div style="background:#e0fafa;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00cec9">
+      <strong style="color:#00cec9">Analysis</strong> — analyze documents, images, and data
+    </div>
+    <div style="background:#fef5e7;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Dev Tools</strong> — search codebases, run commands, edit files (via Claude Code)
+    </div>
+  </div>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#eeeafd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #7b68ee">
+      <strong style="color:#7b68ee">An LLM predicts the next token</strong> — not "the best response." It generates text one piece at a time, choosing the most likely continuation from a probability distribution.
+    </div>
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">A token is a small piece of text</strong> — roughly 3–4 characters. Common words are one token; uncommon words get split into subword pieces by the tokenizer.
+    </div>
+    <div style="background:#e0fafa;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00cec9">
+      <strong style="color:#00cec9">Tokens are the currency of AI</strong> — they determine cost (charged per token), speed (generated one at a time), and conversation limits (context window).
+    </div>
+    <div style="background:#fef5e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Claude is one model</strong> — the same model powers the web app, mobile app, and Claude Code. The interface changes, not the intelligence.
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep1">
+  <span class="section-num cc1-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <!-- Q1 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 01</span>
+    </div>
+    <p class="quiz-question">What does a large language model fundamentally do?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Searches a database for the best answer</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Understands your question and reasons about it like a human</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Predicts the next token, one at a time, based on everything before it</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Retrieves pre-written responses from its training data</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">&#9662;</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(C) Predicts the next token, one at a time</strong></div>
+        <p class="quiz-answer-text">An LLM is autoregressive — it scores every possible next token, picks one, appends it, and repeats. It doesn't search a database or retrieve pre-written text. The "understanding" emerges from patterns learned during training.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 02</span>
+    </div>
+    <p class="quiz-question">The word "authentication" is typically split into how many tokens?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>1 token — it's a common word</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>2 tokens — "authentic" + "ation"</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>14 tokens — one per character</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>3 tokens — "auth" + "entic" + "ation"</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">&#9662;</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(B) 2 tokens — "authentic" + "ation"</strong></div>
+        <p class="quiz-answer-text">Modern tokenizers use subword splitting. Common subwords like "authentic" and "ation" each become their own token. The tokenizer learns these splits from training data — frequently seen substrings stay whole.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 03</span>
+    </div>
+    <p class="quiz-question">Claude Code uses a different, specialized AI model compared to claude.ai.</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>True — Claude Code uses a code-optimized model</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>False — it's the same model with different tools and context</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">&#9662;</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(B) False</strong></div>
+        <p class="quiz-answer-text">Claude is one general-purpose model. Claude Code is a CLI tool that gives the same model access to your file system, terminal, and development tools. The model doesn't change — the interface does.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 04</span>
+    </div>
+    <p class="quiz-question">Which of these is NOT a reason tokens matter?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>You're charged per token for API usage</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>The model generates one token at a time, so more tokens = slower</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Tokens determine the model's intelligence level</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Every model has a maximum token limit (context window)</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">&#9662;</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(C) Tokens determine the model's intelligence level</strong></div>
+        <p class="quiz-answer-text">Tokens affect cost, speed, and context limits — but not the model's capability. A model's intelligence comes from its training data and architecture, not from the number of tokens in a conversation.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- NEXT EPISODE -->
+<section class="next-part" style="background:linear-gradient(135deg,#7b68ee,#4682b4)">
+  <h2>Ready for Episode 2?</h2>
+  <p>You know what an LLM is and what tokens are. But what exactly is Claude? What models are available, what do they cost, and what is Claude Code? Episode 2 breaks it all down.</p>
+  <a href="part2.html" class="btn btn-white" style="color:#7b68ee">Continue to Episode 2 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How Claude Code Works — Episode 1: What is an LLM? | Unbox the Black Box" inlineStyle={inlineStyle} series={claudeCodeSeries} episodeNum={1} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

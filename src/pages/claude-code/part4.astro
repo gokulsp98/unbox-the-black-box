@@ -1,0 +1,409 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { claudeCodeSeries } from '../../data/series';
+const inlineStyle = `
+::selection{background:#7b68ee;color:#fff}
+
+.cc4-hero{background:linear-gradient(135deg,#7b68ee 0%,#3d9e91 100%)}
+
+.cc4-num{color:#7b68ee;background:#eeeafd}
+
+/* ── Hero Art: Rising Cost Bars ── */
+.cost-art{margin:2.5rem auto 0;animation:fadeInUp 1.5s ease;max-width:14rem;text-align:center}
+.cost-bars{display:flex;align-items:flex-end;justify-content:center;gap:0.5rem;height:5.5rem;margin:0 auto 0.75rem}
+.cost-bar{width:1rem;border-radius:0.375rem 0.375rem 0 0;transform-origin:bottom;animation:costGrow 1.5s ease forwards;opacity:0}
+.cost-bar-1{height:1.25rem;background:rgba(255,255,255,0.2);animation-delay:0.6s}
+.cost-bar-2{height:2rem;background:rgba(255,255,255,0.28);animation-delay:0.8s}
+.cost-bar-3{height:2.75rem;background:rgba(255,255,255,0.36);animation-delay:1s}
+.cost-bar-4{height:3.75rem;background:rgba(255,255,255,0.45);animation-delay:1.2s}
+.cost-bar-5{height:4.75rem;background:#fff;animation-delay:1.4s;box-shadow:0 0 1rem rgba(255,255,255,0.3)}
+.cost-bar-dollar{font-family:'Fira Code',monospace;font-size:0.5rem;font-weight:700;color:rgba(255,255,255,0.7);padding-top:0.25rem;text-align:center}
+.cost-bar-5 .cost-bar-dollar{color:#7b68ee}
+@keyframes costGrow{from{transform:scaleY(0);opacity:0}to{transform:scaleY(1);opacity:1}}
+.cost-label{font-family:'Fira Code',monospace;font-size:0.65rem;color:rgba(255,255,255,0.7);letter-spacing:0.125rem;opacity:0;animation:fadeInUp 0.6s ease 2s forwards}
+.cost-trend{display:flex;align-items:center;justify-content:center;gap:0.375rem;margin-top:0.25rem;opacity:0;animation:fadeInUp 0.6s ease 2.2s forwards}
+.cost-trend-arrow{color:#fff;font-size:0.9rem}
+.cost-trend-text{font-family:'Fira Code',monospace;font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.9)}
+
+/* ── Accumulation Bars ── */
+.accum-chart{max-width:40rem;margin:2rem auto;padding:0 1.5rem}
+.ac-box{background:#1e272e;border-radius:1rem;padding:1.5rem;border:0.0625rem solid #485460}
+.ac-title{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#b2bec3;letter-spacing:0.125rem;text-align:center;margin-bottom:1.25rem}
+.ac-row{display:flex;align-items:center;gap:0.625rem;margin-bottom:0.625rem}
+.ac-label{font-family:'Fira Code',monospace;font-size:0.7rem;color:#dfe6e9;min-width:3rem;text-align:right}
+.ac-bar-track{flex:1;height:1.75rem;background:rgba(255,255,255,0.04);border-radius:0.25rem;overflow:hidden;display:flex}
+.ac-bar-old{height:100%;display:flex;align-items:center;justify-content:center}
+.ac-bar-new{height:100%;display:flex;align-items:center;justify-content:center}
+.ac-bar-old{background:rgba(99,110,114,0.4)}
+.ac-bar-new{background:rgba(225,112,85,0.5);border-left:0.125rem solid #7b68ee}
+.ac-bar-text{font-family:'Fira Code',monospace;font-size:0.55rem;font-weight:700;color:rgba(255,255,255,0.8);white-space:nowrap;overflow:hidden}
+.ac-cost{font-family:'Fira Code',monospace;font-size:0.65rem;color:#7b68ee;font-weight:700;min-width:3.5rem;text-align:right}
+
+/* ── Output Cost Comparison ── */
+.output-compare{max-width:36rem;margin:2rem auto;padding:0 1.5rem}
+.oc-box{background:#1e272e;border-radius:1rem;padding:1.5rem;border:0.0625rem solid #485460}
+.oc-title{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#b2bec3;letter-spacing:0.125rem;text-align:center;margin-bottom:1.25rem}
+.oc-row{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem}
+.oc-type{font-family:'Fira Code',monospace;font-size:0.75rem;font-weight:700;min-width:4rem;text-align:right}
+.oc-type-in{color:#74b9ff}
+.oc-type-out{color:#7b68ee}
+.oc-track{flex:1;height:1.5rem;background:rgba(255,255,255,0.06);border-radius:0.25rem;overflow:hidden}
+.oc-fill{height:100%;border-radius:0.25rem;display:flex;align-items:center;padding-left:0.5rem}
+.oc-fill-in{background:linear-gradient(90deg,#74b9ff,#0984e3);width:20%}
+.oc-fill-out{background:linear-gradient(90deg,#7b68ee,#d63031);width:100%}
+.oc-val{font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.9)}
+.oc-note{font-family:'Fira Code',monospace;font-size:0.6rem;color:#636e72;text-align:center;margin-top:0.75rem}
+
+/* ── Session Cost Timeline ── */
+.session-cost{max-width:40rem;margin:2rem auto;padding:0 1.5rem}
+.sc-box{background:#1e272e;border-radius:1rem;padding:1.5rem;border:0.0625rem solid #485460}
+.sc-title{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#b2bec3;letter-spacing:0.125rem;text-align:center;margin-bottom:1.25rem}
+.sc-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;padding:0.5rem;border-radius:0.375rem;background:rgba(255,255,255,0.03)}
+.sc-msg{font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;color:#636e72;min-width:3rem;text-align:right}
+.sc-desc{font-family:'Fira Code',monospace;font-size:0.65rem;color:#dfe6e9;flex:1}
+.sc-tokens{font-family:'Fira Code',monospace;font-size:0.6rem;color:#74b9ff;min-width:5rem;text-align:right}
+.sc-cost{font-family:'Fira Code',monospace;font-size:0.6rem;color:#7b68ee;font-weight:700;min-width:3.5rem;text-align:right}
+.sc-total{display:flex;justify-content:space-between;padding:0.75rem 0.5rem 0;margin-top:0.5rem;border-top:0.0625rem solid rgba(255,255,255,0.1)}
+.sc-total-label{font-family:'Fira Code',monospace;font-size:0.75rem;font-weight:700;color:#dfe6e9}
+.sc-total-val{font-family:'Fira Code',monospace;font-size:0.75rem;font-weight:700;color:#7b68ee}
+
+/* ── Solution Teaser Cards ── */
+.solution-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;max-width:44rem;margin:2rem auto;padding:0 1.5rem}
+.solution-card{border-radius:1rem;padding:1.5rem;text-align:center;transition:transform 0.3s}
+.solution-card:hover{transform:translateY(-0.25rem)}
+.solution-card h4{font-size:1.1rem;font-weight:800;margin-bottom:0.5rem}
+.solution-card p{font-size:0.85rem;line-height:1.6;color:#555}
+.sol-cache{background:#e8f8f5;border:0.125rem solid #b8f0e0}
+.sol-cache h4{color:#00b894}
+.sol-compact{background:#f0efff;border:0.125rem solid #d5ccff}
+.sol-compact h4{color:#6c5ce7}
+@media(max-width:37.5rem){.solution-grid{grid-template-columns:1fr}}
+
+/* ── Quiz theming: Episode 4 ── */
+.quiz-ep4 .quiz-q-num{color:#7b68ee;background:#eeeafd}
+.quiz-ep4 .quiz-reveal-btn{color:#7b68ee}
+.quiz-ep4 .quiz-opt-letter{color:#7b68ee}
+.quiz-ep4 .quiz-option:hover{border-color:#7b68ee;background:#fff8f5}
+.quiz-ep4 .quiz-answer-highlight{background:#eeeafd;border-left:0.25rem solid #7b68ee}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero cc4-hero">
+  <div class="hero-badge">Episode 4 of 7</div>
+  <h1>Why AI Gets<br>Expensive</h1>
+  <p style="color:rgba(255,255,255,0.95)">Every message re-sends everything. Let's see what that actually costs — and why costs grow faster than you'd expect.</p>
+
+  <div class="cost-art">
+    <div class="cost-bars">
+      <div class="cost-bar cost-bar-1"><div class="cost-bar-dollar">$</div></div>
+      <div class="cost-bar cost-bar-2"><div class="cost-bar-dollar">$</div></div>
+      <div class="cost-bar cost-bar-3"><div class="cost-bar-dollar">$$</div></div>
+      <div class="cost-bar cost-bar-4"><div class="cost-bar-dollar">$$</div></div>
+      <div class="cost-bar cost-bar-5"><div class="cost-bar-dollar">$$$</div></div>
+    </div>
+    <div class="cost-label">cost per message</div>
+    <div class="cost-trend">
+      <span class="cost-trend-arrow">&#8599;</span>
+      <span class="cost-trend-text">grows with every request</span>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 01: ACCUMULATION -->
+<section class="section reveal">
+  <span class="section-num cc4-num">01</span>
+  <h2>The Accumulation Problem</h2>
+  <p>Remember from Episode 3: every message re-sends everything. That means the tokens you're paying for <span class="highlight-orange">accumulate</span> with every request.</p>
+  <p>Let's trace a simple 5-message conversation using Sonnet ($3 input / $15 output per MTok):</p>
+</section>
+
+<!-- ACCUMULATION BARS -->
+<div class="accum-chart reveal">
+  <div class="ac-box">
+    <div class="ac-title">INPUT TOKENS SENT PER REQUEST (SONNET)</div>
+    <div class="ac-row">
+      <span class="ac-label">Msg 1</span>
+      <div class="ac-bar-track">
+        <div class="ac-bar-new" style="width:12%"><span class="ac-bar-text">2K new</span></div>
+      </div>
+      <span class="ac-cost">$0.014</span>
+    </div>
+    <div class="ac-row">
+      <span class="ac-label">Msg 2</span>
+      <div class="ac-bar-track">
+        <div class="ac-bar-old" style="width:16%"><span class="ac-bar-text">2.5K old</span></div>
+        <div class="ac-bar-new" style="width:12%"><span class="ac-bar-text">2K new</span></div>
+      </div>
+      <span class="ac-cost">$0.039</span>
+    </div>
+    <div class="ac-row">
+      <span class="ac-label">Msg 3</span>
+      <div class="ac-bar-track">
+        <div class="ac-bar-old" style="width:38%"><span class="ac-bar-text">6.3K old</span></div>
+        <div class="ac-bar-new" style="width:12%"><span class="ac-bar-text">2K new</span></div>
+      </div>
+      <span class="ac-cost">$0.081</span>
+    </div>
+    <div class="ac-row">
+      <span class="ac-label">Msg 4</span>
+      <div class="ac-bar-track">
+        <div class="ac-bar-old" style="width:60%"><span class="ac-bar-text">10.5K old</span></div>
+        <div class="ac-bar-new" style="width:12%"><span class="ac-bar-text">2K new</span></div>
+      </div>
+      <span class="ac-cost">$0.128</span>
+    </div>
+    <div class="ac-row">
+      <span class="ac-label">Msg 5</span>
+      <div class="ac-bar-track">
+        <div class="ac-bar-old" style="width:80%"><span class="ac-bar-text">14.1K old</span></div>
+        <div class="ac-bar-new" style="width:12%"><span class="ac-bar-text">2K new</span></div>
+      </div>
+      <span class="ac-cost">$0.191</span>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>Notice the pattern: by message 5, you're sending <span class="highlight">16,100 input tokens</span> — even though the total new content added is far less. The gray bars are tokens you've already paid for before. You're paying to <span class="highlight-orange">re-process the same old messages every time</span>.</p>
+</section>
+
+<!-- SECTION 02: OUTPUT COST -->
+<section class="section reveal">
+  <span class="section-num cc4-num">02</span>
+  <h2>Output Tokens Cost 5× More</h2>
+  <p>Output tokens are the expensive ones. Every output token requires the model to run its full prediction cycle — one forward pass through the entire neural network, <span class="highlight-orange">one token at a time</span>.</p>
+  <p>Input tokens are processed in a single batch — the model reads them all at once. Output tokens are generated sequentially.</p>
+</section>
+
+<!-- OUTPUT COMPARISON -->
+<div class="output-compare reveal">
+  <div class="oc-box">
+    <div class="oc-title">SONNET COST PER MILLION TOKENS</div>
+    <div class="oc-row">
+      <span class="oc-type oc-type-in">Input</span>
+      <div class="oc-track"><div class="oc-fill oc-fill-in"><span class="oc-val">$3</span></div></div>
+    </div>
+    <div class="oc-row">
+      <span class="oc-type oc-type-out">Output</span>
+      <div class="oc-track"><div class="oc-fill oc-fill-out"><span class="oc-val">$15</span></div></div>
+    </div>
+    <div class="oc-note">Output costs 5&#215; more — generating text is much harder than reading it</div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>That 5× multiplier adds up fast when the model writes long code blocks or detailed explanations.</p>
+</section>
+
+<!-- SECTION 03: REAL WORLD -->
+<section class="section reveal">
+  <span class="section-num cc4-num">03</span>
+  <h2>Real-World Example: A Coding Session</h2>
+  <p>Let's trace a realistic 30-minute coding session with Claude Code using Sonnet:</p>
+</section>
+
+<!-- SESSION COST TIMELINE -->
+<div class="session-cost reveal">
+  <div class="sc-box">
+    <div class="sc-title">A TYPICAL CODING SESSION (SONNET)</div>
+    <div class="sc-row">
+      <span class="sc-msg">1</span>
+      <span class="sc-desc">"Fix the login bug"</span>
+      <span class="sc-tokens">2K in / 500 out</span>
+      <span class="sc-cost">$0.014</span>
+    </div>
+    <div class="sc-row">
+      <span class="sc-msg">2-4</span>
+      <span class="sc-desc">Claude reads 3 files (tool calls)</span>
+      <span class="sc-tokens">+6K file content</span>
+      <span class="sc-cost">$0.12</span>
+    </div>
+    <div class="sc-row">
+      <span class="sc-msg">5</span>
+      <span class="sc-desc">Claude explains bug + proposes fix</span>
+      <span class="sc-tokens">10K in / 1.5K out</span>
+      <span class="sc-cost">$0.17</span>
+    </div>
+    <div class="sc-row">
+      <span class="sc-msg">6</span>
+      <span class="sc-desc">"Yes, do it" (full history re-sent)</span>
+      <span class="sc-tokens">12K in / 800 out</span>
+      <span class="sc-cost">$0.22</span>
+    </div>
+    <div class="sc-row">
+      <span class="sc-msg">7-10</span>
+      <span class="sc-desc">Edits files, runs tests, more tools</span>
+      <span class="sc-tokens">30K-50K in / 3K out</span>
+      <span class="sc-cost">$0.85</span>
+    </div>
+    <div class="sc-row">
+      <span class="sc-msg">11-15</span>
+      <span class="sc-desc">Follow-up questions, more edits</span>
+      <span class="sc-tokens">50K-100K in / 5K out</span>
+      <span class="sc-cost">$2.10</span>
+    </div>
+    <div class="sc-total">
+      <span class="sc-total-label">Session Total</span>
+      <span class="sc-total-val">~$3.50</span>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>By message 15, each request might be sending <span class="highlight">50K-100K input tokens</span>. At $3/MTok, that's $0.15-$0.30 per message just for input — plus output costs.</p>
+  <p>A full coding session can easily cost <span class="highlight-orange">$2-$10</span>, depending on conversation length and how many files are read.</p>
+</section>
+
+<div class="analogy reveal">
+  <p>Imagine paying a consultant by the <strong>word</strong> — and every meeting, they insist on re-reading the complete transcript of all previous meetings before listening to your new question. By meeting 15, most of your bill is for them re-reading old notes, not for new work.</p>
+</div>
+
+<!-- SECTION 04: WHY THIS DESIGN -->
+<section class="section reveal">
+  <span class="section-num cc4-num">04</span>
+  <h2>Why This Design — and What Fixes It</h2>
+  <p>This seems inefficient. Why pay to re-process old messages every time?</p>
+  <p>The answer goes back to how LLMs work: the model needs to "see" the full conversation to generate a coherent response. Without context, it wouldn't know what you've been working on, what files have been discussed, or what approach was agreed upon.</p>
+  <p>The stateless design is a deliberate tradeoff: simpler servers, easier scaling, and user privacy — in exchange for higher per-request costs.</p>
+  <p>But there are <span class="highlight">two solutions</span>:</p>
+</section>
+
+<!-- SOLUTION TEASERS -->
+<div class="solution-grid reveal">
+  <div class="solution-card sol-cache">
+    <h4>&#9889; Prompt Caching</h4>
+    <p>Don't re-compute tokens you've already processed. Cache reads cost 10× less than fresh input. <strong>Episode 5</strong> explains how.</p>
+  </div>
+  <div class="solution-card sol-compact">
+    <h4>&#128220; Compaction</h4>
+    <p>Summarize old messages to reduce token count. When the context gets too long, compress it. <strong>Episode 6</strong> covers this.</p>
+  </div>
+</div>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#eeeafd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #7b68ee">
+      <strong style="color:#7b68ee">Tokens accumulate</strong> — each request re-sends everything, so input token count grows with every message. Most of what you pay for is re-processing old messages.
+    </div>
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">Output costs 5×</strong> — generating text is 5× more expensive than reading it, because each output token requires a separate forward pass through the model.
+    </div>
+    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
+      <strong style="color:#6c5ce7">Real sessions cost $2-$10</strong> — a 30-minute coding session with file reads and edits adds up fast as token counts climb.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">Two solutions exist</strong> — prompt caching (pay less for repeated tokens) and compaction (send fewer tokens). Both coming next.
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep4">
+  <span class="section-num cc4-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <!-- Q1 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 01</span>
+    </div>
+    <p class="quiz-question">In a 10-message conversation, message 10 sends approximately how much to the API?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Just the new message (message 10 only)</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Messages 9 and 10</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>All 10 messages, all 9 responses, and all tool results</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>A diff of what changed since message 9</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">&#9662;</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(C) The entire conversation history</strong></div>
+        <p class="quiz-answer-text">The server is stateless — it forgets everything after each response. Every request must include the full conversation so the model has the context it needs to generate a coherent response.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 02</span>
+    </div>
+    <p class="quiz-question">Why do output tokens cost 5× more than input tokens?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">A</span>Each output token requires a separate forward pass; input is processed in one batch</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Output tokens use more memory on the server</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Output tokens are encrypted before sending back</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>It's a business decision unrelated to compute costs</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">&#9662;</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(A) Each output token requires a separate forward pass</strong></div>
+        <p class="quiz-answer-text">Input tokens are read all at once. But output tokens must be generated one at a time — each requiring the model to run its full prediction cycle. This sequential generation is compute-intensive.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 03</span>
+    </div>
+    <p class="quiz-question">As a conversation grows, which cost grows the fastest?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">A</span>Input costs — re-sending old messages every time</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Output costs — longer responses each time</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Network costs — more data transferred</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Storage costs — larger session files</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">&#9662;</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(A) Input costs from re-sending old messages</strong></div>
+        <p class="quiz-answer-text">Every message re-sends the full history, so input token count grows with every exchange. Output per response stays roughly constant, but input accumulates. This is the core problem prompt caching solves.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 04</span>
+    </div>
+    <p class="quiz-question">What are the two solutions to the cost accumulation problem?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Rate limiting and batching</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Using a smaller model and shorter responses</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Prompt caching (cheaper re-processing) and compaction (fewer tokens)</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Server-side session storage and incremental updates</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">&#9662;</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(C) Prompt caching and compaction</strong></div>
+        <p class="quiz-answer-text">Prompt caching makes re-processing cheaper (cache reads cost ~10× less). Compaction reduces token count by summarizing old messages. Together, they make long conversations practical.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- NEXT EPISODE -->
+<section class="next-part" style="background:linear-gradient(135deg,#7b68ee,#3d9e91)">
+  <h2>Ready for Episode 5?</h2>
+  <p>The accumulation problem is real — but there's a clever solution. What if the server could remember tokens it already processed and skip the work? That's prompt caching, and it changes the math entirely.</p>
+  <a href="part5.html" class="btn btn-white" style="color:#7b68ee">Continue to Episode 5 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How Claude Code Works — Episode 4: Why AI Gets Expensive | Unbox the Black Box" inlineStyle={inlineStyle} series={claudeCodeSeries} episodeNum={4} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

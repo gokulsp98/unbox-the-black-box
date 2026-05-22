@@ -45,4 +45,20 @@ export const fastapiSeries: Series = {
   ],
 };
 
-export const allSeries = [cpuSeries, fastapiSeries];
+export const claudeCodeSeries: Series = {
+  id: 'claude-code',
+  name: 'How Claude Code Works',
+  folder: 'claude-code',
+  hasQuiz: true,
+  episodes: [
+    { num: 1, slug: 'part1', title: 'What is an LLM?', progress: 14 },
+    { num: 2, slug: 'part2', title: 'What is Claude Code?', progress: 28 },
+    { num: 3, slug: 'part3', title: 'Sessions & the Request Flow', progress: 42 },
+    { num: 4, slug: 'part4', title: 'Why AI Gets Expensive', progress: 57 },
+    { num: 5, slug: 'part5', title: 'Prompt Caching', progress: 71 },
+    { num: 6, slug: 'part6', title: 'Context Limits & Compaction', progress: 85 },
+    { num: 7, slug: 'part7', title: 'The Complete Picture', progress: 100 },
+  ],
+};
+
+export const allSeries = [cpuSeries, fastapiSeries, claudeCodeSeries];

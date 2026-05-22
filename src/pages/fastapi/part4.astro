@@ -106,8 +106,9 @@ const inlineStyle = `
 .dt-box{width:100%;border-radius:0.75rem;padding:0.875rem 1.25rem;text-align:center}
 .dt-connector{display:flex;flex-direction:column;align-items:center;padding:0.25rem 0}
 .dt-conn-line{width:0.125rem;height:0.5rem;background:#ddd}
-.dt-conn-text{font-family:'Fira Code',monospace;font-size:0.65rem;color:#888;background:#f8f8f8;padding:0.1875rem 0.625rem;border-radius:1rem}
+.dt-conn-text{font-family:'Fira Code',monospace;font-size:0.65rem;color:#636e72;background:#f8f8f8;padding:0.1875rem 0.625rem;border-radius:1rem}
 .dt-branches{display:grid;grid-template-columns:1fr 1fr;gap:1rem;width:100%;margin-top:0.5rem}
+@media(max-width:37.5rem){.dt-branches{grid-template-columns:1fr}}
 .dt-branch{border-radius:0.75rem;padding:0.875rem;text-align:center}
 .dt-label{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;display:block;margin-bottom:0.3rem}
 .dt-desc{font-family:'Fira Code',monospace;font-size:0.72rem;display:block;line-height:1.5}

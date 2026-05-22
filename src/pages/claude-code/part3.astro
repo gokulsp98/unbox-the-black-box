@@ -1,0 +1,479 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { claudeCodeSeries } from '../../data/series';
+const inlineStyle = `
+::selection{background:#3d9e91;color:#fff}
+
+.cc3-hero{background:linear-gradient(135deg,#3d9e91 0%,#7b68ee 100%)}
+
+.cc3-num{color:#3d9e91;background:#e2f3f0}
+
+/* ── Hero Art: Request Arrow ── */
+.req-art{margin:2.5rem auto 0;animation:fadeInUp 1.5s ease;max-width:22rem;display:flex;flex-direction:column;align-items:center;gap:0}
+.req-box{font-family:'Fira Code',monospace;font-size:0.75rem;font-weight:700;padding:0.75rem 1.25rem;border-radius:0.625rem;text-align:center;width:85%;opacity:0}
+.req-local{background:rgba(255,255,255,0.15);color:#fff;border:0.0625rem solid rgba(255,255,255,0.35);backdrop-filter:blur(0.25rem)}
+.req-cloud{background:rgba(255,255,255,0.2);color:#fff;border:0.125rem solid rgba(255,255,255,0.5);box-shadow:0 0 1.5rem rgba(255,255,255,0.08)}
+.req-arrow{display:flex;flex-direction:column;align-items:center;padding:0.25rem 0;opacity:0}
+.req-arrow-line{width:0.125rem;height:1.25rem;background:linear-gradient(to bottom,rgba(255,255,255,0.5),rgba(255,255,255,0.15))}
+.req-arrow-head{font-family:'Fira Code',monospace;font-size:0.55rem;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:0.0625rem}
+.req-box-1{animation:reqSlideIn 0.6s ease 0.5s forwards}
+.req-arrow-1{animation:reqSlideIn 0.5s ease 1s forwards}
+.req-box-2{animation:reqSlideIn 0.6s ease 1.4s forwards}
+.req-arrow-2{animation:reqSlideIn 0.5s ease 1.8s forwards}
+.req-box-3{animation:reqSlideIn 0.6s ease 2.2s forwards}
+.req-cloud.req-pulse{animation:reqSlideIn 0.6s ease 1.4s forwards,reqPulse 3s ease-in-out 3s infinite}
+@keyframes reqSlideIn{from{opacity:0;transform:translateY(0.75rem)}to{opacity:1;transform:translateY(0)}}
+@keyframes reqPulse{0%,100%{box-shadow:0 0 1.5rem rgba(255,255,255,0.08)}50%{box-shadow:0 0 1.5rem 0.375rem rgba(255,255,255,0.15)}}
+
+/* ── Session File Diagram ── */
+.session-file{max-width:36rem;margin:2rem auto;padding:0 1.5rem}
+.sf-box{background:#1e272e;border-radius:1rem;padding:1.5rem;border:0.0625rem solid #485460}
+.sf-title{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#b2bec3;letter-spacing:0.125rem;text-align:center;margin-bottom:1rem}
+.sf-path{font-family:'Fira Code',monospace;font-size:0.65rem;color:#55efc4;text-align:center;margin-bottom:1.25rem;word-break:break-all}
+.sf-lines{display:flex;flex-direction:column;gap:0.375rem}
+.sf-line{display:flex;align-items:center;gap:0.5rem}
+.sf-line-num{font-family:'Fira Code',monospace;font-size:0.6rem;color:#485460;min-width:1.5rem;text-align:right}
+.sf-line-content{font-family:'Fira Code',monospace;font-size:0.65rem;padding:0.375rem 0.625rem;border-radius:0.25rem;flex:1}
+.sf-user{background:rgba(85,239,196,0.15);color:#55efc4;border:0.0625rem solid rgba(85,239,196,0.3)}
+.sf-assistant{background:rgba(162,155,254,0.15);color:#a29bfe;border:0.0625rem solid rgba(162,155,254,0.3)}
+.sf-tool{background:rgba(116,185,255,0.15);color:#74b9ff;border:0.0625rem solid rgba(116,185,255,0.3)}
+.sf-system{background:rgba(253,203,110,0.15);color:#feca57;border:0.0625rem solid rgba(253,203,110,0.3)}
+
+/* ── Stateless Diagram ── */
+.stateless-vis{max-width:40rem;margin:2rem auto;padding:0 1.5rem}
+.sv-box{background:#1e272e;border-radius:1rem;padding:1.5rem;border:0.0625rem solid #485460}
+.sv-title{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#b2bec3;letter-spacing:0.125rem;text-align:center;margin-bottom:1.25rem}
+.sv-requests{display:flex;flex-direction:column;gap:1rem}
+.sv-req{display:flex;align-items:center;gap:0.75rem}
+.sv-req-label{font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;color:#636e72;min-width:4rem;text-align:right}
+.sv-payload{flex:1;display:flex;gap:0.25rem;flex-wrap:wrap}
+.sv-msg{font-family:'Fira Code',monospace;font-size:0.6rem;font-weight:700;padding:0.25rem 0.5rem;border-radius:0.25rem}
+.sv-old{background:rgba(255,255,255,0.06);color:#636e72;border:0.0625rem solid rgba(255,255,255,0.1)}
+.sv-new{background:rgba(85,239,196,0.2);color:#55efc4;border:0.0625rem solid rgba(85,239,196,0.4)}
+.sv-arrow{color:#636e72;font-size:0.7rem;flex-shrink:0}
+
+/* ── Request Lifecycle Flow ── */
+.lifecycle{max-width:28rem;margin:2rem auto;padding:0 1.5rem;display:flex;flex-direction:column;align-items:center}
+.lc-step{width:100%;border-radius:0.75rem;padding:0.875rem 1.25rem;text-align:center}
+.lc-label{font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.0625rem;margin-bottom:0.25rem}
+.lc-desc{font-family:'Fira Code',monospace;font-size:0.7rem;line-height:1.6}
+.lc-connector{display:flex;flex-direction:column;align-items:center;padding:0.25rem 0}
+.lc-conn-line{width:0.125rem;height:0.5rem;background:#ddd}
+.lc-conn-text{font-family:'Fira Code',monospace;font-size:0.6rem;color:#888;background:#f8f8f8;padding:0.1875rem 0.625rem;border-radius:1rem;white-space:nowrap}
+.lc-local{background:#e2f3f0;border:0.125rem solid #b2f5ea}
+.lc-local .lc-label{color:#3d9e91}
+.lc-local .lc-desc{color:#555}
+.lc-network{background:#fef5e7;border:0.125rem solid #fdd9b5}
+.lc-network .lc-label{color:#e17055}
+.lc-network .lc-desc{color:#555}
+.lc-server{background:#f0efff;border:0.125rem solid #d5ccff}
+.lc-server .lc-label{color:#6c5ce7}
+.lc-server .lc-desc{color:#555}
+.lc-model{background:#e3f2fd;border:0.125rem solid #90caf9}
+.lc-model .lc-label{color:#0984e3}
+.lc-model .lc-desc{color:#555}
+.lc-tool{background:#e8f8f5;border:0.125rem solid #b8f0e0}
+.lc-tool .lc-label{color:#00b894}
+.lc-tool .lc-desc{color:#555}
+.lc-loop-note{font-family:'Fira Code',monospace;font-size:0.6rem;color:#888;margin-top:0.75rem;text-align:center;background:#f9f9f9;padding:0.5rem 1rem;border-radius:0.5rem;border:0.0625rem dashed #ccc;width:100%}
+
+/* ── Tradeoffs Grid ── */
+.tradeoff-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;max-width:44rem;margin:2rem auto;padding:0 1.5rem}
+.tradeoff-card{border-radius:1rem;padding:1.25rem 1.5rem}
+.tradeoff-card h4{font-size:1rem;font-weight:800;margin-bottom:0.75rem}
+.tradeoff-list{list-style:none;padding:0;margin:0}
+.tradeoff-list li{font-size:0.85rem;padding:0.375rem 0;padding-left:1.25rem;position:relative;color:#555;line-height:1.5}
+.tradeoff-list li::before{content:'';position:absolute;left:0;top:0.7rem;width:0.375rem;height:0.375rem;border-radius:50%}
+.tf-good{background:#e8f8f5;border:0.125rem solid #b8f0e0}
+.tf-good h4{color:#00b894}
+.tf-good .tradeoff-list li::before{background:#00b894}
+.tf-bad{background:#fef5e7;border:0.125rem solid #fdd9b5}
+.tf-bad h4{color:#e17055}
+.tf-bad .tradeoff-list li::before{background:#e17055}
+@media(max-width:37.5rem){.tradeoff-grid{grid-template-columns:1fr}}
+
+/* ── Quiz theming: Episode 3 ── */
+.quiz-ep3 .quiz-q-num{color:#3d9e91;background:#e2f3f0}
+.quiz-ep3 .quiz-reveal-btn{color:#3d9e91}
+.quiz-ep3 .quiz-opt-letter{color:#3d9e91}
+.quiz-ep3 .quiz-option:hover{border-color:#3d9e91;background:#f0fdfb}
+.quiz-ep3 .quiz-answer-highlight{background:#e2f3f0;border-left:0.25rem solid #3d9e91}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero cc3-hero">
+  <div class="hero-badge">Episode 3 of 7</div>
+  <h1>Sessions &amp; the<br>Request Flow</h1>
+  <p style="color:rgba(255,255,255,0.95)">You type a message and hit enter. A few seconds later, a response appears. But what actually happened in those seconds?</p>
+
+  <div class="req-art">
+    <div class="req-box req-local req-box-1">Your Terminal (Claude Code)</div>
+    <div class="req-arrow req-arrow-1">
+      <div class="req-arrow-line"></div>
+      <div class="req-arrow-head">&#9660; full history</div>
+    </div>
+    <div class="req-box req-cloud req-box-2 req-pulse">Claude API Server</div>
+    <div class="req-arrow req-arrow-2">
+      <div class="req-arrow-head">&#9650; response tokens</div>
+      <div class="req-arrow-line"></div>
+    </div>
+    <div class="req-box req-local req-box-3">Your Terminal (updated)</div>
+  </div>
+</section>
+
+<!-- SECTION 01: WHAT IS A SESSION -->
+<section class="section reveal">
+  <span class="section-num cc3-num">01</span>
+  <h2>What is a Session?</h2>
+  <p>A <span class="highlight">session</span> is a conversation — the sequence of messages between you and Claude. Every time you start Claude Code, you start a new session.</p>
+  <p>A session contains:</p>
+
+  <div style="display:grid;gap:0.75rem;margin-top:1rem">
+    <div style="background:#e2f3f0;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #3d9e91">
+      <strong style="color:#3d9e91">Your messages</strong> — questions, instructions, requests
+    </div>
+    <div style="background:#f0efff;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
+      <strong style="color:#6c5ce7">Claude's responses</strong> — answers, code, explanations
+    </div>
+    <div style="background:#e3f2fd;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">Tool calls and results</strong> — file reads, command outputs
+    </div>
+    <div style="background:#fef5e7;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">System instructions</strong> — the prompt that tells Claude how to behave
+    </div>
+  </div>
+
+  <p style="margin-top:1.5rem">Each session is an independent conversation. Claude has <span class="highlight-orange">no memory across sessions</span> — when you start a new one, the model doesn't remember what you talked about before. Everything the model needs to know must be in the current session.</p>
+</section>
+
+<!-- SECTION 02: WHERE SESSIONS LIVE -->
+<section class="section reveal">
+  <span class="section-num cc3-num">02</span>
+  <h2>Where Sessions Live</h2>
+  <p>Sessions are stored as <span class="highlight">local files</span> on your machine:</p>
+</section>
+
+<!-- SESSION FILE DIAGRAM -->
+<div class="session-file reveal">
+  <div class="sf-box">
+    <div class="sf-title">SESSION FILE STRUCTURE</div>
+    <div class="sf-path">~/.claude/projects/&lt;encoded-path&gt;/&lt;session-id&gt;.jsonl</div>
+    <div class="sf-lines">
+      <div class="sf-line">
+        <span class="sf-line-num">1</span>
+        <div class="sf-line-content sf-system">{"role": "system", "content": "You are Claude..."}</div>
+      </div>
+      <div class="sf-line">
+        <span class="sf-line-num">2</span>
+        <div class="sf-line-content sf-user">{"role": "user", "content": "Fix the login bug"}</div>
+      </div>
+      <div class="sf-line">
+        <span class="sf-line-num">3</span>
+        <div class="sf-line-content sf-assistant">{"role": "assistant", "tool_use": "read auth.ts"}</div>
+      </div>
+      <div class="sf-line">
+        <span class="sf-line-num">4</span>
+        <div class="sf-line-content sf-tool">{"role": "tool", "content": "// file contents..."}</div>
+      </div>
+      <div class="sf-line">
+        <span class="sf-line-num">5</span>
+        <div class="sf-line-content sf-assistant">{"role": "assistant", "content": "Found it..."}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>Each session file is a <span class="highlight">JSONL</span> (JSON Lines) file — one JSON object per line, one line per message. It's a simple append-only log.</p>
+  <p><strong>Key insight:</strong> Sessions are <span class="highlight-orange">local-only</span>. They never leave your machine (only the messages you send to the API do). If you delete the session file, the conversation is gone.</p>
+</section>
+
+<!-- SECTION 03: STATELESS SERVER -->
+<section class="section reveal">
+  <span class="section-num cc3-num">03</span>
+  <h2>The Server is Stateless</h2>
+  <p>Here's something that surprises most people: <span class="highlight-orange">Claude's server doesn't remember your conversation.</span></p>
+  <p>Every time you send a message, Claude Code sends the <strong>entire conversation history</strong> to the API. Every message, every response, every tool result — from the very first message to the latest one.</p>
+  <p>The server processes it all, generates a response, and <span class="highlight">immediately forgets everything</span>. Next message? The whole history gets sent again, plus the new message.</p>
+</section>
+
+<!-- STATELESS VISUALIZATION -->
+<div class="stateless-vis reveal">
+  <div class="sv-box">
+    <div class="sv-title">WHAT GETS SENT EACH TIME</div>
+    <div class="sv-requests">
+      <div class="sv-req">
+        <span class="sv-req-label">Msg 1</span>
+        <div class="sv-payload">
+          <span class="sv-msg sv-new">msg 1</span>
+        </div>
+        <span class="sv-arrow">&#10132; API</span>
+      </div>
+      <div class="sv-req">
+        <span class="sv-req-label">Msg 2</span>
+        <div class="sv-payload">
+          <span class="sv-msg sv-old">msg 1</span>
+          <span class="sv-msg sv-old">resp 1</span>
+          <span class="sv-msg sv-new">msg 2</span>
+        </div>
+        <span class="sv-arrow">&#10132; API</span>
+      </div>
+      <div class="sv-req">
+        <span class="sv-req-label">Msg 3</span>
+        <div class="sv-payload">
+          <span class="sv-msg sv-old">msg 1</span>
+          <span class="sv-msg sv-old">resp 1</span>
+          <span class="sv-msg sv-old">msg 2</span>
+          <span class="sv-msg sv-old">resp 2</span>
+          <span class="sv-msg sv-new">msg 3</span>
+        </div>
+        <span class="sv-arrow">&#10132; API</span>
+      </div>
+      <div class="sv-req">
+        <span class="sv-req-label">Msg 10</span>
+        <div class="sv-payload">
+          <span class="sv-msg sv-old">msg 1</span>
+          <span class="sv-msg sv-old">...</span>
+          <span class="sv-msg sv-old">resp 9</span>
+          <span class="sv-msg sv-new">msg 10</span>
+        </div>
+        <span class="sv-arrow">&#10132; API</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>This is called a <span class="highlight">stateless API</span> — the server holds no state between requests. Your local session file is the only place the conversation exists.</p>
+</section>
+
+<!-- SECTION 04: REQUEST LIFECYCLE -->
+<section class="section reveal">
+  <span class="section-num cc3-num">04</span>
+  <h2>The Full Request Lifecycle</h2>
+  <p>Here's exactly what happens when you press Enter on a message in Claude Code:</p>
+</section>
+
+<!-- LIFECYCLE FLOW -->
+<div class="lifecycle reveal">
+  <div class="lc-step lc-local">
+    <div class="lc-label">STEP 1 — COLLECT CONTEXT</div>
+    <div class="lc-desc">Claude Code gathers full conversation history + system prompt + tool definitions</div>
+  </div>
+  <div class="lc-connector">
+    <div class="lc-conn-line"></div>
+    <div class="lc-conn-text">HTTPS request</div>
+    <div class="lc-conn-line"></div>
+  </div>
+  <div class="lc-step lc-network">
+    <div class="lc-label">STEP 2 — SEND TO API</div>
+    <div class="lc-desc">Entire payload sent to Anthropic's API over HTTPS</div>
+  </div>
+  <div class="lc-connector">
+    <div class="lc-conn-line"></div>
+    <div class="lc-conn-text">server receives</div>
+    <div class="lc-conn-line"></div>
+  </div>
+  <div class="lc-step lc-server">
+    <div class="lc-label">STEP 3 — TOKENIZE</div>
+    <div class="lc-desc">Server converts all text into tokens using the tokenizer</div>
+  </div>
+  <div class="lc-connector">
+    <div class="lc-conn-line"></div>
+    <div class="lc-conn-text">tokens ready</div>
+    <div class="lc-conn-line"></div>
+  </div>
+  <div class="lc-step lc-model">
+    <div class="lc-label">STEP 4 — MODEL PROCESSES</div>
+    <div class="lc-desc">Model reads all tokens, generates response one token at a time</div>
+  </div>
+  <div class="lc-connector">
+    <div class="lc-conn-line"></div>
+    <div class="lc-conn-text">streaming response</div>
+    <div class="lc-conn-line"></div>
+  </div>
+  <div class="lc-step lc-local">
+    <div class="lc-label">STEP 5 — RESPONSE STREAMS BACK</div>
+    <div class="lc-desc">Tokens sent as they're generated — that's why text appears word by word</div>
+  </div>
+  <div class="lc-connector">
+    <div class="lc-conn-line"></div>
+    <div class="lc-conn-text">tool call?</div>
+    <div class="lc-conn-line"></div>
+  </div>
+  <div class="lc-step lc-tool">
+    <div class="lc-label">STEP 6 — TOOL EXECUTION (IF NEEDED)</div>
+    <div class="lc-desc">Claude Code runs the tool locally, appends result, sends new request</div>
+  </div>
+  <div class="lc-loop-note">&#8635; Steps 2–6 repeat for each tool call</div>
+</div>
+
+<section class="section reveal">
+  <p><span class="highlight">Tokenization happens server-side.</span> Claude Code sends plain text — the server's tokenizer converts it to tokens before the model processes anything. You never need to think about tokenization yourself.</p>
+  <p>The streaming response is why you see text appear <span class="highlight-orange">word by word</span>, not all at once. Each token is sent as soon as it's generated.</p>
+</section>
+
+<!-- SECTION 05: WHY RESEND -->
+<section class="section reveal">
+  <span class="section-num cc3-num">05</span>
+  <h2>Why Everything Gets Re-sent</h2>
+  <p>This re-sending-everything approach seems wasteful. Why not just send the new message?</p>
+  <p>Because the server is <span class="highlight-orange">stateless</span> — it literally doesn't have the previous messages. Every request must be self-contained. The server needs the full conversation to understand context.</p>
+  <p>This design has tradeoffs:</p>
+</section>
+
+<!-- TRADEOFFS -->
+<div class="tradeoff-grid reveal">
+  <div class="tradeoff-card tf-good">
+    <h4>&#10003; Advantages</h4>
+    <ul class="tradeoff-list">
+      <li>Simple server architecture — no session state to manage</li>
+      <li>No server-side storage needed</li>
+      <li>Easy to scale — any server can handle any request</li>
+      <li>Your conversation stays private on your machine</li>
+    </ul>
+  </div>
+  <div class="tradeoff-card tf-bad">
+    <h4>&#10007; Disadvantages</h4>
+    <ul class="tradeoff-list">
+      <li>Token usage grows with every message</li>
+      <li>Cost increases as conversations get longer</li>
+      <li>Eventually, you hit the context window limit</li>
+    </ul>
+  </div>
+</div>
+
+<div class="analogy reveal">
+  <p>Imagine explaining a project to a colleague who has <strong>amnesia after every conversation</strong>. Every time you talk, you have to start from the beginning — who you are, what the project is, everything you've discussed before, plus the new thing. That's how every API request works.</p>
+</div>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#e2f3f0;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #3d9e91">
+      <strong style="color:#3d9e91">A session is a conversation</strong> — stored as a local JSONL file at <code>~/.claude/projects/&lt;encoded-path&gt;/&lt;session-id&gt;.jsonl</code>. It never leaves your machine.
+    </div>
+    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
+      <strong style="color:#6c5ce7">The server is stateless</strong> — it doesn't remember previous requests. Every message sends the full conversation history.
+    </div>
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">Tokenization happens server-side</strong> — Claude Code sends text; the server converts it to tokens before the model processes it.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">Tool calls create loops</strong> — the model requests an action, Claude Code executes it locally, and sends the result back in a new API request.
+    </div>
+    <div style="background:#fef5e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Re-sending everything has costs</strong> — token usage and expense grow with every message. This is the core problem we'll explore next.
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep3">
+  <span class="section-num cc3-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <!-- Q1 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 01</span>
+    </div>
+    <p class="quiz-question">Where are Claude Code sessions stored?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>On Anthropic's servers</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Locally at ~/.claude/projects/&lt;encoded-path&gt;/&lt;session-id&gt;.jsonl</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>In ~/.claude/sessions/&lt;session-id&gt;.json</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>In the cloud with end-to-end encryption</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">&#9662;</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(B) Locally at ~/.claude/projects/&lt;encoded-path&gt;/&lt;session-id&gt;.jsonl</strong></div>
+        <p class="quiz-answer-text">Sessions are stored as local JSONL files organized by project path. They never leave your machine — only the messages you send to the API are transmitted.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 02</span>
+    </div>
+    <p class="quiz-question">When you send your 10th message, how much of the conversation does Claude Code send to the API?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Just message 10</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Messages 9 and 10</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>All 10 messages plus all previous responses and tool results</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>A summary of messages 1-9 plus message 10</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">&#9662;</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(C) Everything — all messages, responses, and tool results</strong></div>
+        <p class="quiz-answer-text">The API is stateless — the server forgets everything after each response. Every request must include the full conversation history so the model has the context it needs.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 03</span>
+    </div>
+    <p class="quiz-question">Where does tokenization (converting text to tokens) happen?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>In your terminal before sending</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>On the server, after receiving the text</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>In the model itself during processing</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>It happens on both client and server</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">&#9662;</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(B) On the server</strong></div>
+        <p class="quiz-answer-text">Claude Code sends plain text to the API. The server's tokenizer converts it to tokens before the model processes anything. You never need to think about tokenization yourself.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 04</span>
+    </div>
+    <p class="quiz-question">When Claude's response includes a tool call (like "read this file"), who executes the tool?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>The Claude model reads the file directly</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Anthropic's server reads the file and returns the contents</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Claude Code executes it locally on your machine</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>A separate microservice handles tool execution</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">&#9662;</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(C) Claude Code executes it locally</strong></div>
+        <p class="quiz-answer-text">The model can't directly access your files. It outputs a tool call request, Claude Code intercepts it, runs the tool on your machine, and sends the result back to the API in a new request.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- NEXT EPISODE -->
+<section class="next-part" style="background:linear-gradient(135deg,#3d9e91,#7b68ee)">
+  <h2>Ready for Episode 4?</h2>
+  <p>Now you understand the flow — every message re-sends everything. But how much does that actually cost? Episode 4 breaks down the math of why AI gets expensive as conversations grow.</p>
+  <a href="part4.html" class="btn btn-white" style="color:#3d9e91">Continue to Episode 4 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How Claude Code Works — Episode 3: Sessions & the Request Flow | Unbox the Black Box" inlineStyle={inlineStyle} series={claudeCodeSeries} episodeNum={3} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

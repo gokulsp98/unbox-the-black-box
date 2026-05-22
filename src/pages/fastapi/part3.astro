@@ -32,7 +32,7 @@ const inlineStyle = `
 .sf-idle .sf-step-label{color:#d63031}
 .sf-connector{display:flex;flex-direction:column;align-items:center;gap:0.2rem;padding:0.35rem 0}
 .sf-connector-line{width:0.125rem;height:1.25rem;background:rgba(100,110,120,0.3);border-radius:0.0625rem}
-.sf-connector-pill{background:#f8f8f8;border-radius:1rem;font-family:'Fira Code',monospace;font-size:0.65rem;color:#888;padding:0.15rem 0.6rem;white-space:nowrap}
+.sf-connector-pill{background:#f8f8f8;border-radius:1rem;font-family:'Fira Code',monospace;font-size:0.65rem;color:#636e72;padding:0.15rem 0.6rem;white-space:nowrap}
 
 /* ── Event Loop Tick Diagram ── */
 .loop-cycle{display:flex;align-items:center;justify-content:center;gap:0;max-width:42rem;margin:2rem auto;padding:0 1.5rem;flex-wrap:nowrap}
@@ -324,7 +324,7 @@ const bodyHtml = `
         <div class="gantt-event-dot" style="left:2.5%"><span>&#9654;</span>A runs</div>
         <div class="gantt-event-dot" style="left:18.5%"><span>&#9654;</span>B runs</div>
         <div class="gantt-event-dot" style="left:35.5%"><span>&#9654;</span>C runs</div>
-        <div class="gantt-event-dot" style="left:55%" style="color:#00cec9"><span style="color:#00cec9">&#9654;</span>A&#8217;s DB ✓</div>
+        <div class="gantt-event-dot" style="left:55%;color:#00cec9"><span style="color:#00cec9">&#9654;</span>A&#8217;s DB ✓</div>
         <div class="gantt-event-dot" style="left:73%"><span style="color:#0984e3">&#9654;</span>B&#8217;s API ✓</div>
         <div class="gantt-event-dot" style="left:91%"><span style="color:#6c5ce7">&#9654;</span>C&#8217;s DB ✓</div>
       </div>
@@ -389,7 +389,7 @@ const bodyHtml = `
       <div class="bp-label" style="right:0.3rem;bottom:0.3rem">5s</div>
     </div>
     <p style="font-size:0.75rem;color:#d63031;margin-top:0.625rem">Request B can't even start until A unblocks.</p>
-    <div style="font-family:'Fira Code',monospace;font-size:0.6rem;margin-top:0.5rem;text-align:center;color:#b2818080">1 request = 1 frozen thread = everyone waits</div>
+    <div style="font-family:'Fira Code',monospace;font-size:0.6rem;margin-top:0.5rem;text-align:center;color:#d63031">1 request = 1 frozen thread = everyone waits</div>
   </div>
   <div class="block-panel bp-good">
     <div class="bp-title">&#9989; NON-BLOCKING</div>
