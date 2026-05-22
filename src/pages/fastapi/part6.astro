@@ -1,0 +1,855 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { fastapiSeries } from '../../data/series';
+const inlineStyle = `
+::selection{background:#00b894;color:#fff}
+
+.part6-hero{background:linear-gradient(135deg,#00b894 0%,#6c5ce7 60%,#e84393 100%)}
+
+.part6-num{color:#00b894;background:#e8f8f5}
+
+/* ── Hero Art: Magic Brackets ── */
+.magic-art{margin:2.5rem auto 0;position:relative;width:14rem;height:14rem;display:flex;align-items:center;justify-content:center;animation:fadeInUp 1.5s ease}
+.magic-brackets{font-family:'Fira Code',monospace;font-size:5rem;font-weight:700;color:rgba(255,255,255,0.95);letter-spacing:0.5rem;line-height:1;text-shadow:0 0 2.5rem rgba(255,255,255,0.4)}
+.magic-sparkle{position:absolute;font-size:1.1rem;color:rgba(255,255,255,0.9)}
+.sp1{top:0.5rem;left:1.5rem;animation:sparklePulse 2.2s ease-in-out infinite}
+.sp2{top:0.25rem;right:1.25rem;animation:sparklePulse 1.8s ease-in-out infinite 0.4s}
+.sp3{bottom:1.5rem;left:0.5rem;animation:sparklePulse 2.5s ease-in-out infinite 0.8s}
+.sp4{bottom:0.5rem;right:1.75rem;animation:sparklePulse 2s ease-in-out infinite 1.2s}
+.sp5{top:50%;left:-0.25rem;animation:sparklePulse 1.9s ease-in-out infinite 0.6s}
+.sp6{top:50%;right:-0.25rem;animation:sparklePulse 2.3s ease-in-out infinite 1s}
+.sp7{top:1.75rem;left:50%;animation:sparklePulse 2.1s ease-in-out infinite 1.5s}
+.sp8{bottom:1.25rem;left:50%;animation:sparklePulse 1.7s ease-in-out infinite 0.2s}
+@keyframes sparklePulse{0%,100%{opacity:0.25;transform:scale(0.7)}50%{opacity:1;transform:scale(1.3)}}
+.hero-label-text{font-family:'Fira Code',monospace;font-size:0.75rem;color:rgba(255,255,255,0.6);letter-spacing:0.125rem;text-align:center;margin-top:0.75rem}
+
+/* ── Three pillars grid ── */
+.pillar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;max-width:50rem;margin:2rem auto;padding:0 1.5rem}
+.pillar-card{background:#2d3436;border-radius:1rem;padding:1.5rem;text-align:center;transition:transform 0.3s}
+.pillar-card:hover{transform:translateY(-0.25rem)}
+.pillar-icon{font-size:2rem;margin-bottom:0.75rem}
+.pillar-num{font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;padding:0.25rem 0.625rem;border-radius:0.375rem;display:inline-block;margin-bottom:0.5rem;letter-spacing:0.0625rem}
+.pn-green{background:rgba(0,184,148,0.2);color:#55efc4;border:0.0625rem solid rgba(0,184,148,0.3)}
+.pn-purple{background:rgba(108,92,231,0.2);color:#a29bfe;border:0.0625rem solid rgba(108,92,231,0.3)}
+.pn-pink{background:rgba(232,67,147,0.2);color:#fd79a8;border:0.0625rem solid rgba(232,67,147,0.3)}
+.pillar-title{font-size:0.9rem;font-weight:800;color:#dfe6e9;margin-bottom:0.5rem}
+.pillar-desc{font-size:0.75rem;color:#636e72;line-height:1.5}
+@media(max-width:37.5rem){.pillar-grid{grid-template-columns:1fr}}
+
+/* ── Param source table ── */
+.param-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:0.92rem}
+.param-table th{background:#e8f8f5;color:#00b894;font-family:'Fira Code',monospace;font-size:0.75rem;font-weight:700;padding:0.75rem 1rem;text-align:left;border-bottom:0.125rem solid #b8f0e0}
+.param-table td{padding:0.75rem 1rem;border-bottom:0.0625rem solid #eee;color:#555;vertical-align:top}
+.param-table tr:last-child td{border-bottom:none}
+.param-table tr:hover td{background:#f8fffe}
+.param-table code{font-family:'Fira Code',monospace;font-size:0.82rem;background:#f0efff;color:#6c5ce7;padding:0.125rem 0.375rem;border-radius:0.25rem}
+
+/* ── Validation gate flow ── */
+.gate-diagram{max-width:40rem;margin:2rem auto;padding:0 1.5rem}
+.gate-box{background:#2d3436;border-radius:1rem;padding:1.25rem 1.5rem;text-align:center;font-family:'Fira Code',monospace;font-size:0.85rem;font-weight:700;color:#dfe6e9}
+.gate-label{font-size:0.65rem;font-weight:700;letter-spacing:0.09375rem;text-transform:uppercase;color:#636e72;margin-top:0.25rem}
+.gate-arrow-down{text-align:center;font-size:1.25rem;color:#6c5ce7;padding:0.25rem 0;animation:arrowPulse 2s ease infinite}
+.gate-decision{background:rgba(108,92,231,0.15);border:0.125rem solid rgba(108,92,231,0.4);border-radius:1rem;padding:1rem 1.5rem;text-align:center;font-weight:800;font-size:0.9rem;color:#a29bfe;margin:0.5rem 0}
+.gate-branch{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:0.5rem}
+.gate-success{background:#e8f8f5;border:0.125rem solid #b8f0e0;border-radius:1rem;padding:1rem;text-align:center}
+.gate-success .gate-label-big{font-weight:800;color:#00b894;font-size:0.9rem}
+.gate-success .gate-sublabel{font-size:0.75rem;color:#636e72;margin-top:0.25rem}
+.gate-error{background:#ffe0e0;border:0.125rem solid #fab1a0;border-radius:1rem;padding:1rem;text-align:center}
+.gate-error .gate-label-big{font-weight:800;color:#d63031;font-size:0.9rem}
+.gate-error .gate-sublabel{font-size:0.75rem;color:#636e72;margin-top:0.25rem}
+@media(max-width:37.5rem){.gate-branch{grid-template-columns:1fr}}
+
+/* ── Dependency tree visual ── */
+.dep-tree{max-width:32rem;margin:2rem auto;padding:0 1.5rem}
+.dep-node{font-family:'Fira Code',monospace;font-size:0.82rem;font-weight:700;padding:0.625rem 1rem;border-radius:0.625rem;margin-bottom:0.25rem;display:flex;align-items:center;gap:0.75rem}
+.dep-node-endpoint{background:rgba(0,184,148,0.15);border:0.125rem solid rgba(0,184,148,0.4);color:#55efc4}
+.dep-node-dep{background:rgba(108,92,231,0.15);border:0.125rem solid rgba(108,92,231,0.4);color:#a29bfe}
+.dep-node-scheme{background:rgba(232,67,147,0.15);border:0.125rem solid rgba(232,67,147,0.4);color:#fd79a8}
+.dep-indent{margin-left:2.5rem}
+.dep-indent2{margin-left:5rem}
+.dep-connector{display:flex;align-items:center;gap:0.5rem;margin-left:1.5rem;margin-bottom:0.25rem}
+.dep-connector-line{width:0.125rem;height:1.25rem;background:#636e72;margin-left:1.5rem}
+.dep-label{font-size:0.65rem;font-weight:700;letter-spacing:0.0625rem;text-transform:uppercase;color:#636e72;padding:0.125rem 0.5rem;background:#f8f8f8;border-radius:0.375rem}
+
+/* ── Full pipeline vertical flow ── */
+.pipeline{max-width:36rem;margin:2rem auto;padding:0 1.5rem}
+.pipeline-step{display:flex;align-items:flex-start;gap:1rem;margin-bottom:0.25rem}
+.pipeline-dot{width:2.5rem;height:2.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;flex-shrink:0;margin-top:0.125rem}
+.pd-green{background:#e8f8f5;color:#00b894;border:0.125rem solid #b8f0e0}
+.pd-purple{background:#f0efff;color:#6c5ce7;border:0.125rem solid #d5ccff}
+.pd-orange{background:#fef5e7;color:#e17055;border:0.125rem solid #fdd9b5}
+.pd-red{background:#ffe0e0;color:#d63031;border:0.125rem solid #fab1a0}
+.pd-pink{background:rgba(232,67,147,0.1);color:#e84393;border:0.125rem solid rgba(232,67,147,0.3)}
+.pd-dark{background:#2d3436;color:#dfe6e9;border:0.125rem solid #636e72}
+.pipeline-content{padding-top:0.25rem;padding-bottom:0.75rem;flex:1}
+.pipeline-title{font-weight:800;font-size:0.95rem;color:#2d3436;margin-bottom:0.25rem}
+.pipeline-desc{font-size:0.82rem;color:#636e72;line-height:1.5}
+.pipeline-connector{width:0.125rem;height:1.25rem;background:linear-gradient(180deg,#6c5ce7,#00b894);border-radius:0.125rem;margin-left:1.25rem;margin-bottom:0.25rem}
+
+/* ── Recap cards ── */
+.recap-grid{display:grid;gap:1rem;margin-top:1.25rem}
+.recap-item{padding:1.25rem 1.5rem;border-radius:0.875rem}
+.ri-green{background:#e8f8f5;border-left:0.25rem solid #00b894}
+.ri-green strong{color:#00b894}
+.ri-blue{background:#e3f2fd;border-left:0.25rem solid #0984e3}
+.ri-blue strong{color:#0984e3}
+.ri-purple{background:#f0efff;border-left:0.25rem solid #6c5ce7}
+.ri-purple strong{color:#6c5ce7}
+.ri-orange{background:#fef5e7;border-left:0.25rem solid #e17055}
+.ri-orange strong{color:#e17055}
+.ri-pink{background:#ffeef7;border-left:0.25rem solid #e84393}
+.ri-pink strong{color:#e84393}
+.ri-teal{background:#e0fafa;border-left:0.25rem solid #00cec9}
+.ri-teal strong{color:#00cec9}
+.ri-dark{background:#f4f4f4;border-left:0.25rem solid #2d3436}
+.ri-dark strong{color:#2d3436}
+
+/* ── Quiz theming: Episode 6 ── */
+.quiz-ep6 .quiz-q-num{color:#00b894;background:#e8f8f5}
+.quiz-ep6 .quiz-reveal-btn{color:#00b894}
+.quiz-ep6 .quiz-opt-letter{color:#00b894}
+.quiz-ep6 .quiz-option:hover{border-color:#00b894;background:#f0fdf9}
+.quiz-ep6 .quiz-answer-highlight{background:#e8f8f5;border-left:0.25rem solid #00b894}
+.quiz-ep6 .quiz-sequence-item:hover{border-color:#00b894;background:#f0fdf9}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero part6-hero">
+  <div class="hero-badge">Episode 6 of 7</div>
+  <h1>FastAPI's Magic —<br>Routing, Validation &amp; Docs</h1>
+  <p style="color:rgba(255,255,255,0.95)">Uvicorn handles the HTTP. The event loop handles concurrency. But what does FastAPI itself actually do? Here's how routing, Pydantic validation, dependency injection, and auto-generated docs work under the hood.</p>
+
+  <div class="magic-art">
+    <span class="magic-sparkle sp1">✦</span>
+    <span class="magic-sparkle sp2">✦</span>
+    <span class="magic-sparkle sp3">✦</span>
+    <span class="magic-sparkle sp4">✦</span>
+    <span class="magic-sparkle sp5">✦</span>
+    <span class="magic-sparkle sp6">✦</span>
+    <span class="magic-sparkle sp7">✦</span>
+    <span class="magic-sparkle sp8">✦</span>
+    <div class="magic-brackets">{ }</div>
+  </div>
+  <div class="hero-label-text">type hints → validation, routing &amp; docs</div>
+</section>
+
+<!-- SECTION 01: WHAT FASTAPI DOES -->
+<section class="section reveal">
+  <span class="section-num part6-num">01</span>
+  <h2>What FastAPI Actually Does</h2>
+  <p>When a request arrives, Uvicorn has already done the hard part: parsed the raw HTTP bytes, created the ASGI scope dict, and handed it off. At that point, FastAPI takes over.</p>
+  <p>FastAPI sits on top of <span class="highlight">Starlette</span> (which handles routing, middleware, and request/response objects) and adds three things that Starlette doesn't give you:</p>
+</section>
+
+<div class="pillar-grid reveal">
+  <div class="pillar-card">
+    <div class="pillar-icon">&#9989;</div>
+    <span class="pillar-num pn-green">01</span>
+    <div class="pillar-title">Automatic Validation</div>
+    <div class="pillar-desc">You write <code style="font-family:'Fira Code',monospace;color:#55efc4">user_id: int</code> and FastAPI ensures the value is an integer before your function ever runs. Wrong type? 422 error, automatically.</div>
+    <div style="font-family:'Fira Code',monospace;font-size:0.6rem;color:#55efc4;margin-top:0.5rem">your type hints → automatic input guards</div>
+  </div>
+  <div class="pillar-card">
+    <div class="pillar-icon">&#128279;</div>
+    <span class="pillar-num pn-purple">02</span>
+    <div class="pillar-title">Dependency Injection</div>
+    <div class="pillar-desc">You write <code style="font-family:'Fira Code',monospace;color:#a29bfe">Depends(get_current_user)</code> and FastAPI runs that function first, resolves its result, and passes it to your endpoint. Dependencies can depend on other dependencies.</div>
+    <div style="font-family:'Fira Code',monospace;font-size:0.6rem;color:#a29bfe;margin-top:0.5rem">declare what you need → FastAPI resolves it</div>
+  </div>
+  <div class="pillar-card">
+    <div class="pillar-icon">&#128196;</div>
+    <span class="pillar-num pn-pink">03</span>
+    <div class="pillar-title">Auto-Generated Docs</div>
+    <div class="pillar-desc">FastAPI reads your routes, type hints, and models, then generates a live Swagger UI at <code style="font-family:'Fira Code',monospace;color:#fd79a8">/docs</code> and ReDoc at <code style="font-family:'Fira Code',monospace;color:#fd79a8">/redoc</code>. Zero extra code.</div>
+    <div style="font-family:'Fira Code',monospace;font-size:0.6rem;color:#fd79a8;margin-top:0.5rem">your code IS the documentation</div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>These three features are why FastAPI exists. Starlette is fast and clean, but you'd have to build validation, dependency resolution, and doc generation yourself. FastAPI does all three for you — at declaration time — from the exact same type hints you'd write anyway.</p>
+</section>
+
+<div class="analogy reveal">
+  <p>Think of Starlette as a well-built car engine. It runs, it's efficient, but you still need to add the dashboard, GPS, and safety systems. <strong>FastAPI is the full car</strong> — the engine is Starlette, but the things that make it usable day-to-day are what FastAPI adds on top.</p>
+</div>
+
+<!-- SECTION 02: ROUTING -->
+<section class="section reveal">
+  <span class="section-num part6-num">02</span>
+  <h2>Routing — How FastAPI Finds Your Function</h2>
+  <p>When your FastAPI app starts up, every decorated function gets registered as a route:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">from</span> fastapi <span class="code-keyword">import</span> FastAPI
+
+app = FastAPI()
+
+<span class="code-keyword">@app.get</span>(<span class="code-string">"/users/{user_id}"</span>)
+<span class="code-keyword">async def</span> <span class="code-string">get_user</span>(user_id: int):
+    <span class="code-keyword">return</span> {<span class="code-string">"user_id"</span>: user_id}</pre>
+  </div>
+
+  <p>That <code>@app.get(...)</code> call isn't magic — it calls Starlette's router and registers an entry that maps <code>GET + /users/{user_id}</code> to your function. FastAPI wraps Starlette's router and adds its own metadata on top: validation rules, response model, doc strings.</p>
+  <p>When a request comes in:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">Incoming request: GET /users/42</span>
+
+<span class="code-comment">Router scans registered routes:</span>
+  <span class="code-keyword">GET</span>  /health          <span class="code-arrow">→</span> <span class="code-string">no match</span>
+  <span class="code-keyword">POST</span> /users           <span class="code-arrow">→</span> <span class="code-string">wrong method</span>
+  <span class="code-keyword">GET</span>  /users/{user_id} <span class="code-arrow">→</span> <span class="code-string">MATCH ✓</span>
+
+<span class="code-comment">Path parameter extracted: user_id = "42" (still a string at this point)</span></pre>
+  </div>
+
+  <p>Starlette handles the actual pattern matching — including extracting path parameters from <code>{user_id}</code> segments. FastAPI then takes the extracted values and runs them through validation before passing them to your function.</p>
+  <p>The router is built <span class="highlight-green">once at startup</span>. There's no scanning on every request — it compiles the route table into an efficient lookup structure so matching is fast.</p>
+</section>
+
+<!-- SECTION 03: PYDANTIC VALIDATION -->
+<section class="section reveal">
+  <span class="section-num part6-num">03</span>
+  <h2>Pydantic — Validation From Type Hints</h2>
+  <p>This is the centerpiece of FastAPI. You define a model using <span class="highlight">Pydantic</span>:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">from</span> pydantic <span class="code-keyword">import</span> BaseModel
+
+<span class="code-keyword">class</span> <span class="code-string">Item</span>(BaseModel):
+    name: str
+    price: float
+    in_stock: bool</pre>
+  </div>
+
+  <p>And use it in an endpoint:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">@app.post</span>(<span class="code-string">"/items"</span>)
+<span class="code-keyword">async def</span> <span class="code-string">create_item</span>(item: Item):
+    <span class="code-keyword">return</span> item</pre>
+  </div>
+
+  <p>When a request hits <code>POST /items</code>, here's what happens before your function runs. With a coercible input:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">Request body (raw JSON):</span>
+{
+  <span class="code-string">"name"</span>: <span class="code-string">"Widget"</span>,
+  <span class="code-string">"price"</span>: <span class="code-string">"9.99"</span>,   <span class="code-arrow"> ← this is a string, not a float</span>
+  <span class="code-string">"in_stock"</span>: true
+}
+
+<span class="code-comment">Pydantic receives this dict and tries to construct Item(...)</span>
+
+<span class="code-string">"price"</span>  is str <span class="code-arrow">→</span> Pydantic coerces <span class="code-string">"9.99"</span> → 9.99 (float) ✓
+<span class="code-string">"name"</span>   is str <span class="code-arrow">→</span> already correct ✓
+<span class="code-string">"in_stock"</span> is bool <span class="code-arrow">→</span> already correct ✓
+
+<span class="code-comment">Item constructed successfully → passed to your function</span></pre>
+  </div>
+
+  <p>Pydantic is lenient where it can be. A string <code>"9.99"</code> becomes a float <code>9.99</code>. A string <code>"true"</code> becomes a boolean <code>True</code>. These are safe coercions — the type is wrong but the meaning is unambiguous.</p>
+  <p>Now try sending something that can't be coerced:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">Request body:</span>
+{
+  <span class="code-string">"name"</span>: <span class="code-string">"Widget"</span>,
+  <span class="code-string">"price"</span>: <span class="code-string">"not-a-number"</span>,
+  <span class="code-string">"in_stock"</span>: true
+}
+
+<span class="code-comment">Pydantic tries: float("not-a-number") → fails</span>
+
+<span class="code-comment">FastAPI catches the validation error</span>
+<span class="code-string">Your function is NEVER called</span>
+<span class="code-comment">Response returned immediately:</span></pre>
+  </div>
+
+  <div class="code-block">
+    <pre><span class="code-comment">HTTP 422 Unprocessable Entity</span>
+
+{
+  <span class="code-string">"detail"</span>: [
+    {
+      <span class="code-string">"type"</span>: <span class="code-string">"float_parsing"</span>,
+      <span class="code-string">"loc"</span>: [<span class="code-string">"body"</span>, <span class="code-string">"price"</span>],
+      <span class="code-string">"msg"</span>: <span class="code-string">"Input should be a valid number, unable to parse string as a number"</span>,
+      <span class="code-string">"input"</span>: <span class="code-string">"not-a-number"</span>
+    }
+  ]
+}</pre>
+  </div>
+
+  <p>The 422 is generated by FastAPI's exception handler. It tells the caller exactly what's wrong and where — field name, location (body/query/path), and why it failed. Your function never ran.</p>
+  <p>This is the key insight: <strong>validation is a gate, not a check inside your function.</strong> You don't write <code>if not isinstance(price, float): raise ...</code> — Pydantic does it before you even see the request.</p>
+</section>
+
+<div class="gate-diagram reveal">
+  <div class="gate-box">Incoming Request<div class="gate-label">raw HTTP body arrives</div></div>
+  <div class="gate-arrow-down">&#8595;</div>
+  <div style="font-family:'Fira Code',monospace;font-size:0.6rem;color:#636e72;text-align:center;padding:0.125rem 0">types extracted from function signature</div>
+  <div class="gate-decision">&#128272; Pydantic Validation Gate</div>
+  <div class="gate-arrow-down">&#8595;</div>
+  <div style="font-family:'Fira Code',monospace;font-size:0.6rem;color:#636e72;text-align:center;padding:0.125rem 0">coerce → validate → pass or reject</div>
+  <div class="gate-branch">
+    <div class="gate-success">
+      <div style="font-size:1.5rem;margin-bottom:0.375rem">&#10003;</div>
+      <div class="gate-label-big">Valid — passes through</div>
+      <div class="gate-sublabel">Types coerced if needed<br>Your function runs</div>
+    </div>
+    <div class="gate-error">
+      <div style="font-size:1.5rem;margin-bottom:0.375rem">&#10007;</div>
+      <div class="gate-label-big">Invalid — 422 returned</div>
+      <div class="gate-sublabel">Exact field + reason<br>Your function never runs</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 04: PATH / QUERY / BODY PARAMS -->
+<section class="section reveal">
+  <span class="section-num part6-num">04</span>
+  <h2>Path Params, Query Params, Request Body</h2>
+  <p>FastAPI decides where each piece of data comes from based entirely on your function signature. You don't decorate parameters or use special wrappers — you just write a normal function and FastAPI figures it out.</p>
+
+  <table class="param-table">
+    <thead>
+      <tr>
+        <th>Source</th>
+        <th>How FastAPI recognizes it</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Path parameter</strong></td>
+        <td>Name appears in the path string: <code>"/users/{user_id}"</code></td>
+      </tr>
+      <tr>
+        <td><strong>Query parameter</strong></td>
+        <td>Function param not in the path and not a Pydantic model</td>
+      </tr>
+      <tr>
+        <td><strong>Request body</strong></td>
+        <td>Parameter is a Pydantic <code>BaseModel</code> subclass</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Here's a single endpoint that uses all three:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">from</span> pydantic <span class="code-keyword">import</span> BaseModel
+
+<span class="code-keyword">class</span> <span class="code-string">ItemUpdate</span>(BaseModel):
+    name: str
+    price: float
+
+<span class="code-keyword">@app.put</span>(<span class="code-string">"/users/{user_id}/items/{item_id}"</span>)
+<span class="code-keyword">async def</span> <span class="code-string">update_item</span>(
+    user_id: int,          <span class="code-comment"># ← path param (in URL)</span>
+    item_id: int,          <span class="code-comment"># ← path param (in URL)</span>
+    notify: bool = False,  <span class="code-comment"># ← query param (?notify=true)</span>
+    item: ItemUpdate,      <span class="code-comment"># ← request body (JSON)</span>
+):
+    <span class="code-keyword">return</span> {
+        <span class="code-string">"user_id"</span>: user_id,
+        <span class="code-string">"item_id"</span>: item_id,
+        <span class="code-string">"notify"</span>: notify,
+        <span class="code-string">"item"</span>: item,
+    }</pre>
+  </div>
+
+  <p>A request to <code>PUT /users/3/items/7?notify=true</code> with a JSON body of <code>{"name": "Gadget", "price": 19.99}</code> maps like this:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">URL path</span>     <span class="code-arrow">→</span> user_id = 3, item_id = 7
+<span class="code-keyword">Query string</span> <span class="code-arrow">→</span> notify = True
+<span class="code-keyword">JSON body</span>    <span class="code-arrow">→</span> item = ItemUpdate(name=<span class="code-string">"Gadget"</span>, price=19.99)</pre>
+  </div>
+
+  <p>All four parameters are validated, coerced to the right types, and passed to your function. If any fail, you get a 422 with the exact field and reason.</p>
+</section>
+
+<div class="analogy reveal">
+  <p>Think of your function signature as a form. FastAPI reads the form, sees which fields are labeled "from the URL," which are "from the query string," and which are "from the body," and fills each one in from the right place. <strong>You write the form once; FastAPI does the filling.</strong></p>
+</div>
+
+<!-- SECTION 05: DEPENDENCY INJECTION -->
+<section class="section reveal">
+  <span class="section-num part6-num">05</span>
+  <h2>Dependency Injection — <code style="font-size:1.4rem">Depends()</code> Explained</h2>
+  <p>Dependencies solve a common problem: some logic needs to run before your endpoint, every time, and you don't want to copy-paste it everywhere.</p>
+  <p>A dependency is just a function. You tell FastAPI to run it first with <code>Depends()</code>:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">from</span> fastapi <span class="code-keyword">import</span> Depends, HTTPException
+<span class="code-keyword">from</span> fastapi.security <span class="code-keyword">import</span> HTTPBearer
+
+bearer_scheme = HTTPBearer()
+
+<span class="code-keyword">async def</span> <span class="code-string">get_current_user</span>(token = Depends(bearer_scheme)):
+    <span class="code-comment"># token.credentials is the raw JWT string</span>
+    user = verify_jwt(token.credentials)
+    <span class="code-keyword">if</span> user <span class="code-keyword">is</span> None:
+        <span class="code-keyword">raise</span> HTTPException(status_code=401, detail=<span class="code-string">"Invalid token"</span>)
+    <span class="code-keyword">return</span> user
+
+<span class="code-keyword">@app.get</span>(<span class="code-string">"/me"</span>)
+<span class="code-keyword">async def</span> <span class="code-string">get_profile</span>(current_user = Depends(get_current_user)):
+    <span class="code-keyword">return</span> {<span class="code-string">"user"</span>: current_user}</pre>
+  </div>
+
+  <p>When a request hits <code>GET /me</code>, FastAPI walks the dependency chain from the bottom up:</p>
+</section>
+
+<div class="dep-tree reveal">
+  <div style="font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;color:#636e72;margin-bottom:0.75rem;letter-spacing:0.0625rem">DEPENDENCY RESOLUTION ORDER ↓</div>
+  <div class="dep-node dep-node-endpoint">
+    <span style="font-size:1rem">&#9654;</span>
+    <div>
+      <div>get_profile( )</div>
+      <div style="font-size:0.7rem;color:#636e72;margin-top:0.125rem">your endpoint — runs last</div>
+    </div>
+  </div>
+  <div class="dep-connector-line"></div>
+  <div class="dep-node dep-indent dep-node-dep">
+    <span style="font-size:0.9rem">&#9135;</span>
+    <div>
+      <div>get_current_user( ) <span class="dep-label">Depends</span></div>
+      <div style="font-size:0.7rem;color:#636e72;margin-top:0.125rem">verifies JWT, returns user dict</div>
+    </div>
+  </div>
+  <div class="dep-connector-line" style="margin-left:3.75rem"></div>
+  <div class="dep-node dep-indent2 dep-node-scheme">
+    <span style="font-size:0.9rem">&#9135;</span>
+    <div>
+      <div>bearer_scheme( ) <span class="dep-label">Depends</span></div>
+      <div style="font-size:0.7rem;color:#636e72;margin-top:0.125rem">extracts Authorization header → token object</div>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>This is the dependency tree: FastAPI walks the <code>Depends()</code> chain, resolves them from the bottom up, and passes results upward. A dependency that raises an <code>HTTPException</code> short-circuits everything — your endpoint never runs.</p>
+
+  <h3 style="margin-top:2rem;font-size:1.2rem;color:#00b894">Common uses of dependencies</h3>
+
+  <div class="info-grid" style="padding:0">
+    <div class="info-card ic-green">
+      <h4 style="color:#00b894">Database sessions</h4>
+      <p>Open a session before the endpoint, close it after (using <code>yield</code>)</p>
+    </div>
+    <div class="info-card ic-purple" style="background:#f0efff;border-color:#d5ccff">
+      <h4 style="color:#6c5ce7">Current user</h4>
+      <p>Extract and validate identity from a JWT token</p>
+    </div>
+    <div class="info-card ic-orange">
+      <h4 style="color:#e17055">Pagination params</h4>
+      <p>Parse <code>page</code> and <code>size</code> query params once, reuse across dozens of endpoints</p>
+    </div>
+    <div class="info-card" style="background:#ffeef7;border:0.125rem solid rgba(232,67,147,0.3)">
+      <h4 style="color:#e84393">Feature flags</h4>
+      <p>Check config before allowing access to a route</p>
+    </div>
+  </div>
+
+  <p style="margin-top:2rem">The <code>yield</code>-based dependency is FastAPI's answer to resource management:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">async def</span> <span class="code-string">get_db</span>():
+    db = SessionLocal()
+    <span class="code-keyword">try</span>:
+        <span class="code-keyword">yield</span> db          <span class="code-comment"># ← yields the session to the endpoint</span>
+    <span class="code-keyword">finally</span>:
+        db.close()        <span class="code-comment"># ← always runs after the endpoint returns</span>
+
+<span class="code-keyword">@app.get</span>(<span class="code-string">"/users"</span>)
+<span class="code-keyword">async def</span> <span class="code-string">list_users</span>(db = Depends(get_db)):
+    <span class="code-keyword">return</span> db.query(User).all()</pre>
+  </div>
+
+  <p>Acquire before, release after, guaranteed. Even if your endpoint raises an exception, the <code>finally</code> block runs and the session closes cleanly.</p>
+</section>
+
+<div class="analogy reveal">
+  <p>Dependencies are like mise en place in cooking. Before the chef starts cooking (your function), the kitchen has already chopped the vegetables, measured the spices, and pre-heated the oven (dependencies ran). <strong>The chef just cooks.</strong> If any prep step fails — out of an ingredient, wrong temperature — the dish never gets made.</p>
+</div>
+
+<!-- SECTION 06: AUTO-GENERATED DOCS -->
+<section class="section reveal">
+  <span class="section-num part6-num">06</span>
+  <h2>Auto-Generated OpenAPI Docs</h2>
+  <p>One of the most impressive things FastAPI does is generate complete API documentation with zero extra code. Start any FastAPI app and visit <code>/docs</code> — you get a live Swagger UI. Visit <code>/redoc</code> — you get ReDoc. Both are generated from a single JSON file at <code>/openapi.json</code>.</p>
+  <p>FastAPI builds that JSON at startup by inspecting every registered route:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">For each route, FastAPI reads:</span>
+  <span class="code-arrow">→</span> HTTP method (GET, POST, PUT, DELETE...)
+  <span class="code-arrow">→</span> URL path and path parameters
+  <span class="code-arrow">→</span> Function parameters and their types
+  <span class="code-arrow">→</span> Pydantic models (for request bodies and responses)
+  <span class="code-arrow">→</span> Docstrings (become descriptions in the docs)
+  <span class="code-arrow">→</span> response_model (if specified)
+  <span class="code-arrow">→</span> status_code (if specified)</pre>
+  </div>
+
+  <p>Here's what that looks like in practice:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">class</span> <span class="code-string">UserResponse</span>(BaseModel):
+    id: int
+    name: str
+    email: str
+
+<span class="code-keyword">@app.get</span>(
+    <span class="code-string">"/users/{user_id}"</span>,
+    response_model=UserResponse,
+    status_code=200,
+    summary=<span class="code-string">"Get a user by ID"</span>,
+    tags=[<span class="code-string">"users"</span>],
+)
+<span class="code-keyword">async def</span> <span class="code-string">get_user</span>(user_id: int):
+    <span class="code-string">"""
+    Retrieve a single user by their unique ID.
+
+    - **user_id**: The integer ID of the user to fetch
+    """</span>
+    <span class="code-keyword">return</span> fetch_user_from_db(user_id)</pre>
+  </div>
+
+  <p>The docs know everything:</p>
+
+  <div class="info-grid" style="padding:0">
+    <div class="info-card ic-green">
+      <h4 style="color:#00b894">Parameters</h4>
+      <p><code>user_id</code> is a required integer in the path — shown in the UI with an example input box.</p>
+    </div>
+    <div class="info-card ic-purple" style="background:#f0efff;border-color:#d5ccff">
+      <h4 style="color:#6c5ce7">Response schema</h4>
+      <p>The response is a <code>UserResponse</code> object with <code>id</code>, <code>name</code>, <code>email</code>.</p>
+    </div>
+    <div class="info-card ic-orange">
+      <h4 style="color:#e17055">Description</h4>
+      <p>Comes from the docstring — formatted Markdown, rendered in Swagger UI.</p>
+    </div>
+    <div class="info-card" style="background:#ffeef7;border:0.125rem solid rgba(232,67,147,0.3)">
+      <h4 style="color:#e84393">Status codes</h4>
+      <p>200 success (explicit) and 422 validation error (FastAPI adds automatically).</p>
+    </div>
+  </div>
+
+  <p style="margin-top:1.5rem">The Swagger UI at <code>/docs</code> lets you send real requests directly from the browser — fill in the form, hit Execute, see the response. It's a live client that auto-builds itself from your code.</p>
+
+  <p>This is not cosmetic. It means your code and your docs <span class="highlight-green">can never drift apart</span> — they're the same thing. The type hints that drive validation also drive the documentation.</p>
+</section>
+
+<!-- SECTION 07: MIDDLEWARE -->
+<section class="section reveal">
+  <span class="section-num part6-num">07</span>
+  <h2>Middleware — The Pipeline Before Your Function</h2>
+  <p>Middleware is code that runs for every request, before routing even happens. It wraps the entire request/response cycle.</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">from</span> fastapi.middleware.cors <span class="code-keyword">import</span> CORSMiddleware
+<span class="code-keyword">import</span> time
+
+<span class="code-comment"># Add CORS middleware</span>
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[<span class="code-string">"https://myapp.com"</span>],
+    allow_methods=[<span class="code-string">"*"</span>],
+    allow_headers=[<span class="code-string">"*"</span>],
+)
+
+<span class="code-comment"># Custom timing middleware</span>
+<span class="code-keyword">@app.middleware</span>(<span class="code-string">"http"</span>)
+<span class="code-keyword">async def</span> <span class="code-string">add_timing_header</span>(request, call_next):
+    start = time.time()
+    response = <span class="code-keyword">await</span> call_next(request)   <span class="code-comment"># ← runs the rest of the stack</span>
+    duration = time.time() - start
+    response.headers[<span class="code-string">"X-Process-Time"</span>] = str(duration)
+    <span class="code-keyword">return</span> response</pre>
+  </div>
+
+  <p>Middleware forms a pipeline — each layer wraps the next one. The outermost middleware runs first on the way in and last on the way out:</p>
+</section>
+
+<div class="reveal" style="max-width:50rem;margin:0 auto;padding:0 1.5rem">
+  <div class="flow" style="flex-direction:column;gap:0.375rem">
+    <div class="flow-box fb-dark" style="width:100%;max-width:28rem;margin:0 auto">Request &#8594; Timing middleware <small style="display:block;font-weight:400;font-size:0.78rem;margin-top:0.25rem">start timer</small></div>
+    <div class="flow-arrow" style="transform:rotate(90deg)">&#10132;</div>
+    <div class="flow-box fb-orange" style="width:100%;max-width:28rem;margin:0 auto">CORS middleware <small style="display:block;font-weight:400;font-size:0.78rem;margin-top:0.25rem">check origin, add headers</small></div>
+    <div class="flow-arrow" style="transform:rotate(90deg)">&#10132;</div>
+    <div class="flow-box fb-green" style="width:100%;max-width:28rem;margin:0 auto">Router + your endpoint <small style="display:block;font-weight:400;font-size:0.78rem;margin-top:0.25rem">does the actual work</small></div>
+    <div class="flow-arrow" style="transform:rotate(90deg)">&#10132;</div>
+    <div class="flow-box fb-orange" style="width:100%;max-width:28rem;margin:0 auto">CORS middleware <small style="display:block;font-weight:400;font-size:0.78rem;margin-top:0.25rem">nothing more to do</small></div>
+    <div class="flow-arrow" style="transform:rotate(90deg)">&#10132;</div>
+    <div class="flow-box fb-dark" style="width:100%;max-width:28rem;margin:0 auto">Timing middleware &#8592; Response <small style="display:block;font-weight:400;font-size:0.78rem;margin-top:0.25rem">stop timer, add header</small></div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>The <code>call_next(request)</code> line hands control to the next middleware (or the router). Everything before it runs on the way in; everything after runs on the way out.</p>
+  <p>Starlette implements the middleware pipeline — FastAPI inherits it and lets you plug in as many layers as you need. Common middleware: CORS headers, request logging, auth checks, response compression, rate limiting.</p>
+  <p style="background:#fef5e7;border-left:0.25rem solid #e17055;padding:1rem 1.25rem;border-radius:0.5rem;color:#555"><strong style="color:#e17055">Watch out:</strong> Middleware runs on every request, including static files, the <code>/docs</code> endpoint, and health checks. Keep middleware lean — expensive work here multiplies across all traffic.</p>
+</section>
+
+<!-- SECTION 08: FULL PIPELINE -->
+<section class="section reveal">
+  <span class="section-num part6-num">08</span>
+  <h2>The Full FastAPI Request Pipeline</h2>
+  <p>Here's everything in one picture. A request comes in and travels through every layer we've covered:</p>
+</section>
+
+<div class="pipeline reveal">
+  <div class="pipeline-step">
+    <div class="pipeline-dot pd-dark">IN</div>
+    <div class="pipeline-content">
+      <div class="pipeline-title">Request arrives at Uvicorn</div>
+      <div class="pipeline-desc">Raw TCP bytes parsed into an ASGI scope dict. Handed off to FastAPI.</div>
+    </div>
+  </div>
+  <div class="pipeline-connector"></div>
+  <div style="font-family:'Fira Code',monospace;font-size:0.55rem;color:#888;text-align:center;margin:0.125rem 0 0.125rem 1.25rem">ASGI scope dict passed to app</div>
+
+  <div class="pipeline-step">
+    <div class="pipeline-dot pd-orange">MW</div>
+    <div class="pipeline-content">
+      <div class="pipeline-title">Middleware pipeline (inbound)</div>
+      <div class="pipeline-desc">Timing records start time. CORS checks Origin header, sets response headers. Each middleware runs in the order added.</div>
+    </div>
+  </div>
+  <div class="pipeline-connector"></div>
+  <div style="font-family:'Fira Code',monospace;font-size:0.55rem;color:#888;text-align:center;margin:0.125rem 0 0.125rem 1.25rem">annotated request forwarded to router</div>
+
+  <div class="pipeline-step">
+    <div class="pipeline-dot pd-purple">RT</div>
+    <div class="pipeline-content">
+      <div class="pipeline-title">Starlette router</div>
+      <div class="pipeline-desc">Matches URL path + HTTP method. Extracts raw path parameter strings (still untyped at this point).</div>
+    </div>
+  </div>
+  <div class="pipeline-connector"></div>
+  <div style="font-family:'Fira Code',monospace;font-size:0.55rem;color:#888;text-align:center;margin:0.125rem 0 0.125rem 1.25rem">matched route + raw param strings</div>
+
+  <div class="pipeline-step">
+    <div class="pipeline-dot pd-pink">DI</div>
+    <div class="pipeline-content">
+      <div class="pipeline-title">FastAPI dependency resolution</div>
+      <div class="pipeline-desc">Walks the <code>Depends()</code> tree bottom-up. Runs each dependency in order. Any dependency raises <code>HTTPException</code> → stops here, returns error immediately.</div>
+    </div>
+  </div>
+  <div class="pipeline-connector"></div>
+  <div style="font-family:'Fira Code',monospace;font-size:0.55rem;color:#888;text-align:center;margin:0.125rem 0 0.125rem 1.25rem">resolved dependency values (user, db session…)</div>
+
+  <div class="pipeline-step">
+    <div class="pipeline-dot pd-green">&#10003;</div>
+    <div class="pipeline-content">
+      <div class="pipeline-title">Pydantic validation (input)</div>
+      <div class="pipeline-desc">Coerces path params to declared types. Parses query params with defaults. Deserializes and validates request body against the Pydantic model. Any failure → 422, stops here.</div>
+    </div>
+  </div>
+  <div class="pipeline-connector"></div>
+  <div style="font-family:'Fira Code',monospace;font-size:0.55rem;color:#888;text-align:center;margin:0.125rem 0 0.125rem 1.25rem">typed Python objects, guaranteed clean</div>
+
+  <div class="pipeline-step">
+    <div class="pipeline-dot pd-green">fn</div>
+    <div class="pipeline-content">
+      <div class="pipeline-title">Your function runs</div>
+      <div class="pipeline-desc">Receives clean, validated, typed Python objects. Returns a value — dict, Pydantic model, list, anything JSON-serializable.</div>
+    </div>
+  </div>
+  <div class="pipeline-connector"></div>
+  <div style="font-family:'Fira Code',monospace;font-size:0.55rem;color:#888;text-align:center;margin:0.125rem 0 0.125rem 1.25rem">raw return value (dict, model, list…)</div>
+
+  <div class="pipeline-step">
+    <div class="pipeline-dot pd-green">&#10003;</div>
+    <div class="pipeline-content">
+      <div class="pipeline-title">Pydantic validation (output)</div>
+      <div class="pipeline-desc">If <code>response_model</code> is set: validates and filters the return value, stripping fields not in the model.</div>
+    </div>
+  </div>
+  <div class="pipeline-connector"></div>
+  <div style="font-family:'Fira Code',monospace;font-size:0.55rem;color:#888;text-align:center;margin:0.125rem 0 0.125rem 1.25rem">filtered, schema-safe response object</div>
+
+  <div class="pipeline-step">
+    <div class="pipeline-dot pd-purple">JS</div>
+    <div class="pipeline-content">
+      <div class="pipeline-title">FastAPI serializes to JSON</div>
+      <div class="pipeline-desc">Sets <code>Content-Type: application/json</code> and the appropriate status code.</div>
+    </div>
+  </div>
+  <div class="pipeline-connector"></div>
+  <div style="font-family:'Fira Code',monospace;font-size:0.55rem;color:#888;text-align:center;margin:0.125rem 0 0.125rem 1.25rem">HTTP response object with JSON body</div>
+
+  <div class="pipeline-step">
+    <div class="pipeline-dot pd-orange">MW</div>
+    <div class="pipeline-content">
+      <div class="pipeline-title">Middleware pipeline (outbound)</div>
+      <div class="pipeline-desc">CORS: nothing left to do. Timing: computes duration, adds <code>X-Process-Time</code> header. Runs in reverse order.</div>
+    </div>
+  </div>
+  <div class="pipeline-connector"></div>
+  <div style="font-family:'Fira Code',monospace;font-size:0.55rem;color:#888;text-align:center;margin:0.125rem 0 0.125rem 1.25rem">response with final headers attached</div>
+
+  <div class="pipeline-step">
+    <div class="pipeline-dot pd-dark">OUT</div>
+    <div class="pipeline-content">
+      <div class="pipeline-title">Uvicorn sends HTTP response</div>
+      <div class="pipeline-desc">Serializes the ASGI response back to raw HTTP bytes over TCP. Done.</div>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>Each layer has one job and hands off to the next. If any layer raises an exception it knows how to handle (validation error, HTTP exception), the pipeline short-circuits and returns an error response. Uvicorn handles the actual bytes in and out. <span class="highlight-green">Your function only ever sees clean, validated, typed Python objects.</span></p>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+
+  <div class="recap-grid">
+    <div class="recap-item ri-green">
+      <strong>FastAPI adds three things on top of Starlette:</strong> automatic validation from type hints, dependency injection, and auto-generated OpenAPI docs. Starlette handles everything else.
+    </div>
+    <div class="recap-item ri-blue">
+      <strong>Routing is handled by Starlette's router</strong> — compiled once at startup, efficient at runtime. FastAPI wraps it with validation metadata and doc generation.
+    </div>
+    <div class="recap-item ri-purple">
+      <strong>Pydantic validates before your function runs</strong> — wrong type → 422 with a detailed error. Safe coercions (string "9.99" → float 9.99) happen silently. Zero boilerplate in your code.
+    </div>
+    <div class="recap-item ri-orange">
+      <strong>FastAPI knows where data comes from</strong> based on your function signature: path params match URL segments, query params are everything else, Pydantic models come from the request body.
+    </div>
+    <div class="recap-item ri-pink">
+      <strong><code>Depends()</code> lets you declare reusable logic</strong> that runs before your endpoint — database sessions, auth checks, shared config. Dependencies can chain; FastAPI resolves the whole tree bottom-up.
+    </div>
+    <div class="recap-item ri-teal">
+      <strong><code>/docs</code> and <code>/redoc</code> are free</strong> — FastAPI generates OpenAPI JSON from your routes and type hints at startup. Your code is your documentation. They can never drift apart.
+    </div>
+    <div class="recap-item ri-dark">
+      <strong>Middleware wraps every request</strong> — runs before routing on the way in, after your function on the way out. Starlette implements the pipeline; FastAPI inherits it.
+    </div>
+    <div class="recap-item ri-green" style="border-left-color:#6c5ce7;background:#f0efff">
+      <strong style="color:#6c5ce7">The full pipeline:</strong> Middleware → Router → Dependencies → Validation → Your function → Output validation → Middleware → Response.
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section class="section reveal quiz-ep6">
+  <span class="section-num part6-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <!-- Q1 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 01</span>
+      <span class="quiz-type-tag">Multiple Choice</span>
+    </div>
+    <p class="quiz-question">At what point does FastAPI register your route handlers — at startup or per request?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Per request — it scans for matching routes each time</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>At startup — when the <code>@app.get()</code> decorator executes</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>At the first request — lazy initialization</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>When Uvicorn calls <code>app(scope, receive, send)</code></button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) At startup — when the <code>@app.get()</code> decorator executes</strong></div>
+        <p class="quiz-answer-text">Decorators like <code>@app.get("/items")</code> run at import time, building an internal routing table. By the time the first request arrives, FastAPI already knows every route, its parameter types, and its dependencies.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 02</span>
+      <span class="quiz-type-tag">True or False</span>
+    </div>
+    <p class="quiz-question">If you change a field in your Pydantic model, the <code>/docs</code> page automatically reflects the change on the next request.</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">A</span>True</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>False</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(A) True</strong></div>
+        <p class="quiz-answer-text">FastAPI generates the OpenAPI schema dynamically from your Python type hints and Pydantic models. There's no separate config file to update. Change the code, restart the server, and <code>/docs</code> shows the new schema instantly.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 03</span>
+      <span class="quiz-type-tag">Multiple Choice</span>
+    </div>
+    <p class="quiz-question">A POST request body doesn't match the expected Pydantic model. What HTTP status code does FastAPI return?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>400 Bad Request</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>404 Not Found</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>422 Unprocessable Entity</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>500 Internal Server Error</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) 422 Unprocessable Entity</strong></div>
+        <p class="quiz-answer-text">FastAPI uses Pydantic to validate the request body <em>before</em> your function runs. If validation fails, it returns a 422 with a detailed JSON error explaining exactly which fields failed and why. Your endpoint code never executes.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 04</span>
+      <span class="quiz-type-tag">Multiple Choice</span>
+    </div>
+    <p class="quiz-question">What happens when a user hits <code>/items/abc</code> with this endpoint?</p>
+    <div class="code-block" style="margin:0 0 1.25rem;max-width:100%">
+      <pre>
+<span class="code-keyword">@app</span>.get(<span class="code-string">"/items/{item_id}"</span>)
+<span class="code-keyword">async def</span> get_item(item_id: <span class="code-keyword">int</span>):
+    <span class="code-keyword">return</span> {<span class="code-string">"item_id"</span>: item_id}</pre>
+    </div>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Returns <code>{"item_id": "abc"}</code> as a string</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Returns a 404 Not Found error</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Returns a 422 validation error — "abc" can't convert to int</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Crashes the server with a TypeError</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) 422 validation error</strong></div>
+        <p class="quiz-answer-text">The type hint <code>item_id: int</code> tells FastAPI to coerce the path parameter to an integer. <code>"abc"</code> can't be converted to <code>int</code>, so Pydantic validation fails before your function runs. The response includes a clear error message: "value is not a valid integer."</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- NEXT EPISODE -->
+<section class="next-part" style="background:linear-gradient(135deg,#00b894,#6c5ce7)">
+  <h2>Ready for Episode 7?</h2>
+  <p>The full production stack — how a real FastAPI deployment looks from DNS to database, where Kubernetes, reverse proxies, and connection pools fit in, and what actually breaks at scale.</p>
+  <a href="part7.html" class="btn btn-white" style="color:#00b894">Continue to Episode 7 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How FastAPI Works — Episode 6: FastAPI's Magic — Routing, Validation & Docs | Unbox the Black Box" inlineStyle={inlineStyle} series={fastapiSeries} episodeNum={6} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

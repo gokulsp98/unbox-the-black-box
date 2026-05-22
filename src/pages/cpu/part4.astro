@@ -1,11 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How Your Code Runs — Episode 4: Java — Binary While It's Running | Unbox the Black Box</title>
-<link rel="stylesheet" href="../style.css">
-<style>
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { cpuSeries } from '../../data/series';
+const inlineStyle = `
 ::selection{background:#e84393;color:#fff}
 
 .part4-hero{background:linear-gradient(135deg,#e84393 0%,#6c5ce7 50%,#0984e3 100%)}
@@ -61,31 +57,8 @@
 .java-steam span:nth-child(3){animation:steam 2s ease 0.6s infinite}
 @keyframes steam{0%,100%{opacity:0.2;transform:translateY(0) scaleY(1)}50%{opacity:0.6;transform:translateY(-6px) scaleY(1.3)}}
 .java-label{font-family:'Fira Code',monospace;font-size:0.9rem;color:rgba(255,255,255,0.7);letter-spacing:2px;margin-top:0.25rem}
-</style>
-</head>
-<body>
-
-<!-- NAV -->
-<nav class="nav">
-  <a href="../index.html" class="nav-title"><span class="nav-title-sub">Gokul's Learning Journal</span><span class="nav-title-main">Unbox the Black Box</span></a>
-  <div class="nav-ep" onclick="this.classList.toggle('open')">
-    <div class="nav-ep-text">
-      <span class="nav-series-name">How Your Code Runs</span>
-      <span class="nav-ep-current">Ep 4 of 7</span>
-    </div>
-    <div class="nav-progress"><div class="nav-progress-fill" style="width:57%"></div></div>
-    <span class="nav-ep-arrow">&#9660;</span>
-    <div class="nav-dropdown">
-      <a href="part1.html"><span class="ep-num">01</span> The Brain of Your Computer</a>
-      <a href="part2.html"><span class="ep-num">02</span> The Bigger Picture</a>
-      <a href="part3.html"><span class="ep-num">03</span> C: The Journey to Binary</a>
-      <a href="part4.html" class="active"><span class="ep-num">04</span> Java: Binary While Running</a>
-      <a href="part5.html"><span class="ep-num">05</span> Python: Binary One Line At A Time</a>
-      <a href="part6.html"><span class="ep-num">06</span> JavaScript: Binary In Your Browser</a>
-      <a href="part7.html"><span class="ep-num">07</span> The Full Picture</a>
-    </div>
-  </div>
-</nav>
+`;
+const bodyHtml = `
 
 <!-- HERO -->
 <section class="hero part4-hero">
@@ -304,21 +277,8 @@ JVM compiles it to native binary once, caches it in memory.
   <p>Python takes a completely different approach — the simplest, and the slowest. But there's a reason it's the most popular language in the world.</p>
   <a href="part5.html" class="btn btn-white" style="color:#e84393">Continue to Episode 5 &#10132;</a>
 </section>
-
-<footer class="footer">
-  <p>Unbox the Black Box - from confusion to clarity.<br>Built with ❤️ by <strong>Gokul</strong>.</p>
-</footer>
-
-<script>
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) entry.target.classList.add('visible');
-  });
-}, { threshold: 0.15 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-document.addEventListener('click', e => { if (!e.target.closest('.nav-ep')) document.querySelectorAll('.nav-ep').forEach(n => n.classList.remove('open')); });
-</script>
-<script data-goatcounter="https://gokulsp.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
-</body>
-</html>
+`;
+---
+<ArticleLayout title="How Your Code Runs — Episode 4: Java — Binary While It's Running | Unbox the Black Box" inlineStyle={inlineStyle} series={cpuSeries} episodeNum={4}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

@@ -1,0 +1,29 @@
+---
+import Footer from '../components/Footer.astro';
+import RevealScript from '../components/RevealScript.astro';
+import GoatCounter from '../components/GoatCounter.astro';
+
+interface Props {
+  title: string;
+  inlineStyle?: string;
+}
+
+const { title, inlineStyle } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{title}</title>
+<link rel="stylesheet" href={`${base}style.css`}>
+{inlineStyle && <style set:html={inlineStyle} />}
+</head>
+<body>
+<slot />
+<Footer />
+<RevealScript />
+<GoatCounter />
+</body>
+</html>

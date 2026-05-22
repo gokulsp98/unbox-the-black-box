@@ -1,0 +1,657 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { fastapiSeries } from '../../data/series';
+const inlineStyle = `
+::selection{background:#0984e3;color:#fff}
+
+.part5-hero{background:linear-gradient(135deg,#0a3d62 0%,#0984e3 50%,#00b894 100%)}
+
+.part5-num{color:#0a3d62;background:#dceeff}
+
+/* ── Hero Art: 4 CPU Core Boxes ── */
+.core-art{margin:2.5rem auto 0;display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:14rem;animation:fadeInUp 1.5s ease}
+.core-box{background:rgba(255,255,255,0.1);border:0.0625rem solid rgba(255,255,255,0.25);border-radius:0.875rem;padding:1rem;text-align:center;position:relative;overflow:hidden;transition:transform 0.3s}
+.core-box:hover{transform:scale(1.04)}
+.core-label{font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.9);letter-spacing:0.0625rem;margin-bottom:0.375rem}
+.core-pulse{width:2rem;height:2rem;border-radius:0.375rem;margin:0 auto;background:rgba(9,132,227,0.6);box-shadow:0 0 0 0 rgba(9,132,227,0.6);animation:corePulse 2s ease-in-out infinite}
+.core-box:nth-child(1) .core-pulse{animation-delay:0s}
+.core-box:nth-child(2) .core-pulse{animation-delay:0.5s}
+.core-box:nth-child(3) .core-pulse{animation-delay:1s}
+.core-box:nth-child(4) .core-pulse{animation-delay:1.5s}
+@keyframes corePulse{0%,100%{box-shadow:0 0 0 0 rgba(9,132,227,0.6);background:rgba(9,132,227,0.6)}50%{box-shadow:0 0 0 0.625rem rgba(9,132,227,0);background:rgba(0,184,148,0.8)}}
+.hero-label-text{font-family:'Fira Code',monospace;font-size:0.75rem;color:rgba(255,255,255,0.6);letter-spacing:0.125rem;text-align:center;margin-top:0.75rem}
+
+/* ── GIL Visualization ── */
+.gil-viz{max-width:38rem;margin:2rem auto;padding:0 1.5rem}
+.core-row{display:grid;grid-template-columns:5rem 1fr;align-items:center;gap:1rem;margin-bottom:0.75rem}
+.core-row-label{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#636e72;text-align:right}
+.core-bar{border-radius:0.375rem;height:2rem;display:flex;align-items:center;padding:0 0.75rem;font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;position:relative;overflow:hidden}
+.core-bar-active{background:linear-gradient(90deg,#0984e3,#00b894);color:#fff}
+.core-bar-idle{background:#2d3436;color:#636e72;border:0.0625rem solid #3d4449}
+.core-bar-active::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);animation:shimmer 2s ease-in-out infinite}
+@keyframes shimmer{0%{left:-100%}100%{left:100%}}
+
+/* ── Multi-Process Visualization ── */
+.multiproc-viz{max-width:38rem;margin:2rem auto;padding:0 1.5rem}
+.mp-core-bar{background:linear-gradient(90deg,#0a3d62,#0984e3);color:#fff}
+
+/* ── Worker Formula Box ── */
+.formula-box{max-width:30rem;margin:2rem auto;padding:0 1.5rem}
+.formula-inner{background:#0a3d62;border-radius:1.25rem;padding:2rem;text-align:center;border:0.125rem solid rgba(9,132,227,0.4)}
+.formula-text{font-family:'Fira Code',monospace;font-size:1.5rem;font-weight:700;color:#74b9ff;letter-spacing:0.125rem;margin-bottom:0.5rem}
+.formula-sub{font-family:'Fira Code',monospace;font-size:0.75rem;color:rgba(255,255,255,0.5);letter-spacing:0.0625rem}
+.formula-example{font-family:'Fira Code',monospace;font-size:0.85rem;color:#55efc4;margin-top:0.75rem}
+
+/* ── Three-Layer Concurrency Diagram ── */
+.concurrency-diagram{max-width:38rem;margin:2rem auto;padding:0 1.5rem}
+.cd-outer{background:#1e272e;border:0.125rem solid rgba(9,132,227,0.3);border-radius:1.25rem;padding:1.25rem}
+.cd-outer-label{font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;color:#74b9ff;letter-spacing:0.09375rem;margin-bottom:0.875rem}
+.cd-workers{display:grid;grid-template-columns:1fr 1fr;gap:0.875rem}
+.cd-worker{background:#2d3436;border:0.0625rem solid rgba(0,184,148,0.25);border-radius:0.875rem;padding:1rem}
+.cd-worker-label{font-family:'Fira Code',monospace;font-size:0.6rem;font-weight:700;color:#55efc4;letter-spacing:0.0625rem;margin-bottom:0.5rem}
+.cd-el{background:rgba(9,132,227,0.12);border:0.0625rem solid rgba(9,132,227,0.25);border-radius:0.625rem;padding:0.625rem;margin-bottom:0.5rem}
+.cd-el-label{font-family:'Fira Code',monospace;font-size:0.55rem;font-weight:700;color:#74b9ff;margin-bottom:0.25rem}
+.cd-coros{display:flex;gap:0.25rem;flex-wrap:wrap}
+.cd-coro{font-family:'Fira Code',monospace;font-size:0.5rem;background:rgba(9,132,227,0.2);color:#74b9ff;padding:0.125rem 0.375rem;border-radius:0.25rem}
+.cd-tp{background:rgba(108,92,231,0.1);border:0.0625rem solid rgba(108,92,231,0.2);border-radius:0.625rem;padding:0.625rem}
+.cd-tp-label{font-family:'Fira Code',monospace;font-size:0.55rem;font-weight:700;color:#a29bfe}
+
+/* ── Compare Table ── */
+.compare-table{max-width:46rem;margin:2rem auto;padding:0 1.5rem;overflow-x:auto}
+.compare-table table{width:100%;border-collapse:collapse;font-size:0.82rem}
+.compare-table th{background:#0a3d62;color:#74b9ff;font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.0625rem;padding:0.75rem 1rem;text-align:left;border-bottom:0.125rem solid rgba(9,132,227,0.3)}
+.compare-table td{padding:0.75rem 1rem;border-bottom:0.0625rem solid #2d3436;color:#555;vertical-align:top}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table tr:nth-child(even) td{background:#f8f9fa}
+.compare-table td:first-child{font-weight:700;color:#2d3436}
+.compare-table td strong{color:#2d3436}
+.td-green{color:#00b894!important;font-weight:700!important}
+.td-orange{color:#e17055!important;font-weight:700!important}
+
+/* ── Gunicorn vs Uvicorn Compare ── */
+.gu-compare{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;max-width:46rem;margin:2rem auto;padding:0 1.5rem}
+.gu-card{border-radius:1rem;padding:1.5rem}
+.gu-uvicorn{background:#e3f2fd;border:0.125rem solid #90caf9}
+.gu-uvicorn h4{color:#0984e3}
+.gu-gunicorn{background:#f0efff;border:0.125rem solid #d5ccff}
+.gu-gunicorn h4{color:#6c5ce7}
+.gu-card h4{font-size:1rem;font-weight:800;margin-bottom:0.875rem}
+.gu-card ul{margin:0;padding-left:1.25rem}
+.gu-card li{font-size:0.82rem;line-height:1.7;color:#555}
+@media(max-width:37.5rem){.gu-compare{grid-template-columns:1fr}.cd-workers{grid-template-columns:1fr}}
+
+/* ── Info Grid ── */
+.info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;max-width:46rem;margin:2rem auto;padding:0 1.5rem}
+.info-card{background:#f8f9fa;border-radius:1rem;padding:1.25rem 1.5rem;border-left:0.25rem solid #0984e3}
+.info-card h4{font-size:0.9rem;font-weight:800;color:#0a3d62;margin-bottom:0.375rem}
+.info-card p{font-size:0.82rem;line-height:1.6;color:#555;margin:0}
+@media(max-width:37.5rem){.info-grid{grid-template-columns:1fr}}
+
+/* ── Stack Flow ── */
+.stack-flow{max-width:28rem;margin:2rem auto;padding:0 1.5rem;display:flex;flex-direction:column;align-items:center}
+.stf-step{width:100%;border-radius:0.75rem;padding:0.875rem 1.25rem;text-align:center}
+.stf-label{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;letter-spacing:0.0625rem;margin-bottom:0.25rem}
+.stf-desc{font-family:'Fira Code',monospace;font-size:0.75rem;line-height:1.6}
+.stf-connector{display:flex;flex-direction:column;align-items:center;padding:0.25rem 0}
+.stf-conn-line{width:0.125rem;height:0.5rem;background:#ddd}
+.stf-conn-text{font-family:'Fira Code',monospace;font-size:0.65rem;color:#888;background:#f8f8f8;padding:0.1875rem 0.625rem;border-radius:1rem;white-space:nowrap}
+
+/* ── Quiz theming: Episode 5 ── */
+.quiz-ep5 .quiz-q-num{color:#0a3d62;background:#dceeff}
+.quiz-ep5 .quiz-reveal-btn{color:#0a3d62}
+.quiz-ep5 .quiz-opt-letter{color:#0a3d62}
+.quiz-ep5 .quiz-option:hover{border-color:#0a3d62;background:#eaf3ff}
+.quiz-ep5 .quiz-answer-highlight{background:#dceeff;border-left:0.25rem solid #0a3d62}
+.quiz-ep5 .quiz-sequence-item:hover{border-color:#0a3d62;background:#eaf3ff}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero part5-hero">
+  <div class="hero-badge">Episode 5 of 7</div>
+  <h1>Workers — Scaling FastAPI<br>Across CPU Cores</h1>
+  <p style="color:rgba(255,255,255,0.95)">Async gives you concurrency within one process. But what about multiple CPU cores? This is how FastAPI uses all of your hardware.</p>
+
+  <div class="core-art">
+    <div class="core-box">
+      <div class="core-label">Core 1</div>
+      <div class="core-pulse"></div>
+    </div>
+    <div class="core-box">
+      <div class="core-label">Core 2</div>
+      <div class="core-pulse"></div>
+    </div>
+    <div class="core-box">
+      <div class="core-label">Core 3</div>
+      <div class="core-pulse"></div>
+    </div>
+    <div class="core-box">
+      <div class="core-label">Core 4</div>
+      <div class="core-pulse"></div>
+    </div>
+  </div>
+  <div class="hero-label-text">four cores — all working</div>
+</section>
+
+<!-- SECTION 01: THE GIL PROBLEM -->
+<section class="section reveal">
+  <span class="section-num part5-num">01</span>
+  <h2>The GIL Problem</h2>
+  <p>In Episodes 3 and 4, we saw how FastAPI handles concurrency: one event loop, one thread, hundreds of requests interleaved through <code>async/await</code>. It's elegant. But there's a hard ceiling.</p>
+  <p>No matter how efficient your async code is, one Python process can only use <span class="highlight">one CPU core at a time</span>.</p>
+  <p>Python has a feature called the <strong>Global Interpreter Lock</strong> — the GIL. It's a mutex (a lock) inside CPython, Python's standard interpreter. It ensures that only one thread executes Python bytecode at any given moment, even if your machine has multiple CPU cores.</p>
+  <p>Here's what that means in practice — four cores, one Python process, four threads:</p>
+</section>
+
+<div class="gil-viz reveal">
+  <div style="font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#e17055;margin-bottom:0.75rem;text-align:center;letter-spacing:0.0625rem">ONE PROCESS, FOUR CORES — ONLY ONE WORKS</div>
+  <div class="core-row">
+    <div class="core-row-label">Core 1</div>
+    <div class="core-bar core-bar-active">&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608; running Python</div>
+  </div>
+  <div class="core-row">
+    <div class="core-row-label">Core 2</div>
+    <div class="core-bar core-bar-idle">idle — GIL is taken</div>
+  </div>
+  <div class="core-row">
+    <div class="core-row-label">Core 3</div>
+    <div class="core-bar core-bar-idle">idle — GIL is taken</div>
+  </div>
+  <div class="core-row">
+    <div class="core-row-label">Core 4</div>
+    <div class="core-bar core-bar-idle">idle — GIL is taken</div>
+  </div>
+  <div style="font-family:'Fira Code',monospace;font-size:0.6rem;color:#636e72;text-align:center;margin-top:0.75rem">the GIL locks the other 3 cores out — 75% of your CPU is wasted</div>
+</div>
+
+<section class="section reveal">
+  <p>Only one thread holds the GIL at a time. The others wait their turn. For CPU-bound work — heavy computation, image processing, cryptography — threading in Python gives you <span class="highlight-orange">no parallelism at all</span>. You get concurrency (taking turns), not parallelism (working simultaneously).</p>
+  <p>The event loop from Episodes 3 and 4 doesn't change this. It gives us <em>concurrency</em> — the ability to interleave I/O waits and make progress on multiple requests. But it still runs in a single thread, under the same GIL. One core is all we get.</p>
+  <p>For a web API that mostly waits on databases and external services, this is fine. For anything CPU-heavy, or to simply use all available hardware, we need a different approach.</p>
+</section>
+
+<div class="analogy reveal">
+  <p>The GIL is like a <strong>baton in a relay race</strong> — only the runner holding the baton can run Python. Four runners on the track, but only one baton. Passing it around makes each runner <em>feel</em> concurrent, but at any instant only one is actually moving.</p>
+</div>
+
+<!-- SECTION 02: MULTIPLE PROCESSES -->
+<section class="section reveal">
+  <span class="section-num part5-num">02</span>
+  <h2>The Solution: Multiple Processes</h2>
+  <p>The fix is straightforward: instead of one process trying to share a GIL across threads, we run <span class="highlight">multiple separate processes</span>. Each process is a completely independent copy of the Python interpreter — with its own GIL, its own memory, its own event loop.</p>
+  <p>All four cores busy. True parallelism — not taking turns, actually running at the same time:</p>
+</section>
+
+<div class="multiproc-viz reveal">
+  <div style="font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#00b894;margin-bottom:0.75rem;text-align:center;letter-spacing:0.0625rem">FOUR PROCESSES, FOUR CORES — ALL WORKING</div>
+  <div class="core-row">
+    <div class="core-row-label">Core 1</div>
+    <div class="core-bar mp-core-bar">&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608; Worker 1, own GIL</div>
+  </div>
+  <div class="core-row">
+    <div class="core-row-label">Core 2</div>
+    <div class="core-bar mp-core-bar">&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608; Worker 2, own GIL</div>
+  </div>
+  <div class="core-row">
+    <div class="core-row-label">Core 3</div>
+    <div class="core-bar mp-core-bar">&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608; Worker 3, own GIL</div>
+  </div>
+  <div class="core-row">
+    <div class="core-row-label">Core 4</div>
+    <div class="core-bar mp-core-bar">&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608; Worker 4, own GIL</div>
+  </div>
+  <div style="font-family:'Fira Code',monospace;font-size:0.6rem;color:#636e72;text-align:center;margin-top:0.75rem">each process has its own GIL — true parallelism</div>
+</div>
+
+<section class="section reveal">
+  <p>You get this with one flag:</p>
+  <div class="code-block">
+    <pre><span class="code-keyword">uvicorn</span> main:app <span class="code-string">--workers 4</span></pre>
+  </div>
+  <p>Or with Gunicorn:</p>
+  <div class="code-block">
+    <pre><span class="code-keyword">gunicorn</span> main:app <span class="code-string">-k uvicorn.workers.UvicornWorker -w 4</span></pre>
+  </div>
+  <p>Four workers. Four OS processes. Four cores doing real work simultaneously.</p>
+</section>
+
+<div class="analogy reveal">
+  <p>Instead of one chef trying to work at every station in a kitchen, you <strong>hire four chefs</strong> and give each their own station. They don't share tools, they don't get in each other's way — they just work in parallel.</p>
+</div>
+
+<!-- SECTION 03: WHAT EACH WORKER IS -->
+<section class="section reveal">
+  <span class="section-num part5-num">03</span>
+  <h2>What Each Worker Actually Is</h2>
+  <p>When you run <code>--workers 4</code>, here's what's actually created:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">Main Process (manages workers)</span>
+  <span class="code-arrow">├──</span> <span class="code-keyword">Worker 1:</span> <span class="code-string">own GIL, own event loop, own FastAPI app</span>
+  <span class="code-arrow">├──</span> <span class="code-keyword">Worker 2:</span> <span class="code-string">own GIL, own event loop, own FastAPI app</span>
+  <span class="code-arrow">├──</span> <span class="code-keyword">Worker 3:</span> <span class="code-string">own GIL, own event loop, own FastAPI app</span>
+  <span class="code-arrow">└──</span> <span class="code-keyword">Worker 4:</span> <span class="code-string">own GIL, own event loop, own FastAPI app</span></pre>
+  </div>
+
+  <p>Each worker is a full, separate OS process. Not a thread. Not a lightweight coroutine. A process — the same kind of thing your terminal or your text editor is.</p>
+  <p>That means each worker:</p>
+</section>
+
+<div class="info-grid reveal">
+  <div class="info-card">
+    <h4>Its own copy of your app</h4>
+    <p>Every worker loads your entire FastAPI application — all routes, models, and dependencies — independently into its own memory space.</p>
+  </div>
+  <div class="info-card">
+    <h4>Its own event loop</h4>
+    <p>Each worker runs a completely independent event loop. Coroutines in Worker 1 have nothing to do with coroutines in Worker 2.</p>
+  </div>
+  <div class="info-card">
+    <h4>Its own isolated state</h4>
+    <p>Caches, global variables, in-memory dicts — completely isolated per worker. Worker 2 cannot see what Worker 1 stored.</p>
+  </div>
+  <div class="info-card">
+    <h4>Crash isolation</h4>
+    <p>A worker can crash, get killed, or restart without affecting the other workers. The remaining three keep serving requests.</p>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>When a request comes in, the OS distributes incoming TCP connections across the listening workers. Each worker picks up a request, handles it through its own event loop, and sends the response back — completely independently of the others.</p>
+  <p>This is important: <span class="highlight">workers do not communicate with each other</span>. They don't share a cache. They don't share session state. They don't know the other workers exist. Each one is an island.</p>
+  <p>If you store something in a Python dict inside Worker 1's app, Worker 2 has no idea it's there. This is why stateless design matters in production — anything you need to share (session data, rate limit counters, cached results) needs to live outside the process, in <span class="highlight-orange">Redis or a database</span>.</p>
+</section>
+
+<!-- SECTION 04: PROCESSES VS THREADS -->
+<section class="section reveal">
+  <span class="section-num part5-num">04</span>
+  <h2>Processes vs Threads</h2>
+  <p>The choice between threads and processes for Python parallelism has a clear answer once you understand the GIL.</p>
+</section>
+
+<div class="compare-table reveal">
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Threads</th>
+        <th>Processes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>GIL</strong></td>
+        <td>Shared — only one runs at a time</td>
+        <td class="td-green">Each has its own — true parallelism</td>
+      </tr>
+      <tr>
+        <td><strong>Memory</strong></td>
+        <td>Shared — see each other's data</td>
+        <td>Isolated — completely separate</td>
+      </tr>
+      <tr>
+        <td><strong>CPU parallelism</strong></td>
+        <td class="td-orange">No (GIL prevents it)</td>
+        <td class="td-green">Yes</td>
+      </tr>
+      <tr>
+        <td><strong>Communication</strong></td>
+        <td>Easy (shared memory)</td>
+        <td>Hard (need IPC, Redis, etc.)</td>
+      </tr>
+      <tr>
+        <td><strong>Memory usage</strong></td>
+        <td class="td-green">Low — one copy of the app</td>
+        <td class="td-orange">High — N copies of the app</td>
+      </tr>
+      <tr>
+        <td><strong>Crash isolation</strong></td>
+        <td class="td-orange">One thread crash can kill all</td>
+        <td class="td-green">One worker crash leaves others running</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<section class="section reveal">
+  <p>For CPU parallelism in Python: <span class="highlight">processes win, every time</span>. The GIL makes threads useless for this purpose.</p>
+  <p>The tradeoff is memory. Each worker loads your entire FastAPI app — all your routes, all your Pydantic models, all your dependencies. If your app takes 200MB to load, four workers use 800MB. That's the price of true parallelism.</p>
+  <p>For most web APIs, this is a reasonable trade. Memory is cheap. Wasting three CPU cores is expensive.</p>
+</section>
+
+<div class="analogy reveal">
+  <p>Threads are like <strong>multiple people sharing one laptop</strong> — they take turns but can't really work at the same time. Processes are like giving <strong>each person their own laptop</strong> — more hardware cost, but everyone works in parallel and one person's crash doesn't affect the others.</p>
+</div>
+
+<!-- SECTION 05: HOW MANY WORKERS -->
+<section class="section reveal">
+  <span class="section-num part5-num">05</span>
+  <h2>How Many Workers?</h2>
+  <p>The standard formula:</p>
+</section>
+
+<div class="formula-box reveal">
+  <div class="formula-inner">
+    <div class="formula-text">workers = 2 &times; CPU_cores + 1</div>
+    <div class="formula-sub">the standard starting point</div>
+    <div class="formula-example">4-core machine: 2 &times; 4 + 1 = <strong>9 workers</strong></div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>Where does this come from?</p>
+  <ul style="line-height:1.9;padding-left:1.25rem">
+    <li>You want at least one worker per core to keep all cores busy</li>
+    <li>The <code>&times; 2</code> accounts for workers that are momentarily blocked — waiting for a database response, doing I/O, handling a slow client. A blocked worker isn't using its core, so having extras means other workers can fill the gap</li>
+    <li>The <code>+ 1</code> is a spare — one extra worker to absorb traffic spikes without all workers being simultaneously busy</li>
+  </ul>
+
+  <p>To find your core count in Python:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">import</span> multiprocessing
+<span class="code-keyword">print</span>(multiprocessing.<span class="code-string">cpu_count</span>())</pre>
+  </div>
+
+  <p>Or set it dynamically in your startup script:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">import</span> multiprocessing
+workers = <span class="code-keyword">2</span> * multiprocessing.<span class="code-string">cpu_count</span>() + <span class="code-keyword">1</span></pre>
+  </div>
+
+  <p>This formula is a <strong>starting point, not a law</strong>. It assumes your workers are mostly I/O-bound (which web APIs usually are). If your endpoints are CPU-heavy, you might go with <code>1 &times; CPU_cores</code> instead — no point having more workers than cores if they're all pegging the CPU.</p>
+  <p>Real tuning comes from measuring. Run load tests, watch CPU and memory usage, adjust. But <span class="highlight">2 &times; cores + 1</span> is the right place to start.</p>
+</section>
+
+<!-- SECTION 06: UVICORN VS GUNICORN -->
+<section class="section reveal">
+  <span class="section-num part5-num">06</span>
+  <h2>Uvicorn <code>--workers</code> vs Gunicorn</h2>
+  <p>Uvicorn can spawn workers on its own:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">uvicorn</span> main:app <span class="code-string">--workers 4</span></pre>
+  </div>
+
+  <p>This works. For many setups — containers, simple deployments, small teams — it's all you need. Gunicorn with the Uvicorn worker class adds more:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">gunicorn</span> main:app <span class="code-string">-k uvicorn.workers.UvicornWorker -w 4</span></pre>
+  </div>
+</section>
+
+<div class="gu-compare reveal">
+  <div class="gu-card gu-uvicorn">
+    <h4>Uvicorn <code>--workers</code></h4>
+    <ul>
+      <li>Simple, built-in, no extra dependency</li>
+      <li>Works great in containers (Kubernetes, ECS) where the orchestrator handles crash recovery</li>
+      <li>Sufficient for most teams and setups</li>
+      <li>Rolling restarts handled by the container orchestrator</li>
+    </ul>
+  </div>
+  <div class="gu-card gu-gunicorn">
+    <h4>Gunicorn + UvicornWorker</h4>
+    <ul>
+      <li><strong>Graceful restarts</strong> — drains existing requests before killing old workers. No dropped connections on deploy.</li>
+      <li><strong>Automatic crash recovery</strong> — detects a dead worker and spawns a replacement immediately.</li>
+      <li><strong>Pre-fork model</strong> — workers are warm and ready before traffic hits.</li>
+      <li><strong>Mature signal handling</strong> — SIGHUP for reload, SIGTERM for graceful shutdown.</li>
+    </ul>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>The choice isn't "one is better" — it's <span class="highlight">"what does your deployment infrastructure already handle?"</span></p>
+  <p>In a containerized environment where the orchestrator (Kubernetes, ECS) manages crash recovery and rolling restarts, Uvicorn's built-in workers are often sufficient. The container dies, the orchestrator restarts it — Gunicorn's worker supervision is redundant.</p>
+  <p>For a traditional server setup, or high-traffic production where you need zero-downtime deploys without external tooling, <span class="highlight-orange">Gunicorn earns its place</span>.</p>
+</section>
+
+<!-- SECTION 07: COMPLETE CONCURRENCY PICTURE -->
+<section class="section reveal">
+  <span class="section-num part5-num">07</span>
+  <h2>The Complete Concurrency Picture</h2>
+  <p>We've now seen three layers of concurrency in FastAPI. They stack on top of each other — each layer doing a different job:</p>
+</section>
+
+<div class="stack-flow reveal">
+  <div class="stf-step" style="background:#2d3436;color:#fff">
+    <div class="stf-label" style="color:#b2bec3">INCOMING REQUESTS</div>
+    <div class="stf-desc" style="color:#dfe6e9">100s of concurrent connections</div>
+  </div>
+  <div class="stf-connector">
+    <div class="stf-conn-line"></div>
+    <div class="stf-conn-text">OS distributes TCP connections</div>
+    <div class="stf-conn-line"></div>
+  </div>
+  <div class="stf-step" style="background:#e8f8f5;border:0.0625rem solid #b8f0e0">
+    <div class="stf-label" style="color:#00b894">WORKERS (PROCESSES)</div>
+    <div class="stf-desc" style="color:#555">parallelism — one per CPU core</div>
+  </div>
+  <div class="stf-connector">
+    <div class="stf-conn-line"></div>
+    <div class="stf-conn-text">each worker has its own event loop</div>
+    <div class="stf-conn-line"></div>
+  </div>
+  <div class="stf-step" style="background:#e3f2fd;border:0.0625rem solid #90caf9">
+    <div class="stf-label" style="color:#0984e3">EVENT LOOP</div>
+    <div class="stf-desc" style="color:#555">concurrency — interleaves I/O waits</div>
+  </div>
+  <div class="stf-connector">
+    <div class="stf-conn-line"></div>
+    <div class="stf-conn-text">sync def endpoints offloaded here</div>
+    <div class="stf-conn-line"></div>
+  </div>
+  <div class="stf-step" style="background:#f0efff;border:0.0625rem solid #d5ccff">
+    <div class="stf-label" style="color:#6c5ce7">THREAD POOL</div>
+    <div class="stf-desc" style="color:#555">isolation — blocking code can't freeze the loop</div>
+  </div>
+</div>
+
+<div class="concurrency-diagram reveal">
+  <div class="cd-outer">
+    <div class="cd-outer-label">INCOMING REQUESTS &#8595;</div>
+    <div class="cd-workers">
+      <div class="cd-worker">
+        <div class="cd-worker-label">Worker 1 — OS Process</div>
+        <div class="cd-el">
+          <div class="cd-el-label">Event Loop</div>
+          <div class="cd-coros">
+            <span class="cd-coro">coro</span>
+            <span class="cd-coro">coro</span>
+            <span class="cd-coro">coro</span>
+            <span class="cd-coro">coro</span>
+          </div>
+          <div style="font-family:'Fira Code',monospace;font-size:0.5rem;color:#636e72;margin-top:0.25rem">async def endpoints run here</div>
+        </div>
+        <div class="cd-tp">
+          <div class="cd-tp-label">Thread Pool (sync def)</div>
+          <div style="font-family:'Fira Code',monospace;font-size:0.5rem;color:#636e72;margin-top:0.25rem">def endpoints run here</div>
+        </div>
+      </div>
+      <div class="cd-worker">
+        <div class="cd-worker-label">Worker 2 — OS Process</div>
+        <div class="cd-el">
+          <div class="cd-el-label">Event Loop</div>
+          <div class="cd-coros">
+            <span class="cd-coro">coro</span>
+            <span class="cd-coro">coro</span>
+            <span class="cd-coro">coro</span>
+            <span class="cd-coro">coro</span>
+          </div>
+          <div style="font-family:'Fira Code',monospace;font-size:0.5rem;color:#636e72;margin-top:0.25rem">async def endpoints run here</div>
+        </div>
+        <div class="cd-tp">
+          <div class="cd-tp-label">Thread Pool (sync def)</div>
+          <div style="font-family:'Fira Code',monospace;font-size:0.5rem;color:#636e72;margin-top:0.25rem">def endpoints run here</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <h3 style="font-size:1.1rem;color:#0984e3;margin-top:0.5rem">Workers (processes)</h3>
+  <p>Parallelism across CPU cores. Multiple workers run simultaneously on different cores. The OS decides which worker handles each incoming connection. This is your horizontal scale — more workers means more CPU cores working.</p>
+
+  <h3 style="font-size:1.1rem;color:#00b894;margin-top:1.5rem">Event loop (per worker)</h3>
+  <p>Concurrency for I/O-bound work within each worker. One event loop handles many requests by interleaving them at <code>await</code> points. While one coroutine waits for a database response, another runs. This is why a single worker can handle hundreds of concurrent requests.</p>
+
+  <h3 style="font-size:1.1rem;color:#6c5ce7;margin-top:1.5rem">Thread pool (per worker)</h3>
+  <p>Handles sync/blocking code without freezing the event loop. When a <code>def</code> endpoint runs, FastAPI offloads it to a thread pool so the event loop stays free. The thread pool is not for parallelism — it's for isolation.</p>
+
+  <p style="margin-top:1.5rem">Put it together:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">For I/O-bound work (99% of web APIs):</span>
+  <span class="code-keyword">Event loop</span> handles concurrency within each worker.
+  <span class="code-keyword">Workers</span>     handle parallelism across cores.
+  <span class="code-string">Result:</span>     high throughput, low memory, all cores used.
+
+<span class="code-comment">For CPU-bound work:</span>
+  <span class="code-keyword">Workers</span>     handle parallelism.
+  <span class="code-keyword">Event loop</span> gives no benefit (no I/O to interleave).
+  <span class="code-string">Result:</span>     as many workers as cores, each pegging one core.</pre>
+  </div>
+
+  <p>This is why FastAPI scales well with reasonable hardware. It's not magic — it's three layers of well-understood concurrency working together.</p>
+</section>
+
+<!-- SECTION 08: RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#dceeff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0a3d62">The GIL ensures only one thread runs Python at a time.</strong> Multiple threads in one process cannot achieve CPU parallelism in CPython.
+    </div>
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">The fix is processes</strong> — each process has its own GIL and event loop. <code>uvicorn main:app --workers 4</code> creates four independent OS processes.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">Each worker is isolated</strong> — its own memory, its own FastAPI app, its own state. Workers don't share anything. Global variables and in-process caches are per-worker.
+    </div>
+    <div style="background:#fef5e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Processes use more memory than threads</strong> — each worker loads a full copy of your app. That's the cost of true parallelism.
+    </div>
+    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
+      <strong style="color:#6c5ce7">The worker formula is 2 &times; CPU_cores + 1</strong> — enough to keep all cores busy, plus spares for workers momentarily blocked on I/O.
+    </div>
+    <div style="background:#ffeef7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e84393">
+      <strong style="color:#e84393">Uvicorn <code>--workers</code> is sufficient for most setups.</strong> Gunicorn adds graceful restarts, crash recovery, and mature signal handling for high-traffic production.
+    </div>
+    <div style="background:#e0fafa;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00cec9">
+      <strong style="color:#00cec9">Three concurrency layers stack together:</strong> workers (parallelism across cores) &#8594; event loop (concurrency for I/O within each worker) &#8594; thread pool (isolation for sync code).
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section class="section reveal quiz-ep5">
+  <span class="section-num part5-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <!-- Q1: Multiple Choice -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 01</span>
+      <span class="quiz-type-tag">Multiple Choice</span>
+    </div>
+    <p class="quiz-question">Worker 1 caches an API result in a Python dictionary. Worker 2 receives the next request for the same data. Does Worker 2 see Worker 1's cache?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Yes — all workers share the same memory</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Yes — Gunicorn syncs state between workers</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>No — each worker is a separate OS process with isolated memory</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>It depends on the caching library used</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) No — each worker is a separate OS process with isolated memory</strong></div>
+        <p class="quiz-answer-text">When Gunicorn forks workers, each gets its own copy of everything. Global variables, in-memory caches, and module-level state are all per-process. If you need shared state, use an external store like Redis.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2: Multiple Choice -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 02</span>
+      <span class="quiz-type-tag">Multiple Choice</span>
+    </div>
+    <p class="quiz-question">Put these steps in the correct order for Gunicorn startup:</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Workers start → Master binds port → Master forks → Requests arrive</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Master forks → Master binds port → Workers init → Requests arrive</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Master binds port → Master forks → Workers init app → Workers handle requests</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Master binds port → Workers init → Master forks → Requests arrive</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) Master binds port → Master forks → Workers init app → Workers handle requests</strong></div>
+        <p class="quiz-answer-text">The master owns the socket and passes it to forked workers. Each worker loads its own copy of the FastAPI application.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3: True or False -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 03</span>
+      <span class="quiz-type-tag">True or False</span>
+    </div>
+    <p class="quiz-question">Adding more workers always improves performance linearly — double the workers, double the throughput.</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>True</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>False</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) False</strong></div>
+        <p class="quiz-answer-text">Returns diminish quickly. More workers than CPU cores means context-switching overhead. For CPU-bound work, the GIL limits each process to one thread of Python execution anyway. The recommended formula is <code>2 × CPU_cores + 1</code> — beyond that, you're often hurting performance rather than helping it.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4: Multiple Choice -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 04</span>
+      <span class="quiz-type-tag">Multiple Choice</span>
+    </div>
+    <p class="quiz-question">Your FastAPI app stores login sessions in a Python dictionary. You run 4 workers. A user logs in and their request is handled by Worker 1. Their next request hits Worker 3. Are they still logged in?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Yes — Gunicorn syncs session state between workers</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Yes — Python dictionaries are shared across processes</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>No — each worker has isolated memory, Worker 3 doesn't see Worker 1's dict</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>It depends on the session middleware configuration</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) No — each worker has isolated memory</strong></div>
+        <p class="quiz-answer-text">Worker 3 has its own separate Python dictionary that knows nothing about Worker 1's session. This is the classic "shared state" bug in multi-worker deployments. The fix: use an external session store (Redis, database) that all workers can access, or use sticky sessions at the load balancer level.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- NEXT EPISODE -->
+<section class="next-part" style="background:linear-gradient(135deg,#0a3d62,#00b894)">
+  <h2>Ready for Episode 6?</h2>
+  <p>You've seen how requests get to your app and how workers scale it across cores. Now let's look at what FastAPI does with a request once it arrives — how <code>@app.get("/users/{id}")</code> turns into a matched route, how your type hints become validation, and how the interactive docs at <code>/docs</code> generate themselves from code you already wrote. This is FastAPI's magic.</p>
+  <a href="part6.html" class="btn btn-white" style="color:#0a3d62">Continue to Episode 6 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How FastAPI Works — Episode 5: Workers — Scaling Across CPU Cores | Unbox the Black Box" inlineStyle={inlineStyle} series={fastapiSeries} episodeNum={5} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

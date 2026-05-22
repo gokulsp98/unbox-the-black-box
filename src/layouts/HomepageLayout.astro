@@ -1,0 +1,15 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+
+interface Props {
+  title: string;
+  inlineStyle?: string;
+}
+
+const { title, inlineStyle } = Astro.props;
+---
+<BaseLayout title={title} inlineStyle={inlineStyle}>
+  <Nav />
+  <slot />
+</BaseLayout>

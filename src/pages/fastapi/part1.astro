@@ -1,0 +1,661 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { fastapiSeries } from '../../data/series';
+const inlineStyle = `
+::selection{background:#00b894;color:#fff}
+
+.part1-hero{background:linear-gradient(135deg,#00b894 0%,#0984e3 60%,#6c5ce7 100%)}
+
+.part1-num{color:#00b894;background:#e8f8f5}
+
+/* ── Hero Art: Stack Layers ── */
+.stack-art{margin:2.5rem auto 0;animation:fadeInUp 1.5s ease;display:flex;flex-direction:column;align-items:center;gap:0.5rem;max-width:16rem}
+.stack-layer{font-family:'Fira Code',monospace;font-size:0.75rem;font-weight:700;padding:0.5rem 1.25rem;border-radius:0.5rem;text-align:center;width:100%;position:relative;transition:transform 0.3s}
+.stack-layer:hover{transform:scale(1.05)}
+.sl-browser{background:rgba(255,255,255,0.2);color:#fff;border:0.0625rem solid rgba(255,255,255,0.6);width:100%}
+.sl-gunicorn{background:rgba(108,92,231,0.5);color:#fff;border:0.0625rem solid #a29bfe;width:88%}
+.sl-uvicorn{background:rgba(9,132,227,0.5);color:#fff;border:0.0625rem solid #74b9ff;width:76%}
+.sl-fastapi{background:rgba(0,184,148,0.5);color:#fff;border:0.0625rem solid #55efc4;width:64%}
+.stack-arrow{color:rgba(255,255,255,0.7);font-size:0.9rem;animation:arrowPulse 2s ease infinite}
+.hero-label-text{font-family:'Fira Code',monospace;font-size:0.75rem;color:rgba(255,255,255,0.85);letter-spacing:0.125rem;text-align:center;margin-top:0.75rem}
+
+/* ── Stage Cards ── */
+.stage-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;max-width:50rem;margin:2rem auto;padding:0 1.5rem}
+.stage-card{background:#1e272e;border-radius:1rem;padding:1.5rem;text-align:left;transition:transform 0.3s;border:0.0625rem solid #485460}
+.stage-card:hover{transform:translateY(-0.25rem)}
+.stage-badge{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;padding:0.3rem 0.75rem;border-radius:0.375rem;display:inline-block;margin-bottom:0.75rem;letter-spacing:0.0625rem}
+.sb-dev{background:rgba(0,184,148,0.3);color:#55efc4;border:0.0625rem solid #55efc4}
+.sb-simple{background:rgba(9,132,227,0.3);color:#74b9ff;border:0.0625rem solid #74b9ff}
+.sb-prod{background:rgba(108,92,231,0.3);color:#a29bfe;border:0.0625rem solid #a29bfe}
+.stage-cmd{font-family:'Fira Code',monospace;font-size:0.8rem;color:#fff;margin-bottom:0.75rem;line-height:1.5;font-weight:600}
+.stage-tree{font-family:'Fira Code',monospace;font-size:0.75rem;color:#dfe6e9;line-height:1.7}
+.stage-tree strong{color:#fff;font-weight:800}
+@media(max-width:37.5rem){.stage-grid{grid-template-columns:1fr}}
+
+/* ── Layer Cards ── */
+.layer-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;max-width:50rem;margin:2rem auto;padding:0 1.5rem}
+.layer-card{border-radius:1rem;padding:1.25rem 1.5rem;display:flex;align-items:flex-start;gap:1rem}
+.layer-icon{font-size:1.5rem;flex-shrink:0;margin-top:0.125rem}
+.layer-card h4{font-size:1rem;font-weight:800;margin-bottom:0.25rem}
+.layer-card p{font-size:0.85rem;line-height:1.6;color:#555}
+.lc-gunicorn{background:#f0efff;border:0.125rem solid #d5ccff}
+.lc-gunicorn h4{color:#6c5ce7}
+.lc-uvicorn{background:#e3f2fd;border:0.125rem solid #90caf9}
+.lc-uvicorn h4{color:#0984e3}
+.lc-fastapi{background:#e8f8f5;border:0.125rem solid #b8f0e0}
+.lc-fastapi h4{color:#00b894}
+.lc-yours{background:#fef5e7;border:0.125rem solid #fdd9b5}
+.lc-yours h4{color:#e17055}
+@media(max-width:37.5rem){.layer-grid{grid-template-columns:1fr}}
+
+/* ── Production Stack Diagram ── */
+.prod-stack{max-width:32rem;margin:2rem auto;padding:0 1.5rem}
+.ps-box{background:#1e272e;border-radius:1rem;padding:1.5rem;position:relative;border:0.0625rem solid #485460}
+.ps-label{font-family:'Fira Code',monospace;font-size:0.75rem;font-weight:700;color:#fff;margin-bottom:0.75rem;letter-spacing:0.0625rem}
+.ps-workers{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.ps-worker{background:rgba(9,132,227,0.2);border:0.0625rem solid #74b9ff;border-radius:0.75rem;padding:0.875rem;text-align:center}
+.ps-worker-label{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#74b9ff;margin-bottom:0.375rem}
+.ps-worker-inner{font-family:'Fira Code',monospace;font-size:0.65rem;color:#dfe6e9;line-height:1.6}
+.ps-worker-inner span{color:#55efc4;font-weight:700}
+@media(max-width:37.5rem){.ps-workers{grid-template-columns:1fr}}
+
+/* ── Unwrap: what fastapi dev does ── */
+.unwrap{max-width:30rem;margin:2rem auto;padding:0 1.5rem}
+.uw-box{background:#1e272e;border-radius:1rem;padding:1.5rem;border:0.0625rem solid #485460}
+.uw-cmd{font-family:'Fira Code',monospace;font-size:0.85rem;font-weight:700;color:#55efc4;text-align:center;margin-bottom:1rem}
+.uw-checks{list-style:none;padding:0;margin:0 0 1rem}
+.uw-checks li{font-family:'Fira Code',monospace;font-size:0.75rem;color:#dfe6e9;padding:0.375rem 0;padding-left:1.5rem;position:relative}
+.uw-checks li::before{content:'✓';position:absolute;left:0;color:#55efc4;font-weight:700}
+.uw-then{text-align:center;font-family:'Fira Code',monospace;font-size:0.7rem;color:#636e72;margin:0.25rem 0 0.75rem}
+.uw-result{font-family:'Fira Code',monospace;font-size:0.8rem;color:#74b9ff;text-align:center;background:rgba(9,132,227,0.15);padding:0.625rem;border-radius:0.5rem;border:0.0625rem solid rgba(9,132,227,0.3)}
+
+/* ── Story Flow: vertical request journey ── */
+.story-flow{max-width:28rem;margin:2rem auto;padding:0 1.5rem;display:flex;flex-direction:column;align-items:center}
+.sf-step{width:100%;border-radius:0.75rem;padding:0.875rem 1.25rem;text-align:center}
+.sf-label{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;letter-spacing:0.0625rem;margin-bottom:0.25rem}
+.sf-desc{font-family:'Fira Code',monospace;font-size:0.75rem;line-height:1.6}
+.sf-connector{display:flex;flex-direction:column;align-items:center;padding:0.25rem 0}
+.sf-conn-line{width:0.125rem;height:0.5rem;background:#ddd}
+.sf-conn-text{font-family:'Fira Code',monospace;font-size:0.65rem;color:#888;background:#f8f8f8;padding:0.1875rem 0.625rem;border-radius:1rem;white-space:nowrap}
+.sf-client{background:#2d3436;border:0.0625rem solid #636e72}
+.sf-client .sf-label,.sf-client .sf-desc{color:#dfe6e9}
+.sf-gunicorn{background:#f0efff;border:0.125rem solid #d5ccff}
+.sf-gunicorn .sf-label{color:#6c5ce7}.sf-gunicorn .sf-desc{color:#555}
+.sf-uvicorn{background:#e3f2fd;border:0.125rem solid #90caf9}
+.sf-uvicorn .sf-label{color:#0984e3}.sf-uvicorn .sf-desc{color:#555}
+.sf-fastapi{background:#e8f8f5;border:0.125rem solid #b8f0e0}
+.sf-fastapi .sf-label{color:#00b894}.sf-fastapi .sf-desc{color:#555}
+.sf-yourcode{background:#fef5e7;border:0.125rem solid #fdd9b5}
+.sf-yourcode .sf-label{color:#e17055}.sf-yourcode .sf-desc{color:#555}
+.sf-return{margin-top:0.75rem;width:100%;text-align:center;padding:0.75rem;border-radius:0.75rem;background:#f9f9f9;border:0.0625rem dashed #ccc}
+.sf-return-title{font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;color:#888;margin-bottom:0.25rem;letter-spacing:0.0625rem}
+.sf-return-text{font-family:'Fira Code',monospace;font-size:0.7rem;color:#555}
+
+/* ── Annotation labels for mental model ── */
+.mm-note{font-family:'Fira Code',monospace;font-size:0.6rem;color:#b2bec3;letter-spacing:0.0625rem;margin-top:0.375rem;text-align:center}
+.mm-note-green{color:#55efc4}.mm-note-blue{color:#74b9ff}.mm-note-purple{color:#a29bfe}
+
+/* ── Quiz theming: Episode 1 ── */
+.quiz-ep1 .quiz-q-num{color:#00b894;background:#e8f8f5}
+.quiz-ep1 .quiz-reveal-btn{color:#00b894}
+.quiz-ep1 .quiz-opt-letter{color:#00b894}
+.quiz-ep1 .quiz-option:hover{border-color:#00b894;background:#f0fdf9}
+.quiz-ep1 .quiz-answer-highlight{background:#e8f8f5;border-left:0.25rem solid #00b894}
+.quiz-ep1 .quiz-sequence-item:hover{border-color:#00b894;background:#f0fdf9}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero part1-hero">
+  <div class="hero-badge">Episode 1 of 7</div>
+  <h1>What Happens When<br>You Hit It</h1>
+  <p style="color:rgba(255,255,255,0.95)">You run <code style="background:rgba(255,255,255,0.25);padding:0.125rem 0.5rem;border-radius:0.25rem">fastapi dev</code> and it works. But what's actually happening between your terminal and that JSON response?</p>
+
+  <div class="stack-art">
+    <div class="stack-layer sl-browser">Browser / Client</div>
+    <div class="stack-arrow">&#8595;</div>
+    <div class="stack-layer sl-gunicorn">Gunicorn</div>
+    <div class="stack-arrow">&#8595;</div>
+    <div class="stack-layer sl-uvicorn">Uvicorn</div>
+    <div class="stack-arrow">&#8595;</div>
+    <div class="stack-layer sl-fastapi">FastAPI + Your Code</div>
+  </div>
+  <div class="hero-label-text">every request passes through layers</div>
+</section>
+
+<!-- SECTION 01: DEV MODE -->
+<section class="section reveal">
+  <span class="section-num part1-num">01</span>
+  <h2>How You Run It in Development</h2>
+  <p>Here's the app everyone starts with:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">from</span> fastapi <span class="code-keyword">import</span> FastAPI
+
+app = FastAPI()
+
+<span class="code-keyword">@app.get</span>(<span class="code-string">"/hello"</span>)
+<span class="code-keyword">async def</span> <span class="code-string">hello</span>():
+    <span class="code-keyword">return</span> {<span class="code-string">"message"</span>: <span class="code-string">"Hello, world!"</span>}</pre>
+  </div>
+
+  <p>In development, you run it like this:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">fastapi dev</span> main.py</pre>
+  </div>
+
+  <p>That's it. You open <code>http://localhost:8000/hello</code> and see a JSON response. No server config, no setup, no extra tools.</p>
+  <p>But here's the thing — <code>fastapi dev</code> is a convenience wrapper. Under the hood, it's doing this:</p>
+</section>
+
+<div class="unwrap reveal">
+  <div class="uw-box">
+    <div class="uw-cmd">$ fastapi dev main.py</div>
+    <ul class="uw-checks">
+      <li>Finds your <strong style="color:#fff">app</strong> object automatically</li>
+      <li>Enables <strong style="color:#feca57">--reload</strong> (hot reload on file changes)</li>
+      <li>Binds to <strong style="color:#74b9ff">127.0.0.1</strong> (localhost only)</li>
+      <li>Sets port <strong style="color:#74b9ff">8000</strong></li>
+    </ul>
+    <div class="uw-then">&#8595; then secretly runs &#8595;</div>
+    <div class="uw-result">uvicorn main:app --reload --host 127.0.0.1 --port 8000</div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>It starts <span class="highlight">Uvicorn</span> for you — with auto-reload enabled so changes reflect instantly. It also auto-discovers your <code>app</code> object, so you don't need to specify <code>main:app</code> yourself. You just don't see any of it.</p>
+  <p>So why not use <code>fastapi dev</code> in production? Because it forces <span class="highlight-orange">auto-reload ON</span> (wastes CPU, causes brief restarts on every file change) and binds to <span class="highlight-orange">127.0.0.1 only</span> (localhost — external traffic can't reach your server). In production, you run Uvicorn directly with <code>--host 0.0.0.0</code> and no reload.</p>
+  <p>So even in dev mode, there's already a hidden layer: <span class="highlight">Uvicorn, an HTTP server</span>. FastAPI never touches the network directly.</p>
+</section>
+
+<!-- SECTION 02: THREE STAGES -->
+<section class="section reveal">
+  <span class="section-num part1-num">02</span>
+  <h2>From Dev to Production: The Three Stages</h2>
+  <p>As your app grows from your laptop to serving real users, the stack grows too:</p>
+</section>
+
+<div class="stage-grid reveal">
+  <div class="stage-card">
+    <span class="stage-badge sb-dev">DEVELOPMENT</span>
+    <div class="stage-cmd">fastapi dev main.py</div>
+    <div class="stage-tree">
+      <strong>Uvicorn</strong> (1 worker, reload ON)<br>
+      &nbsp;&nbsp;&#9492;&#9472; FastAPI app
+    </div>
+  </div>
+  <div class="stage-card">
+    <span class="stage-badge sb-simple">SIMPLE PRODUCTION</span>
+    <div class="stage-cmd">uvicorn main:app<br>--host 0.0.0.0 --port 8000</div>
+    <div class="stage-tree">
+      <strong>Uvicorn</strong> (1 worker, no reload)<br>
+      &nbsp;&nbsp;&#9492;&#9472; FastAPI app
+    </div>
+  </div>
+  <div class="stage-card">
+    <span class="stage-badge sb-prod">REAL PRODUCTION</span>
+    <div class="stage-cmd">gunicorn main:app<br>-k uvicorn.workers.UvicornWorker -w 4</div>
+    <div class="stage-tree">
+      <strong>Gunicorn</strong> (process manager)<br>
+      &nbsp;&nbsp;&#9500;&#9472; Uvicorn Worker 1 &#8594; FastAPI<br>
+      &nbsp;&nbsp;&#9500;&#9472; Uvicorn Worker 2 &#8594; FastAPI<br>
+      &nbsp;&nbsp;&#9500;&#9472; Uvicorn Worker 3 &#8594; FastAPI<br>
+      &nbsp;&nbsp;&#9492;&#9472; Uvicorn Worker 4 &#8594; FastAPI
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>One process handling requests in dev. One hardened process in simple production. <span class="highlight-green">Four parallel workers</span> in real production — four requests getting CPU time simultaneously.</p>
+  <p>But what does each piece actually do? Let's break it down.</p>
+</section>
+
+<!-- SECTION 03: WHO DOES WHAT -->
+<section class="section reveal">
+  <span class="section-num part1-num">03</span>
+  <h2>The Stack: Who Does What</h2>
+  <p>Every request passes through multiple layers. Each layer has exactly one job:</p>
+</section>
+
+<div class="story-flow reveal">
+  <div class="sf-step sf-client">
+    <div class="sf-label">BROWSER / CLIENT</div>
+    <div class="sf-desc">GET /hello HTTP/1.1</div>
+  </div>
+  <div class="sf-connector">
+    <div class="sf-conn-line"></div>
+    <div class="sf-conn-text">raw HTTP bytes over TCP</div>
+    <div class="sf-conn-line"></div>
+  </div>
+  <div class="sf-step sf-gunicorn">
+    <div class="sf-label">GUNICORN</div>
+    <div class="sf-desc">"Which worker is free?" &#8594; forwards to Worker 3</div>
+  </div>
+  <div class="sf-connector">
+    <div class="sf-conn-line"></div>
+    <div class="sf-conn-text">connection handed to worker process</div>
+    <div class="sf-conn-line"></div>
+  </div>
+  <div class="sf-step sf-uvicorn">
+    <div class="sf-label">UVICORN</div>
+    <div class="sf-desc">Parses HTTP bytes &#8594; creates Python dict (scope)</div>
+  </div>
+  <div class="sf-connector">
+    <div class="sf-conn-line"></div>
+    <div class="sf-conn-text">ASGI call: scope + receive + send</div>
+    <div class="sf-conn-line"></div>
+  </div>
+  <div class="sf-step sf-fastapi">
+    <div class="sf-label">FASTAPI</div>
+    <div class="sf-desc">Matches @app.get("/hello") &#8594; validates &#8594; calls hello()</div>
+  </div>
+  <div class="sf-connector">
+    <div class="sf-conn-line"></div>
+    <div class="sf-conn-text">calls your function</div>
+    <div class="sf-conn-line"></div>
+  </div>
+  <div class="sf-step sf-yourcode">
+    <div class="sf-label">YOUR FUNCTION</div>
+    <div class="sf-desc">return {"message": "Hello, world!"}</div>
+  </div>
+  <div class="sf-return">
+    <div class="sf-return-title">&#8593; RESPONSE FLOWS BACK UP &#8593;</div>
+    <div class="sf-return-text">dict &#8594; JSON &#8594; HTTP bytes &#8594; Client</div>
+  </div>
+</div>
+
+<div class="layer-grid reveal">
+  <div class="layer-card lc-gunicorn">
+    <div class="layer-icon">&#128188;</div>
+    <div>
+      <h4>Gunicorn — The Manager</h4>
+      <p>Spawns and supervises multiple worker processes. Restarts them if they crash. Doesn't handle HTTP itself.</p>
+    </div>
+  </div>
+  <div class="layer-card lc-uvicorn">
+    <div class="layer-icon">&#128066;</div>
+    <div>
+      <h4>Uvicorn — The Ears</h4>
+      <p>Listens for HTTP, parses requests, sends responses. Each worker runs one Uvicorn instance.</p>
+    </div>
+  </div>
+  <div class="layer-card lc-fastapi">
+    <div class="layer-icon">&#129504;</div>
+    <div>
+      <h4>FastAPI — The Brain</h4>
+      <p>Routes requests, validates data, generates docs. The intelligence layer.</p>
+    </div>
+  </div>
+  <div class="layer-card lc-yours">
+    <div class="layer-icon">&#9997;</div>
+    <div>
+      <h4>Your Function — The Hands</h4>
+      <p>Does the actual work — DB queries, calculations, API calls.</p>
+    </div>
+  </div>
+</div>
+
+<div class="analogy reveal">
+  <p>Imagine a <strong>restaurant</strong>. The <strong>owner</strong> (Gunicorn) hires multiple waitstaff and makes sure shifts are covered — but never takes orders himself. Each <strong>waiter</strong> (Uvicorn) stands at the door, seats customers, and carries plates. The <strong>menu system</strong> (FastAPI) checks if the order is valid and routes it to the right kitchen station. The <strong>chef</strong> (your function) actually cooks.</p>
+</div>
+
+<!-- SECTION 04: WHY THREE LAYERS -->
+<section class="section reveal">
+  <span class="section-num part1-num">04</span>
+  <h2>Why Three Layers? Can't One Do Everything?</h2>
+  <p>This is the question everyone asks. Let's see why each layer exists:</p>
+
+  <h3 style="margin-top:2rem;font-size:1.2rem;color:#0984e3">Why can't FastAPI handle HTTP?</h3>
+  <p>Handling HTTP connections is hard, low-level work — opening TCP sockets, managing thousands of simultaneous connections, parsing raw HTTP bytes, handling keep-alive and timeouts. This has nothing to do with your business logic. So FastAPI doesn't — it delegates to Uvicorn.</p>
+
+  <h3 style="margin-top:2rem;font-size:1.2rem;color:#6c5ce7">Can Uvicorn run in production without Gunicorn?</h3>
+  <p>Yes — and many apps do, especially in containers where Kubernetes or ECS handles restarts and scaling. Uvicorn even has a <code>--workers 4</code> flag to spawn multiple processes.</p>
+  <p>But Uvicorn is primarily a <span class="highlight">single-process ASGI server</span> — process management isn't its core strength. Gunicorn is purpose-built for it: graceful restarts (zero-downtime deploys), automatic crash recovery, pre-fork model. For high-traffic production without a container orchestrator, Gunicorn adds that layer of robustness.</p>
+
+  <h3 style="margin-top:2rem;font-size:1.2rem;color:#00b894">Why not just use Gunicorn alone?</h3>
+  <p>Gunicorn was built for <span class="highlight-orange">WSGI</span> — the older, synchronous Python web standard. It doesn't natively speak <span class="highlight">ASGI</span> (the async standard FastAPI uses). So Gunicorn manages the processes, but each process runs a Uvicorn worker that handles the actual async HTTP.</p>
+</section>
+
+<div class="analogy reveal">
+  <p>Your phone has a <strong>cellular radio</strong> (connects to towers), an <strong>operating system</strong> (manages apps), and <strong>apps</strong> (do useful things). The apps don't connect to towers. The radio doesn't manage apps. The OS doesn't display your photos. Three layers, each with a clear purpose.</p>
+</div>
+
+<!-- SECTION 05: LIFE OF A REQUEST -->
+<section class="section reveal">
+  <span class="section-num part1-num">05</span>
+  <h2>Step by Step: The Life of a Request</h2>
+  <p>Let's trace exactly what happens when your browser hits <code>GET /hello</code>:</p>
+</section>
+
+<div class="timeline reveal" style="max-width:43.75rem;margin:2.5rem auto;padding:0 1.5rem 0 4rem">
+  <div class="timeline-item">
+    <div class="timeline-year">Step 1 — Browser</div>
+    <div class="timeline-text">Browser sends a raw HTTP request over TCP to port 8000</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">Step 2 — Uvicorn receives</div>
+    <div class="timeline-text">Uvicorn accepts the TCP connection, parses the HTTP — extracts method (<code>GET</code>), path (<code>/hello</code>), headers</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">Step 3 — Uvicorn creates scope</div>
+    <div class="timeline-text">Creates a Python dict called a <strong>scope</strong> — a standardized way to represent the request</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">Step 4 — ASGI handoff</div>
+    <div class="timeline-text">Calls your FastAPI app using the <strong>ASGI interface</strong> <span class="timeline-chip">the contract</span></div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">Step 5 — FastAPI routes</div>
+    <div class="timeline-text">FastAPI matches the URL, validates input, resolves dependencies, calls your function</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">Step 6 — Your function runs</div>
+    <div class="timeline-text">Returns <code>{"message": "Hello, world!"}</code> — just a plain Python dict</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">Step 7 — FastAPI responds</div>
+    <div class="timeline-text">Serializes your dict to JSON, sets status <code>200 OK</code> and <code>Content-Type: application/json</code></div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">Step 8 — Uvicorn sends back</div>
+    <div class="timeline-text">Formats it as raw HTTP bytes and sends the response back over TCP</div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>The raw HTTP request your browser sends:</p>
+  <div class="code-block">
+    <pre><span class="code-keyword">GET</span> /hello <span class="code-comment">HTTP/1.1</span>
+<span class="code-string">Host:</span> localhost:8000
+<span class="code-string">Accept:</span> application/json</pre>
+  </div>
+
+  <p>The raw HTTP response Uvicorn sends back:</p>
+  <div class="code-block">
+    <pre><span class="code-comment">HTTP/1.1</span> <span class="code-keyword">200 OK</span>
+<span class="code-string">Content-Type:</span> application/json
+<span class="code-string">Content-Length:</span> 27
+
+<span class="code-keyword">{"message":"Hello, world!"}</span></pre>
+  </div>
+
+  <p>Total time: usually <span class="highlight-green">under 1 millisecond</span> for a simple endpoint.</p>
+</section>
+
+<!-- SECTION 06: ASGI -->
+<section class="section reveal">
+  <span class="section-num part1-num">06</span>
+  <h2>What is ASGI? The Contract Between Server and App</h2>
+  <p>For Uvicorn and FastAPI to work together, they need a shared contract — a standard that says "here's how a server talks to an app." That contract is <span class="highlight">ASGI</span> — <strong>Asynchronous Server Gateway Interface</strong>.</p>
+  <p>ASGI says: the server will call your app as a Python callable, passing three things:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment"># What an ASGI app looks like at the lowest level</span>
+<span class="code-keyword">async def</span> <span class="code-string">app</span>(scope, receive, send):
+    <span class="code-comment"># scope   = dict with request info (method, path, headers)</span>
+    <span class="code-comment"># receive = async function to read request body</span>
+    <span class="code-comment"># send    = async function to send response</span>
+    ...</pre>
+  </div>
+
+  <p>FastAPI implements this interface. So does Django Channels. So does Starlette. Uvicorn can talk to any of them — because it only cares about the interface, not the framework.</p>
+</section>
+
+<div class="reveal" style="max-width:50rem;margin:0 auto;padding:0 1.5rem">
+  <div class="flow">
+    <div class="flow-box fb-orange">Uvicorn<br><small>server</small></div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-dark">ASGI<br><small>contract</small></div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-green">Any Framework<br><small>FastAPI / Django / Starlette</small></div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>This is why <code>uvicorn main:app</code> works — Uvicorn imports <code>app</code> from <code>main.py</code> and calls it using the ASGI protocol. It doesn't know it's FastAPI.</p>
+
+  <h3 style="margin-top:2rem;font-size:1.2rem;color:#e17055">What about WSGI?</h3>
+  <p>Before ASGI, Python had <span class="highlight-orange">WSGI</span> — the synchronous version. Flask and traditional Django use WSGI.</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">              WSGI                    ASGI</span>
+<span class="code-keyword">Style</span>         Synchronous             Asynchronous
+<span class="code-keyword">One request</span>   Blocks the thread       Can pause, let others run
+<span class="code-keyword">Concurrency</span>   One request per thread   Thousands per thread
+<span class="code-keyword">Server</span>        Gunicorn (native)       Uvicorn
+<span class="code-keyword">Frameworks</span>    Flask, Django           FastAPI, Django Channels</pre>
+  </div>
+
+  <p>ASGI exists because async Python (<code>async</code>/<code>await</code>) made it possible to handle many requests with a single thread — which is exactly what makes FastAPI fast. We'll dig deep into this in Episodes 3 and 4.</p>
+</section>
+
+<!-- SECTION 07: STARLETTE -->
+<section class="section reveal">
+  <span class="section-num part1-num">07</span>
+  <h2>The Hidden Layer: Starlette</h2>
+  <p>Here's a detail most tutorials skip: FastAPI is built on top of <span class="highlight">another framework</span>.</p>
+</section>
+
+<div class="reveal" style="max-width:50rem;margin:0 auto;padding:0 1.5rem">
+  <div class="flow">
+    <div class="flow-box fb-green">FastAPI<br><small>your interface</small></div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-purple">Starlette<br><small>ASGI framework</small></div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-dark">AnyIO<br><small>async compat</small></div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>And for data validation:</p>
+</section>
+
+<div class="reveal" style="max-width:30rem;margin:0 auto;padding:0 1.5rem">
+  <div class="flow">
+    <div class="flow-box fb-green">FastAPI<br><small>uses</small></div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-orange">Pydantic<br><small>data validation</small></div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p><span class="highlight">Starlette</span> handles the core web stuff — routing, middleware, request/response objects, WebSockets. FastAPI adds the magic on top — automatic validation from type hints, dependency injection, and auto-generated OpenAPI docs.</p>
+  <p>You rarely interact with Starlette directly. But knowing it's there explains why FastAPI is fast — Starlette is one of the <span class="highlight-green">fastest Python web frameworks</span>, and FastAPI inherits all of that.</p>
+</section>
+
+<!-- SECTION 08: COMPLETE MENTAL MODEL -->
+<section class="section reveal">
+  <span class="section-num part1-num">08</span>
+  <h2>The Complete Mental Model</h2>
+  <p>Here's the full picture — from the machine (or pod) all the way down to your code:</p>
+
+  <h3 style="margin-top:2rem;font-size:1.2rem;color:#00b894">Development</h3>
+</section>
+
+<div class="reveal" style="max-width:26rem;margin:0 auto;padding:0 1.5rem">
+  <div style="background:#1e272e;border-radius:1rem;padding:1.25rem;text-align:center;border:0.0625rem solid #485460">
+    <div style="font-family:'Fira Code',monospace;font-size:0.65rem;color:#b2bec3;margin-bottom:0.5rem;letter-spacing:0.0625rem">YOUR LAPTOP</div>
+    <div style="font-family:'Fira Code',monospace;font-size:0.75rem;color:#fff;margin-bottom:0.25rem;letter-spacing:0.0625rem;font-weight:700">fastapi dev main.py</div>
+    <div class="mm-note" style="margin-bottom:0.75rem">localhost:8000 &#183; auto-reload ON</div>
+    <div style="background:rgba(9,132,227,0.2);border:0.0625rem solid #74b9ff;border-radius:0.75rem;padding:0.875rem">
+      <div style="font-family:'Fira Code',monospace;font-size:0.75rem;font-weight:700;color:#74b9ff;margin-bottom:0.125rem">Uvicorn (1 worker)</div>
+      <div class="mm-note mm-note-blue" style="margin-bottom:0.5rem">listens on port 8000 &#183; handles HTTP</div>
+      <div style="background:rgba(0,184,148,0.2);border:0.0625rem solid #55efc4;border-radius:0.5rem;padding:0.5rem">
+        <div style="font-family:'Fira Code',monospace;font-size:0.7rem;color:#55efc4;font-weight:700">FastAPI &#8594; Your code</div>
+        <div class="mm-note mm-note-green">routes &#183; validates &#183; returns JSON</div>
+      </div>
+    </div>
+    <div class="mm-note" style="margin-top:0.625rem">1 request gets CPU at a time</div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <h3 style="margin-top:2rem;font-size:1.2rem;color:#6c5ce7">Production</h3>
+</section>
+
+<div class="prod-stack reveal">
+  <div class="ps-box">
+    <div style="font-family:'Fira Code',monospace;font-size:0.65rem;color:#b2bec3;margin-bottom:0.5rem;letter-spacing:0.0625rem;text-align:center">SERVER / POD</div>
+    <div class="ps-label">GUNICORN (PROCESS MANAGER)</div>
+    <div class="mm-note mm-note-purple" style="margin-bottom:0.75rem;text-align:left">spawns workers &#183; restarts crashes &#183; zero-downtime deploys</div>
+    <div class="ps-workers">
+      <div class="ps-worker">
+        <div class="ps-worker-label">Uvicorn W1</div>
+        <div class="ps-worker-inner">&#9492;&#9472; FastAPI<br>&nbsp;&nbsp;&#9492;&#9472; <span>Code</span></div>
+      </div>
+      <div class="ps-worker">
+        <div class="ps-worker-label">Uvicorn W2</div>
+        <div class="ps-worker-inner">&#9492;&#9472; FastAPI<br>&nbsp;&nbsp;&#9492;&#9472; <span>Code</span></div>
+      </div>
+      <div class="ps-worker">
+        <div class="ps-worker-label">Uvicorn W3</div>
+        <div class="ps-worker-inner">&#9492;&#9472; FastAPI<br>&nbsp;&nbsp;&#9492;&#9472; <span>Code</span></div>
+      </div>
+      <div class="ps-worker">
+        <div class="ps-worker-label">Uvicorn W4</div>
+        <div class="ps-worker-inner">&#9492;&#9472; FastAPI<br>&nbsp;&nbsp;&#9492;&#9472; <span>Code</span></div>
+      </div>
+    </div>
+    <div class="mm-note" style="margin-top:0.75rem">each worker = separate process &#183; 4 workers = 4 requests get CPU in parallel</div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p><strong>Key takeaway:</strong> FastAPI is not a server. It's an application framework that plugs into a server (Uvicorn) via a standard interface (ASGI). In dev mode, <code>fastapi dev</code> hides this from you. In production, Gunicorn adds process management on top.</p>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">fastapi dev is a convenience</strong> — it secretly runs Uvicorn with auto-reload behind the scenes.
+    </div>
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">Uvicorn is the HTTP server</strong> — it listens on a port, parses HTTP, and manages connections. FastAPI can't do this alone.
+    </div>
+    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
+      <strong style="color:#6c5ce7">Gunicorn is the process manager</strong> — it spawns multiple Uvicorn workers so your app can use multiple CPU cores.
+    </div>
+    <div style="background:#fef5e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">FastAPI is the application framework</strong> — it routes requests, validates input, and generates docs. No networking.
+    </div>
+    <div style="background:#ffeef7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e84393">
+      <strong style="color:#e84393">ASGI is the contract</strong> — a simple interface (scope, receive, send) that lets any ASGI server talk to any ASGI app.
+    </div>
+    <div style="background:#e0fafa;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00cec9">
+      <strong style="color:#00cec9">Starlette is the hidden layer</strong> — the web framework FastAPI is built on. It handles routing, middleware, and request/response objects.
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep1">
+  <span class="section-num part1-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <!-- Q1 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 01</span>
+      <span class="quiz-type-tag">MULTIPLE CHOICE</span>
+    </div>
+    <p class="quiz-question">When you run <code>fastapi dev main.py</code>, which process is actually listening on port 8000?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>FastAPI directly</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Gunicorn</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Uvicorn</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Python's built-in http.server</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) Uvicorn</strong></div>
+        <p class="quiz-answer-text"><code>fastapi dev</code> is a convenience wrapper that secretly runs <code>uvicorn main:app --reload</code>. FastAPI is an application framework with no networking capability — Uvicorn is the server that owns the port.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 02</span>
+      <span class="quiz-type-tag">SEQUENCE</span>
+    </div>
+    <p class="quiz-question">A request arrives from a browser. Put these layers in the correct order it passes through:</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Client → FastAPI → Uvicorn → Gunicorn → Your Function</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Client → Gunicorn → Uvicorn → FastAPI → Your Function</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Client → Uvicorn → Gunicorn → FastAPI → Your Function</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Client → Gunicorn → FastAPI → Uvicorn → Your Function</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) Client → Gunicorn → Uvicorn → FastAPI → Your Function</strong></div>
+        <p class="quiz-answer-text">Each layer has one job and passes the request inward.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 03</span>
+      <span class="quiz-type-tag">TRUE / FALSE</span>
+    </div>
+    <p class="quiz-question">FastAPI directly handles TCP connections and reads raw bytes from the network.</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>True</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>False</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) False</strong></div>
+        <p class="quiz-answer-text">FastAPI never touches the network. Uvicorn handles TCP connections, parses HTTP, and passes structured data to FastAPI via the ASGI interface.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 04</span>
+      <span class="quiz-type-tag">MULTIPLE CHOICE</span>
+    </div>
+    <p class="quiz-question">What are the three arguments in the ASGI interface that Uvicorn passes to FastAPI?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>request, response, next</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>scope, receive, send</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>method, path, body</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>host, port, handler</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) scope, receive, send</strong></div>
+        <p class="quiz-answer-text"><code>scope</code> contains request metadata (method, path, headers), <code>receive</code> is an async callable to read the body, and <code>send</code> is an async callable to write the response.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- NEXT EPISODE -->
+<section class="next-part" style="background:linear-gradient(135deg,#00b894,#0984e3)">
+  <h2>Ready for Episode 2?</h2>
+  <p>We'll look inside Uvicorn — how a Python server handles HTTP at near-C speed, what uvloop and httptools are, and why "written in Python" doesn't mean slow.</p>
+  <a href="part2.html" class="btn btn-white" style="color:#00b894">Continue to Episode 2 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How FastAPI Works — Episode 1: What Happens When You Hit It | Unbox the Black Box" inlineStyle={inlineStyle} series={fastapiSeries} episodeNum={1} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

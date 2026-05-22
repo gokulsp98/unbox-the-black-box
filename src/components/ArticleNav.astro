@@ -1,0 +1,30 @@
+---
+import type { Series } from '../data/series';
+
+interface Props {
+  series: Series;
+  episodeNum: number;
+}
+
+const { series, episodeNum } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const current = series.episodes.find(ep => ep.num === episodeNum)!;
+---
+<nav class="nav">
+  <a href={`${base}`} class="nav-title"><span class="nav-title-sub">Gokul's Learning Journal</span><span class="nav-title-main">Unbox the Black Box</span></a>
+  <div class="nav-ep" onclick="this.classList.toggle('open')">
+    <div class="nav-ep-text">
+      <span class="nav-series-name">{series.name}</span>
+      <span class="nav-ep-current">Ep {episodeNum} of {series.episodes.length}</span>
+    </div>
+    <div class="nav-progress"><div class="nav-progress-fill" style={`width:${current.progress}%`}></div></div>
+    <span class="nav-ep-arrow">&#9660;</span>
+    <div class="nav-dropdown">
+      {series.episodes.map(ep => (
+        <a href={`${base}${series.folder}/${ep.slug}.html`} class={ep.num === episodeNum ? 'active' : ''}>
+          <span class="ep-num">{String(ep.num).padStart(2, '0')}</span> {ep.title}
+        </a>
+      ))}
+    </div>
+  </div>
+</nav>

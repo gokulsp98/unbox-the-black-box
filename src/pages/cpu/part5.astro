@@ -1,11 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How Your Code Runs — Episode 5: Python — Binary One Line At A Time | Unbox the Black Box</title>
-<link rel="stylesheet" href="../style.css">
-<style>
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { cpuSeries } from '../../data/series';
+const inlineStyle = `
 ::selection{background:#fdcb6e;color:#2d3436}
 
 .part5-hero{background:linear-gradient(135deg,#fdcb6e 0%,#e17055 50%,#d63031 100%)}
@@ -55,31 +51,8 @@
 .glue-c{background:linear-gradient(90deg,#00b894,#0984e3);color:#fff}
 .glue-cpu{background:rgba(255,255,255,0.08);color:#b2bec3;border:1px solid rgba(255,255,255,0.15)}
 .glue-label{font-size:0.65rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:2px;margin-top:0.5rem}
-</style>
-</head>
-<body>
-
-<!-- NAV -->
-<nav class="nav">
-  <a href="../index.html" class="nav-title"><span class="nav-title-sub">Gokul's Learning Journal</span><span class="nav-title-main">Unbox the Black Box</span></a>
-  <div class="nav-ep" onclick="this.classList.toggle('open')">
-    <div class="nav-ep-text">
-      <span class="nav-series-name">How Your Code Runs</span>
-      <span class="nav-ep-current">Ep 5 of 7</span>
-    </div>
-    <div class="nav-progress"><div class="nav-progress-fill" style="width:71%"></div></div>
-    <span class="nav-ep-arrow">&#9660;</span>
-    <div class="nav-dropdown">
-      <a href="part1.html"><span class="ep-num">01</span> The Brain of Your Computer</a>
-      <a href="part2.html"><span class="ep-num">02</span> The Bigger Picture</a>
-      <a href="part3.html"><span class="ep-num">03</span> C: The Journey to Binary</a>
-      <a href="part4.html"><span class="ep-num">04</span> Java: Binary While Running</a>
-      <a href="part5.html" class="active"><span class="ep-num">05</span> Python: Binary One Line At A Time</a>
-      <a href="part6.html"><span class="ep-num">06</span> JavaScript: Binary In Your Browser</a>
-      <a href="part7.html"><span class="ep-num">07</span> The Full Picture</a>
-    </div>
-  </div>
-</nav>
+`;
+const bodyHtml = `
 
 <!-- HERO -->
 <section class="hero part5-hero">
@@ -312,31 +285,8 @@ result = data * 2
   <p>JavaScript takes the most unique path of all — it ships source code directly to your browser. And we'll see all four languages side by side for the complete picture.</p>
   <a href="part6.html" class="btn btn-white" style="color:#e17055">Continue to Episode 6 &#10132;</a>
 </section>
-
-<footer class="footer">
-  <p>Unbox the Black Box - from confusion to clarity.<br>Built with ❤️ by <strong>Gokul</strong>.</p>
-</footer>
-
-<script>
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) entry.target.classList.add('visible');
-  });
-}, { threshold: 0.15 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-document.addEventListener('click', e => { if (!e.target.closest('.nav-ep')) document.querySelectorAll('.nav-ep').forEach(n => n.classList.remove('open')); });
-
-let currentLine = 0;
-const lines = document.querySelectorAll('.interp-line');
-if (lines.length) {
-  setInterval(() => {
-    lines.forEach(l => l.classList.remove('active'));
-    lines[currentLine].classList.add('active');
-    currentLine = (currentLine + 1) % lines.length;
-  }, 2000);
-}
-</script>
-<script data-goatcounter="https://gokulsp.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
-</body>
-</html>
+`;
+---
+<ArticleLayout title="How Your Code Runs — Episode 5: Python — Binary One Line At A Time | Unbox the Black Box" inlineStyle={inlineStyle} series={cpuSeries} episodeNum={5}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

@@ -1,0 +1,738 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { fastapiSeries } from '../../data/series';
+const inlineStyle = `
+::selection{background:#00cec9;color:#fff}
+
+.part3-hero{background:linear-gradient(135deg,#00cec9 0%,#0984e3 60%,#6c5ce7 100%)}
+
+.part3-num{color:#00cec9;background:#e0fafa}
+
+/* ── Hero Art: Orbiting Dots ── */
+.orbit-art{margin:2.5rem auto 0;position:relative;width:11rem;height:11rem;animation:fadeInUp 1.5s ease;display:flex;align-items:center;justify-content:center}
+.orbit-ring{position:absolute;width:9rem;height:9rem;border-radius:50%;border:0.125rem dashed rgba(255,255,255,0.3);top:50%;left:50%;transform:translate(-50%,-50%)}
+.orbit-center{font-family:'Fira Code',monospace;font-size:1rem;font-weight:700;color:rgba(255,255,255,0.9);z-index:2;text-align:center;line-height:1.2}
+.orbit-center small{display:block;font-size:0.55rem;letter-spacing:0.125rem;color:rgba(255,255,255,0.55);margin-top:0.2rem}
+.orbit-dot{position:absolute;width:2rem;height:2rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;font-size:0.45rem;font-weight:700;z-index:3;top:50%;left:50%;margin-top:-1rem;margin-left:-1rem}
+.od-a{background:#00cec9;color:#fff;animation:orbitA 3s linear infinite}
+.od-b{background:#0984e3;color:#fff;animation:orbitB 4.5s linear infinite}
+.od-c{background:#6c5ce7;color:#fff;animation:orbitC 6s linear infinite}
+@keyframes orbitA{from{transform:rotate(0deg) translateX(4.5rem) rotate(0deg)}to{transform:rotate(360deg) translateX(4.5rem) rotate(-360deg)}}
+@keyframes orbitB{from{transform:rotate(120deg) translateX(4.5rem) rotate(-120deg)}to{transform:rotate(480deg) translateX(4.5rem) rotate(-480deg)}}
+@keyframes orbitC{from{transform:rotate(240deg) translateX(4.5rem) rotate(-240deg)}to{transform:rotate(600deg) translateX(4.5rem) rotate(-600deg)}}
+
+/* ── Story Flow Diagram ── */
+.story-flow{display:flex;flex-direction:column;align-items:center;max-width:28rem;margin:2rem auto;padding:0 1.5rem;gap:0}
+.sf-step{width:100%;border-radius:0.875rem;padding:0.875rem 1.25rem;text-align:center}
+.sf-step-label{font-family:'Fira Code',monospace;font-size:0.72rem;font-weight:700;margin-bottom:0.2rem}
+.sf-step-sub{font-size:0.68rem;color:#555;line-height:1.4}
+.sf-active{background:rgba(0,206,201,0.15);border:0.125rem solid #b2f0ed}
+.sf-active .sf-step-label{color:#00cec9}
+.sf-idle{background:rgba(255,118,117,0.08);border:0.125rem dashed #ffcccc}
+.sf-idle .sf-step-label{color:#d63031}
+.sf-connector{display:flex;flex-direction:column;align-items:center;gap:0.2rem;padding:0.35rem 0}
+.sf-connector-line{width:0.125rem;height:1.25rem;background:rgba(100,110,120,0.3);border-radius:0.0625rem}
+.sf-connector-pill{background:#f8f8f8;border-radius:1rem;font-family:'Fira Code',monospace;font-size:0.65rem;color:#888;padding:0.15rem 0.6rem;white-space:nowrap}
+
+/* ── Event Loop Tick Diagram ── */
+.loop-cycle{display:flex;align-items:center;justify-content:center;gap:0;max-width:42rem;margin:2rem auto;padding:0 1.5rem;flex-wrap:nowrap}
+.loop-box{background:#2d3436;border:0.125rem solid #00cec9;border-radius:0.875rem;padding:0.875rem 1rem;text-align:center;min-width:6.5rem;position:relative}
+.loop-box-label{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#00cec9;margin-bottom:0.25rem}
+.loop-box-sub{font-size:0.65rem;color:#636e72;line-height:1.4}
+.loop-arrow-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 0.25rem}
+.loop-arr{color:#00cec9;font-size:1.1rem}
+.loop-back{display:flex;justify-content:center;margin-top:0.5rem;max-width:42rem;margin-left:auto;margin-right:auto;padding:0 1.5rem}
+.loop-back-line{border-top:0.125rem dashed rgba(0,206,201,0.4);width:calc(100% - 3rem);position:relative}
+.loop-back-line::before{content:'↑';color:#00cec9;position:absolute;left:-0.5rem;top:-0.875rem;font-size:0.9rem}
+.loop-back-line::after{content:'↑';color:#00cec9;position:absolute;right:-0.5rem;top:-0.875rem;font-size:0.9rem}
+
+/* ── Gantt-style Timeline ── */
+.gantt{max-width:50rem;margin:2rem auto;padding:0 1.5rem;overflow-x:auto}
+.gantt-inner{min-width:34rem}
+.gantt-header{display:grid;grid-template-columns:5rem 1fr;margin-bottom:0.5rem;gap:0.5rem}
+.gantt-header-label{font-family:'Fira Code',monospace;font-size:0.6rem;color:#636e72;font-weight:700;letter-spacing:0.0625rem}
+.gantt-ticks{display:flex;justify-content:space-between;font-family:'Fira Code',monospace;font-size:0.55rem;color:#636e72}
+.gantt-row{display:grid;grid-template-columns:5rem 1fr;gap:0.5rem;margin-bottom:0.625rem;align-items:center}
+.gantt-label{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700}
+.gantt-label.la{color:#00cec9}
+.gantt-label.lb{color:#0984e3}
+.gantt-label.lc{color:#6c5ce7}
+.gantt-label.lloop{color:#636e72;font-size:0.6rem}
+.gantt-track{background:#2d3436;border-radius:0.375rem;height:1.75rem;position:relative;overflow:visible}
+.gantt-bar{position:absolute;top:0.25rem;height:1.25rem;border-radius:0.3rem;display:flex;align-items:center;padding:0 0.375rem;font-family:'Fira Code',monospace;font-size:0.55rem;font-weight:700;color:#fff;white-space:nowrap}
+.gb-teal{background:#00cec9}
+.gb-blue{background:#0984e3}
+.gb-purple{background:#6c5ce7}
+.gb-teal-light{background:rgba(0,206,201,0.25);border:0.0625rem solid rgba(0,206,201,0.5)}
+.gb-blue-light{background:rgba(9,132,227,0.25);border:0.0625rem solid rgba(9,132,227,0.5)}
+.gb-purple-light{background:rgba(108,92,231,0.25);border:0.0625rem solid rgba(108,92,231,0.5)}
+.gb-event{background:#2d3436;border:0.0625rem solid #636e72;color:#dfe6e9;font-size:0.5rem}
+.gantt-event-row{display:grid;grid-template-columns:5rem 1fr;gap:0.5rem;margin-top:1.25rem;align-items:flex-start}
+.gantt-events{position:relative;min-height:1.5rem}
+.gantt-event-dot{position:absolute;top:0;font-family:'Fira Code',monospace;font-size:0.55rem;color:#636e72;transform:translateX(-50%);white-space:nowrap;text-align:center;line-height:1.3}
+.gantt-event-dot span{display:block;font-size:0.65rem}
+
+/* ── Blocking vs Non-Blocking Comparison ── */
+.block-compare{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;max-width:50rem;margin:2rem auto;padding:0 1.5rem}
+.block-panel{border-radius:1rem;padding:1.25rem}
+.bp-bad{background:#fff5f5;border:0.125rem solid #ffcccc}
+.bp-good{background:#f0fffe;border:0.125rem solid #b2f0ed}
+.bp-title{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;margin-bottom:0.875rem;padding:0.3rem 0.625rem;border-radius:0.375rem;display:inline-block;letter-spacing:0.0625rem}
+.bp-bad .bp-title{background:rgba(255,118,117,0.15);color:#d63031}
+.bp-good .bp-title{background:rgba(0,206,201,0.15);color:#00cec9}
+.bp-track-wrap{position:relative;height:5rem;background:#2d3436;border-radius:0.5rem;overflow:hidden;margin-top:0.5rem}
+.bp-req{position:absolute;top:0.4rem;height:1.1rem;border-radius:0.25rem;display:flex;align-items:center;padding:0 0.375rem;font-family:'Fira Code',monospace;font-size:0.5rem;font-weight:700;color:#fff;white-space:nowrap}
+.bp-frozen{position:absolute;top:0;bottom:0;background:rgba(255,118,117,0.1);border:0.0625rem solid rgba(255,118,117,0.3);display:flex;align-items:flex-end;padding:0.2rem;font-family:'Fira Code',monospace;font-size:0.45rem;color:#d63031}
+.bp-label{position:absolute;bottom:0.3rem;font-family:'Fira Code',monospace;font-size:0.5rem;color:#636e72}
+@media(max-width:37.5rem){.block-compare{grid-template-columns:1fr}.loop-cycle{gap:0.25rem}.loop-box{min-width:5rem}}
+
+/* ── Rule Grid ── */
+.rule-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.875rem;max-width:50rem;margin:2rem auto;padding:0 1.5rem}
+.rule-card{border-radius:0.875rem;padding:1rem 1.25rem;display:flex;align-items:flex-start;gap:0.75rem}
+.rule-icon{font-size:1.1rem;flex-shrink:0;margin-top:0.1rem}
+.rule-card h5{font-size:0.85rem;font-weight:800;margin-bottom:0.2rem}
+.rule-card p{font-size:0.78rem;color:#555;line-height:1.5}
+.rc-good{background:#f0fffe;border:0.125rem solid #b2f0ed}
+.rc-good h5{color:#00cec9}
+.rc-bad{background:#fff5f5;border:0.125rem solid #ffcccc}
+.rc-bad h5{color:#d63031}
+@media(max-width:37.5rem){.rule-grid{grid-template-columns:1fr}}
+
+/* ── uvloop info cards ── */
+.uvloop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;max-width:50rem;margin:2rem auto;padding:0 1.5rem}
+.uvloop-card{background:#2d3436;border-radius:1rem;padding:1.25rem;text-align:center}
+.uvloop-card .uvl-icon{font-size:1.5rem;margin-bottom:0.5rem}
+.uvloop-card h5{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;margin-bottom:0.3rem}
+.uvc-python h5{color:#74b9ff}
+.uvc-uvloop h5{color:#00cec9}
+.uvc-libuv h5{color:#a29bfe}
+.uvloop-card p{font-size:0.78rem;color:#a0acba;line-height:1.5}
+@media(max-width:37.5rem){.uvloop-grid{grid-template-columns:1fr}}
+
+/* ── Concurrency vs Parallelism visual ── */
+.concpar{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;max-width:50rem;margin:2rem auto;padding:0 1.5rem}
+.cp-panel{background:#2d3436;border-radius:1rem;padding:1.25rem}
+.cp-title{font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.0625rem;margin-bottom:0.875rem;padding:0.25rem 0.625rem;border-radius:0.375rem;display:inline-block}
+.cpt-conc{background:rgba(0,206,201,0.15);color:#00cec9}
+.cpt-par{background:rgba(108,92,231,0.15);color:#a29bfe}
+.cp-thread{margin-bottom:0.5rem;font-family:'Fira Code',monospace;font-size:0.62rem;display:flex;align-items:center;gap:0.375rem}
+.cp-thread-label{color:#636e72;min-width:3.5rem;flex-shrink:0}
+.cp-seg{height:1rem;border-radius:0.2rem;display:inline-flex;align-items:center;justify-content:center;font-size:0.45rem;font-weight:700;color:#fff;flex-shrink:0}
+.cp-gap{width:0.375rem;flex-shrink:0}
+.cs-a{background:#00cec9}
+.cs-b{background:#0984e3}
+.cs-c{background:#6c5ce7}
+.cs-d{background:#e17055}
+.cs-pause{background:#3d4a52;color:#636e72}
+@media(max-width:37.5rem){.concpar{grid-template-columns:1fr}}
+
+/* ── Quiz theming: Episode 3 ── */
+.quiz-ep3 .quiz-q-num{color:#00cec9;background:#e0fafa}
+.quiz-ep3 .quiz-reveal-btn{color:#00cec9}
+.quiz-ep3 .quiz-opt-letter{color:#00cec9}
+.quiz-ep3 .quiz-option:hover{border-color:#00cec9;background:#edfcfc}
+.quiz-ep3 .quiz-answer-highlight{background:#e0fafa;border-left:0.25rem solid #00cec9}
+.quiz-ep3 .quiz-sequence-item:hover{border-color:#00cec9;background:#edfcfc}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero part3-hero">
+  <div class="hero-badge">Episode 3 of 7</div>
+  <h1>The Event Loop<br>Inside Uvicorn</h1>
+  <p style="color:rgba(255,255,255,0.95)">How does one Python thread handle thousands of simultaneous requests? The answer is the event loop — and understanding it changes how you write FastAPI code forever.</p>
+
+  <div class="orbit-art">
+    <div class="orbit-ring"></div>
+    <div class="orbit-center">&#10247; loop<br><small>one thread</small></div>
+    <div class="orbit-dot od-a">Req A</div>
+    <div class="orbit-dot od-b">Req B</div>
+    <div class="orbit-dot od-c">Req C</div>
+  </div>
+  <div class="hero-label-text" style="margin-top:1rem">three requests &mdash; one thread &mdash; zero idle time</div>
+</section>
+
+<!-- SECTION 01: THE PROBLEM -->
+<section class="section reveal">
+  <span class="section-num part3-num">01</span>
+  <h2>The Problem: Waiting Is Wasting</h2>
+  <p>Think about what your typical API endpoint actually does:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">@app.get</span>(<span class="code-string">"/user/{id}"</span>)
+<span class="code-keyword">async def</span> <span class="code-string">get_user</span>(id: int):
+    user    = <span class="code-keyword">await</span> db.fetch_one(<span class="code-string">"SELECT * FROM users WHERE id = ?"</span>, id)
+    profile = <span class="code-keyword">await</span> http_client.get(<span class="code-string">f"https://profile-service/user/{id}"</span>)
+    <span class="code-keyword">return</span> {<span class="code-string">"user"</span>: user, <span class="code-string">"profile"</span>: profile}</pre>
+  </div>
+
+  <p>There are two operations here: a database query and an HTTP call to another service. Both involve <span class="highlight">waiting</span>. You send the query, then sit there until the database sends data back. You send the HTTP request, then sit there until the other server responds.</p>
+  <p>That wait time is not a millisecond. It's typically 5ms, 20ms, 50ms — sometimes hundreds of milliseconds. During that entire time, the thread is doing <strong>nothing</strong>.</p>
+</section>
+
+<div class="reveal">
+  <div class="story-flow">
+    <div class="sf-step sf-active">
+      <div class="sf-step-label">Thread starts handling request</div>
+      <div class="sf-step-sub">request arrives — the thread is busy, doing real work</div>
+    </div>
+    <div class="sf-connector">
+      <div class="sf-connector-line"></div>
+      <div class="sf-connector-pill">sends DB query</div>
+      <div class="sf-connector-line"></div>
+    </div>
+    <div class="sf-step sf-active">
+      <div class="sf-step-label">Thread sends DB query</div>
+      <div class="sf-step-sub">query dispatched to the database — then the thread just... stops</div>
+    </div>
+    <div class="sf-connector">
+      <div class="sf-connector-line"></div>
+      <div class="sf-connector-pill">now just... waiting (20ms)</div>
+      <div class="sf-connector-line"></div>
+    </div>
+    <div class="sf-step sf-idle">
+      <div class="sf-step-label">Thread is IDLE — doing nothing</div>
+      <div class="sf-step-sub">20ms of pure waste. no other requests can be handled. memory is consumed. the thread sits frozen.</div>
+    </div>
+    <div class="sf-connector">
+      <div class="sf-connector-line"></div>
+      <div class="sf-connector-pill">DB finally responds</div>
+      <div class="sf-connector-line"></div>
+    </div>
+    <div class="sf-step sf-active">
+      <div class="sf-step-label">Thread resumes work</div>
+      <div class="sf-step-sub">response arrives — thread wakes up and finishes the request</div>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>On a synchronous server, that thread is completely blocked. It can't do anything else. If 1000 users hit your API simultaneously, you need 1000 threads — all sitting idle while their DB queries run. Threads aren't free: each costs 1–8 MB of stack space. A thousand threads means gigabytes of RAM just waiting for database responses.</p>
+  <p>There has to be a better way. There is.</p>
+</section>
+
+<!-- SECTION 02: WHAT IS AN EVENT LOOP -->
+<section class="section reveal">
+  <span class="section-num part3-num">02</span>
+  <h2>What Is an Event Loop?</h2>
+  <p>The event loop is a simple idea with a powerful payoff. It's a <span class="highlight">single-threaded loop</span> that runs forever, doing exactly three things:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">while</span> True:
+    <span class="code-comment"># Check: is anything ready?</span>
+    <span class="code-comment">#   - New connection arrived?</span>
+    <span class="code-comment">#   - DB response came back?</span>
+    <span class="code-comment">#   - Timer expired?</span>
+    <span class="code-comment">#   - File finished reading?</span>
+
+    <span class="code-keyword">if</span> yes <span class="code-arrow">→</span> run the handler for that event
+    <span class="code-keyword">if</span> no  <span class="code-arrow">→</span> check again</pre>
+  </div>
+
+  <p>That's it. No blocking. No waiting. Always checking. The moment something is ready, it runs the right handler. The moment that handler needs to wait for I/O, it steps aside and the loop moves on to the next ready event.</p>
+  <p><strong>One thread. One CPU core. Thousands of simultaneous connections.</strong></p>
+</section>
+
+<!-- Event Loop Cycle Diagram -->
+<div class="reveal" style="max-width:50rem;margin:0 auto;padding:0 1.5rem">
+  <div class="loop-cycle">
+    <div class="loop-box">
+      <div class="loop-box-label">&#x2714; Check</div>
+      <div class="loop-box-sub">Is anything ready? New conn? I/O response?</div>
+    </div>
+    <div class="loop-arrow-wrap">
+      <div class="loop-arr">&#10132;</div>
+      <div style="font-family:'Fira Code',monospace;font-size:0.58rem;color:#636e72;white-space:nowrap;margin-top:0.2rem">something ready!</div>
+    </div>
+    <div class="loop-box">
+      <div class="loop-box-label">&#9654; Run</div>
+      <div class="loop-box-sub">Execute handler until it hits an await</div>
+    </div>
+    <div class="loop-arrow-wrap">
+      <div class="loop-arr">&#10132;</div>
+      <div style="font-family:'Fira Code',monospace;font-size:0.58rem;color:#636e72;white-space:nowrap;margin-top:0.2rem">hits an await</div>
+    </div>
+    <div class="loop-box">
+      <div class="loop-box-label">&#8617; Give back</div>
+      <div class="loop-box-sub">Handler pauses, control returns to loop</div>
+    </div>
+    <div class="loop-arrow-wrap">
+      <div class="loop-arr" style="color:rgba(0,206,201,0.5)">&#8635;</div>
+      <div style="font-family:'Fira Code',monospace;font-size:0.58rem;color:rgba(0,206,201,0.5);white-space:nowrap;margin-top:0.2rem">repeat forever</div>
+    </div>
+  </div>
+</div>
+
+<div class="analogy reveal">
+  <p>Think of a <strong>chef cooking ten dishes at once</strong>. A bad chef stands at the stove and watches water boil. A great chef puts the water on, goes to chop vegetables, checks the oven, stirs a sauce, comes back to find the water boiling — and only then continues with that dish. Ten dishes, one chef, zero idle time.</p>
+  <p>The event loop is that chef. Your requests are the dishes. Waiting for a DB response is the water that needs to boil.</p>
+</div>
+
+<!-- SECTION 03: THREE REQUESTS -->
+<section class="section reveal">
+  <span class="section-num part3-num">03</span>
+  <h2>How the Event Loop Handles Multiple Requests</h2>
+  <p>Let's walk through a concrete scenario. Three requests arrive in quick succession. Watch how the single thread never sits idle.</p>
+</section>
+
+<!-- Gantt Timeline -->
+<div class="gantt reveal">
+  <div class="gantt-inner">
+    <div class="gantt-header">
+      <div class="gantt-header-label"></div>
+      <div class="gantt-ticks">
+        <span>0ms</span><span>10ms</span><span>20ms</span><span>30ms</span><span>40ms</span><span>50ms</span><span>60ms</span>
+      </div>
+    </div>
+
+    <!-- Req A -->
+    <div class="gantt-row">
+      <div class="gantt-label la">Req A</div>
+      <div class="gantt-track">
+        <!-- start 0%, run to ~5%, await DB ~5-55%, resume+respond ~55-62% -->
+        <div class="gantt-bar gb-teal" style="left:0%;width:5%">start</div>
+        <div class="gantt-bar gb-teal-light" style="left:5%;width:50%">await DB...</div>
+        <div class="gantt-bar gb-teal" style="left:55%;width:10%">respond</div>
+      </div>
+    </div>
+
+    <!-- Req B -->
+    <div class="gantt-row">
+      <div class="gantt-label lb">Req B</div>
+      <div class="gantt-track">
+        <div class="gantt-bar gb-blue" style="left:16%;width:5%">start</div>
+        <div class="gantt-bar gb-blue-light" style="left:21%;width:52%">await API...</div>
+        <div class="gantt-bar gb-blue" style="left:73%;width:10%">respond</div>
+      </div>
+    </div>
+
+    <!-- Req C -->
+    <div class="gantt-row">
+      <div class="gantt-label lc">Req C</div>
+      <div class="gantt-track">
+        <div class="gantt-bar gb-purple" style="left:33%;width:5%">start</div>
+        <div class="gantt-bar gb-purple-light" style="left:38%;width:53%">await DB...</div>
+        <div class="gantt-bar gb-purple" style="left:91%;width:9%">✓</div>
+      </div>
+    </div>
+
+    <!-- Event loop -->
+    <div class="gantt-event-row">
+      <div class="gantt-label lloop">Event<br>Loop</div>
+      <div class="gantt-events" style="height:2.5rem">
+        <div class="gantt-event-dot" style="left:2.5%"><span>&#9654;</span>A runs</div>
+        <div class="gantt-event-dot" style="left:18.5%"><span>&#9654;</span>B runs</div>
+        <div class="gantt-event-dot" style="left:35.5%"><span>&#9654;</span>C runs</div>
+        <div class="gantt-event-dot" style="left:55%" style="color:#00cec9"><span style="color:#00cec9">&#9654;</span>A&#8217;s DB ✓</div>
+        <div class="gantt-event-dot" style="left:73%"><span style="color:#0984e3">&#9654;</span>B&#8217;s API ✓</div>
+        <div class="gantt-event-dot" style="left:91%"><span style="color:#6c5ce7">&#9654;</span>C&#8217;s DB ✓</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>Step by step:</p>
+  <ul style="line-height:2;padding-left:1.5rem">
+    <li><span class="highlight">0ms</span> — Request A arrives. Handler runs, hits a DB query, <strong>pauses</strong>. Control returns to the event loop.</li>
+    <li><span class="highlight">10ms</span> — Request B arrives. Handler runs, hits an API call, <strong>pauses</strong>. Control returns.</li>
+    <li><span class="highlight">20ms</span> — Request C arrives. Handler runs, hits a DB query, <strong>pauses</strong>. Control returns.</li>
+    <li><span class="highlight">35ms</span> — A's DB response arrives. Loop wakes A's handler, it finishes and responds. Done.</li>
+    <li><span class="highlight">45ms</span> — B's API response arrives. B wakes, finishes, responds. Done.</li>
+    <li><span class="highlight">55ms</span> — C's DB response arrives. Same thing.</li>
+  </ul>
+  <p>Three requests, one thread, zero time wasted sitting idle. The thread was doing useful work the entire time.</p>
+</section>
+
+<!-- SECTION 04: BLOCKING VS NON-BLOCKING -->
+<section class="section reveal">
+  <span class="section-num part3-num">04</span>
+  <h2>Blocking vs Non-Blocking I/O</h2>
+  <p>This is the critical distinction that separates async code from sync code. It's also where bugs happen.</p>
+  <p><strong>Blocking I/O</strong> — the entire thread freezes until the operation completes:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">import</span> time
+
+<span class="code-keyword">@app.get</span>(<span class="code-string">"/slow"</span>)
+<span class="code-keyword">async def</span> <span class="code-string">slow</span>():
+    time.sleep(5)       <span class="code-comment">  # ← BLOCKS. The entire event loop freezes.</span>
+    result = db.query() <span class="code-comment">  # ← BLOCKS. Synchronous DB library.</span>
+    <span class="code-keyword">return</span> result</pre>
+  </div>
+
+  <p>When <code>time.sleep(5)</code> runs, the event loop can't check for anything. It's frozen. Every other connected user is stuck waiting for 5 seconds.</p>
+  <p><strong>Non-blocking I/O</strong> — hands control back to the event loop while waiting:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">import</span> asyncio
+
+<span class="code-keyword">@app.get</span>(<span class="code-string">"/slow"</span>)
+<span class="code-keyword">async def</span> <span class="code-string">slow</span>():
+    <span class="code-keyword">await</span> asyncio.sleep(5)    <span class="code-comment">  # ← Non-blocking. Loop handles other requests.</span>
+    result = <span class="code-keyword">await</span> db.query() <span class="code-comment">  # ← Non-blocking. Async DB driver.</span>
+    <span class="code-keyword">return</span> result</pre>
+  </div>
+
+  <p><code>await asyncio.sleep(5)</code> doesn't freeze the thread. It tells the event loop: <em>"Wake me up in 5 seconds. Go handle other stuff until then."</em></p>
+</section>
+
+<!-- Blocking vs Non-blocking visual -->
+<div class="block-compare reveal">
+  <div class="block-panel bp-bad">
+    <div class="bp-title">&#128683; BLOCKING</div>
+    <div class="bp-track-wrap">
+      <div class="bp-frozen" style="left:0;right:0;top:0;bottom:0;opacity:0.5"></div>
+      <div class="bp-req" style="left:0%;width:95%;background:#d63031">Request A — entire event loop frozen for 5 seconds</div>
+      <div class="bp-label" style="left:0%;bottom:0.3rem">0s</div>
+      <div class="bp-label" style="right:0.3rem;bottom:0.3rem">5s</div>
+    </div>
+    <p style="font-size:0.75rem;color:#d63031;margin-top:0.625rem">Request B can't even start until A unblocks.</p>
+    <div style="font-family:'Fira Code',monospace;font-size:0.6rem;margin-top:0.5rem;text-align:center;color:#b2818080">1 request = 1 frozen thread = everyone waits</div>
+  </div>
+  <div class="block-panel bp-good">
+    <div class="bp-title">&#9989; NON-BLOCKING</div>
+    <div class="bp-track-wrap">
+      <div class="bp-req gb-teal" style="left:0%;width:3%;background:#00cec9">A</div>
+      <div class="bp-req" style="left:3%;width:90%;background:rgba(0,206,201,0.2);border:0.0625rem solid rgba(0,206,201,0.5);color:#00cec9;font-size:0.45rem">A awaits sleep — loop is free</div>
+      <div class="bp-req gb-blue" style="left:3%;width:30%;top:1.75rem;background:#0984e3">B runs immediately</div>
+      <div class="bp-req gb-purple" style="left:3%;width:25%;top:3.1rem;background:#6c5ce7">C runs immediately</div>
+    </div>
+    <p style="font-size:0.75rem;color:#00cec9;margin-top:0.625rem">B and C start right away. A wakes up after 5s.</p>
+    <div style="font-family:'Fira Code',monospace;font-size:0.6rem;margin-top:0.5rem;text-align:center;color:#636e72">1 thread, 3 requests running — zero wasted time</div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>This is why FastAPI uses <code>async def</code>. It's not just syntax — it's what enables the event loop to work. Same rule applies to database calls:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment"># Blocking — don't do this in async def</span>
+result = db.execute(<span class="code-string">"SELECT ..."</span>)
+
+<span class="code-comment"># Non-blocking — use an async driver</span>
+result = <span class="code-keyword">await</span> db.execute(<span class="code-string">"SELECT ..."</span>)</pre>
+  </div>
+</section>
+
+<!-- SECTION 05: WHAT HAPPENS IF YOU BLOCK -->
+<section class="section reveal">
+  <span class="section-num part3-num">05</span>
+  <h2>What Happens If You Block the Event Loop?</h2>
+  <p>This is the <span class="highlight-orange">number one mistake</span> in FastAPI. Easy to make, brutal in production.</p>
+  <p>If your <code>async def</code> endpoint calls any blocking code, the <strong>entire event loop freezes</strong>:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">@app.get</span>(<span class="code-string">"/users"</span>)
+<span class="code-keyword">async def</span> <span class="code-string">get_users</span>():
+    time.sleep(2)                          <span class="code-comment">  # 💀 2-second freeze</span>
+    result = requests.get(<span class="code-string">"https://..."</span>) <span class="code-comment">  # 💀 sync HTTP library — blocks</span>
+    <span class="code-keyword">return</span> result.json()</pre>
+  </div>
+
+  <p>For those 2 seconds, <strong>every connected user waits</strong>. All 1000 of them. No events get checked. No requests can be accepted. Everything stops.</p>
+  <p>FastAPI does have a safety net — but only if you use <code>def</code> instead of <code>async def</code>:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">@app.get</span>(<span class="code-string">"/users"</span>)
+<span class="code-keyword">def</span> <span class="code-string">get_users</span>():          <span class="code-comment">  # ← regular def, not async def</span>
+    time.sleep(2)          <span class="code-comment">  # ← still blocks, but now in a thread pool</span>
+    <span class="code-keyword">return</span> {<span class="code-string">"ok"</span>: True}</pre>
+  </div>
+
+  <p>When FastAPI sees a regular <code>def</code> endpoint, it runs it in a <span class="highlight">thread pool</span> automatically. The blocking call freezes that thread — but not the event loop. The event loop keeps running. Other requests keep getting handled.</p>
+  <p>The trap is this:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">@app.get</span>(<span class="code-string">"/users"</span>)
+<span class="code-keyword">async def</span> <span class="code-string">get_users</span>():    <span class="code-comment">  # ← async def</span>
+    time.sleep(2)          <span class="code-comment">  # ← blocking call inside async def = disaster</span>
+    <span class="code-keyword">return</span> {<span class="code-string">"ok"</span>: True}</pre>
+  </div>
+
+  <p><code>async def</code> with blocking code is the worst of both worlds — FastAPI trusts you to not block, runs it on the event loop, and you freeze everything.</p>
+</section>
+
+<!-- Rule Grid -->
+<div class="rule-grid reveal">
+  <div class="rule-card rc-good">
+    <div class="rule-icon">&#9989;</div>
+    <div>
+      <h5>async def + await calls</h5>
+      <p>Perfect. Non-blocking I/O hands control back to the loop. This is what you want.</p>
+    </div>
+  </div>
+  <div class="rule-card rc-good">
+    <div class="rule-icon">&#9989;</div>
+    <div>
+      <h5>def + blocking calls</h5>
+      <p>FastAPI automatically runs this in a thread pool. Blocking freezes that thread, not the event loop.</p>
+    </div>
+  </div>
+  <div class="rule-card rc-bad">
+    <div class="rule-icon">&#128683;</div>
+    <div>
+      <h5>async def + blocking calls</h5>
+      <p>Catastrophic. The event loop is frozen. Every connected user stalls for the full duration.</p>
+    </div>
+  </div>
+  <div class="rule-card rc-bad">
+    <div class="rule-icon">&#128683;</div>
+    <div>
+      <h5>def + await</h5>
+      <p>Syntax error. You can't use <code>await</code> outside an <code>async</code> function.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 06: UVLOOP -->
+<section class="section reveal">
+  <span class="section-num part3-num">06</span>
+  <h2>uvloop: The C-Powered Event Loop</h2>
+  <p>Python's built-in event loop — in the <code>asyncio</code> standard library — is written in pure Python. It works. It's reliable. But it's not as fast as it could be.</p>
+  <p>Uvicorn swaps it out for <span class="highlight">uvloop</span>.</p>
+</section>
+
+<div class="uvloop-grid reveal">
+  <div class="uvloop-card uvc-python">
+    <div class="uvl-icon">&#128013;</div>
+    <h5>asyncio (default)</h5>
+    <p>Python's built-in event loop. Pure Python implementation. Works everywhere. Baseline speed.</p>
+  </div>
+  <div class="uvloop-card uvc-uvloop">
+    <div class="uvl-icon">&#9889;</div>
+    <h5>uvloop</h5>
+    <p>Reimplements the event loop in C. Same Python API you already use. 2–4x faster than asyncio.</p>
+  </div>
+  <div class="uvloop-card uvc-libuv">
+    <div class="uvl-icon">&#128296;</div>
+    <h5>libuv (underneath)</h5>
+    <p>The same C library that powers Node.js. Battle-tested, ultra-fast I/O event handling.</p>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>You write exactly the same code — uvloop is a drop-in replacement:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment"># You write this — works the same either way</span>
+<span class="code-keyword">await</span> asyncio.sleep(1)
+result = <span class="code-keyword">await</span> db.fetch_one(query)</pre>
+  </div>
+
+  <p>Uvicorn enables it automatically at startup:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment"># Inside Uvicorn's startup code (simplified)</span>
+<span class="code-keyword">import</span> uvloop
+uvloop.install()  <span class="code-comment">  # replaces asyncio's default loop with uvloop</span></pre>
+  </div>
+
+  <p>You don't configure anything. You just get a faster event loop for free.</p>
+</section>
+
+<div class="analogy reveal">
+  <p>Same kitchen, same chef, same recipes. But now the kitchen has better equipment — faster burners, sharper knives, better oven thermostats. The chef works the same way. <strong>Everything is just faster.</strong></p>
+</div>
+
+<!-- SECTION 07: CONCURRENCY VS PARALLELISM -->
+<section class="section reveal">
+  <span class="section-num part3-num">07</span>
+  <h2>The Event Loop Is NOT Parallelism</h2>
+  <p>This is the most important clarification in this whole episode. Easy to confuse, important to keep straight.</p>
+</section>
+
+<div class="concpar reveal">
+  <div class="cp-panel">
+    <div class="cp-title cpt-conc">&#9654; CONCURRENCY (event loop)</div>
+    <div style="font-family:'Fira Code',monospace;font-size:0.6rem;color:#636e72;margin-top:0.25rem;margin-bottom:0.75rem">one chef, many dishes, zero idle time</div>
+    <div class="cp-thread">
+      <span class="cp-thread-label">Thread:</span>
+      <div class="cp-seg cs-a" style="width:3rem">A</div>
+      <div class="cp-seg cs-pause" style="width:2rem">wait</div>
+      <div class="cp-seg cs-b" style="width:2.5rem">B</div>
+      <div class="cp-seg cs-pause" style="width:1.5rem">wait</div>
+      <div class="cp-seg cs-a" style="width:2rem">A</div>
+      <div class="cp-seg cs-c" style="width:2rem">C</div>
+      <div class="cp-seg cs-pause" style="width:1.5rem">wait</div>
+      <div class="cp-seg cs-b" style="width:2rem">B</div>
+    </div>
+    <p style="font-size:0.75rem;color:#a0acba;margin-top:0.75rem;line-height:1.6">One thread. Tasks <strong>take turns</strong>. When A waits for DB, B runs. When B waits, A continues. <em>Interleaved, not simultaneous.</em></p>
+  </div>
+  <div class="cp-panel">
+    <div class="cp-title cpt-par">&#9646;&#9646; PARALLELISM (multiple workers)</div>
+    <div style="font-family:'Fira Code',monospace;font-size:0.6rem;color:#636e72;margin-top:0.25rem;margin-bottom:0.75rem">many chefs, each with their own kitchen</div>
+    <div class="cp-thread">
+      <span class="cp-thread-label">Core 1:</span>
+      <div class="cp-seg cs-a" style="width:10rem">A &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</div>
+    </div>
+    <div class="cp-thread" style="margin-top:0.4rem">
+      <span class="cp-thread-label">Core 2:</span>
+      <div class="cp-seg cs-b" style="width:10rem">B &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</div>
+    </div>
+    <div class="cp-thread" style="margin-top:0.4rem">
+      <span class="cp-thread-label">Core 3:</span>
+      <div class="cp-seg cs-c" style="width:10rem">C &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</div>
+    </div>
+    <div class="cp-thread" style="margin-top:0.4rem">
+      <span class="cp-thread-label">Core 4:</span>
+      <div class="cp-seg cs-d" style="width:10rem">D &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</div>
+    </div>
+    <p style="font-size:0.75rem;color:#a0acba;margin-top:0.75rem;line-height:1.6">Multiple cores. Tasks run <strong>simultaneously</strong>. Requires multiple processes. That's Episode 5.</p>
+  </div>
+</div>
+
+<section class="section reveal">
+  <div class="compare">
+    <div class="compare-card" style="border-top:0.1875rem solid #00cec9">
+      <h4 style="color:#00cec9">I/O-bound work</h4>
+      <p>Database queries, HTTP calls, file reads. Most of the time is spent <em>waiting</em> for external systems. The event loop is a <span class="highlight-green">huge win</span> — while you wait, other requests run.</p>
+    </div>
+    <div class="compare-card" style="border-top:0.1875rem solid #e17055">
+      <h4 style="color:#e17055">CPU-bound work</h4>
+      <p>Image processing, video encoding, ML inference. The CPU is busy <em>computing</em>, not waiting. The event loop <span class="highlight-orange">doesn't help</span> — you need real parallelism across multiple cores.</p>
+    </div>
+  </div>
+  <p style="margin-top:1.5rem">For true parallelism — multiple tasks running on multiple cores simultaneously — you need multiple workers. That's Episode 5.</p>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#e0fafa;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00cec9">
+      <strong style="color:#00cec9">Most API work is I/O</strong> — database queries, HTTP calls, file reads. The thread spends most of its time waiting, not computing.
+    </div>
+    <div style="background:#fff5f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #d63031">
+      <strong style="color:#d63031">A synchronous server blocks during I/O</strong> — one thread per request. 1000 users = 1000 threads = gigabytes of wasted memory.
+    </div>
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">The event loop never waits</strong> — it checks what's ready, runs the handler, moves on. Chef cooking ten dishes — never watching the water boil.
+    </div>
+    <div style="background:#fff5f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Blocking I/O freezes the event loop</strong> — <code>time.sleep()</code>, synchronous DB drivers, synchronous HTTP libraries all freeze the entire loop. Every connected user waits.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">Non-blocking I/O (<code>await</code>) gives control back</strong> — the loop handles other work while waiting for the response to come back.
+    </div>
+    <div style="background:#fef5e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #fdcb6e">
+      <strong style="color:#e17055">The golden rule:</strong> <code>async def</code> + <code>await</code> = good. <code>async def</code> + blocking calls = catastrophic. Regular <code>def</code> + blocking calls = FastAPI puts it in a thread pool, which is safe.
+    </div>
+    <div style="background:#e0fafa;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00cec9">
+      <strong style="color:#00cec9">uvloop replaces Python's event loop with C</strong> — same API, 2–4x faster. Uvicorn uses it automatically, powered by the same libuv that runs Node.js.
+    </div>
+    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
+      <strong style="color:#6c5ce7">The event loop is concurrency, not parallelism</strong> — one thread, tasks interleave, they don't run simultaneously. For multiple CPU cores, you need multiple workers.
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section class="section reveal quiz-ep3">
+  <span class="section-num part3-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <!-- Q1 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 01</span>
+      <span class="quiz-type-tag">Multiple Choice</span>
+    </div>
+    <p class="quiz-question">A FastAPI endpoint uses <code>time.sleep(5)</code> inside an <code>async def</code> function. What happens to all other connected users?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Nothing — each user gets their own thread</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>They all wait — the event loop is frozen for 5 seconds</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Only users hitting the same endpoint wait</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>FastAPI automatically offloads it to a background thread</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) They all wait — the event loop is frozen for 5 seconds</strong></div>
+        <p class="quiz-answer-text"><code>time.sleep()</code> is a blocking call. Inside <code>async def</code>, it blocks the single event loop thread, freezing ALL request processing — not just the one that called it.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 02</span>
+      <span class="quiz-type-tag">MULTIPLE CHOICE</span>
+    </div>
+    <p class="quiz-question">Three requests arrive simultaneously. Request A calls <code>await db.query()</code>, Request B calls <code>await http.get()</code>. While both are awaiting, what does the event loop do with Request C?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Queues Request C until A or B completes</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Starts processing Request C immediately</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Spawns a new thread for Request C</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Returns a 503 Service Unavailable error</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) Starts processing Request C immediately</strong></div>
+        <p class="quiz-answer-text">When A and B hit <code>await</code>, they yield control back to the loop. The loop doesn't sit idle — it picks up the next ready task. This is the core power of async: zero idle time.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 03</span>
+      <span class="quiz-type-tag">True or False</span>
+    </div>
+    <p class="quiz-question">The event loop runs multiple coroutines at the exact same instant in time.</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>True</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>False</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) False</strong></div>
+        <p class="quiz-answer-text">The event loop interleaves coroutines, switching between them at <code>await</code> points. Only one coroutine executes at any given instant. This is concurrency (interleaving), not parallelism (simultaneous execution). Think: one chef, many dishes — never two burners at the exact same moment.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 04</span>
+      <span class="quiz-type-tag">Multiple Choice</span>
+    </div>
+    <p class="quiz-question">What kind of work does <code>async</code>/<code>await</code> help with?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>CPU-heavy computation (math, image processing)</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>I/O-bound work (database queries, HTTP calls, file reads)</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Both equally</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Neither — it's just syntax sugar</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) I/O-bound work</strong></div>
+        <p class="quiz-answer-text">Async shines when your code spends time <em>waiting</em> for external responses. During that wait, the event loop handles other requests. CPU-bound work doesn't have wait points, so async provides no benefit — you need multiple workers (processes) for that.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- NEXT EPISODE -->
+<section class="next-part" style="background:linear-gradient(135deg,#00cec9,#6c5ce7)">
+  <h2>Ready for Episode 4?</h2>
+  <p>We'll go one level deeper — into coroutines and <code>async</code>/<code>await</code> themselves. What does <code>await</code> actually do? What is a coroutine? How does Python know where to pause and resume? It's stranger and more elegant than you might expect.</p>
+  <a href="part4.html" class="btn btn-white" style="color:#00cec9">Continue to Episode 4 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How FastAPI Works — Episode 3: The Event Loop Inside Uvicorn | Unbox the Black Box" inlineStyle={inlineStyle} series={fastapiSeries} episodeNum={3} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

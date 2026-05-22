@@ -1,0 +1,684 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { fastapiSeries } from '../../data/series';
+const inlineStyle = `
+::selection{background:#0984e3;color:#fff}
+
+.part2-hero{background:linear-gradient(135deg,#0984e3 0%,#00b894 60%,#6c5ce7 100%)}
+
+.part2-num{color:#0984e3;background:#e3f2fd}
+
+/* ── Hero Art: Antenna Signal ── */
+.antenna-art{margin:2.5rem auto 0;position:relative;width:14rem;height:14rem;animation:fadeInUp 1.5s ease;display:flex;align-items:flex-end;justify-content:center}
+.antenna-mast{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:0.25rem;height:7rem;background:linear-gradient(to top,rgba(255,255,255,0.9),rgba(255,255,255,0.3));border-radius:0.125rem}
+.antenna-top{position:absolute;bottom:7rem;left:50%;transform:translateX(-50%);width:0;height:0;border-left:0.5rem solid transparent;border-right:0.5rem solid transparent;border-bottom:1.125rem solid rgba(255,255,255,0.8)}
+.antenna-base{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:2.5rem;height:0.375rem;background:rgba(255,255,255,0.5);border-radius:0.1875rem}
+.signal-ring{position:absolute;bottom:5.5rem;left:50%;transform:translateX(-50%);border-radius:50%;border:0.125rem solid rgba(255,255,255,0.6);animation:signalPulse 2.4s ease-out infinite}
+.sr1{width:2.5rem;height:1.25rem;animation-delay:0s}
+.sr2{width:5rem;height:2.5rem;animation-delay:0.6s}
+.sr3{width:7.5rem;height:3.75rem;animation-delay:1.2s}
+.sr4{width:10rem;height:5rem;animation-delay:1.8s}
+@keyframes signalPulse{
+  0%{opacity:0.9;transform:translateX(-50%) scaleX(1)}
+  100%{opacity:0;transform:translateX(-50%) scaleX(1.15)}
+}
+.antenna-port-label{position:absolute;bottom:1.5rem;right:0.5rem;font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.85);background:rgba(0,0,0,0.25);padding:0.2rem 0.5rem;border-radius:0.375rem;letter-spacing:0.0625rem;border:0.0625rem solid rgba(255,255,255,0.2)}
+
+/* ── Ownership Grid ── */
+.owns-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;max-width:50rem;margin:2rem auto;padding:0 1.5rem}
+.owns-card{background:#2d3436;border-radius:1rem;padding:1.25rem 1.5rem}
+.owns-card h4{font-family:'Fira Code',monospace;font-size:0.85rem;font-weight:700;color:#74b9ff;margin-bottom:0.5rem}
+.owns-card p{font-size:0.85rem;line-height:1.6;color:#b2bec3}
+@media(max-width:37.5rem){.owns-grid{grid-template-columns:1fr}}
+
+/* ── Speed Cards ── */
+.speed-pair{display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:50rem;margin:2rem auto;padding:0 1.5rem}
+.speed-card{border-radius:1rem;padding:1.25rem 1.5rem}
+.sc-blue{background:#e3f2fd;border:0.125rem solid #90caf9}
+.sc-blue h4{color:#0984e3}
+.sc-green{background:#e8f8f5;border:0.125rem solid #b8f0e0}
+.sc-green h4{color:#00b894}
+.speed-card h4{font-size:1rem;font-weight:800;margin-bottom:0.5rem}
+.speed-card p{font-size:0.85rem;line-height:1.6;color:#555}
+.speed-card code{font-size:0.8rem;background:#f0f0f0;padding:0.1rem 0.35rem;border-radius:0.25rem}
+@media(max-width:37.5rem){.speed-pair{grid-template-columns:1fr}}
+
+/* ── ASGI Arg Cards ── */
+.asgi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;max-width:50rem;margin:2rem auto;padding:0 1.5rem}
+.asgi-card{border-radius:1rem;padding:1.25rem 1.5rem;text-align:center}
+.asgi-card .asgi-label{font-family:'Fira Code',monospace;font-size:1rem;font-weight:700;margin-bottom:0.5rem}
+.asgi-card p{font-size:0.8rem;line-height:1.6;color:#555}
+.ac-blue{background:#e3f2fd;border:0.125rem solid #90caf9}
+.ac-blue .asgi-label{color:#0984e3}
+.ac-green{background:#e8f8f5;border:0.125rem solid #b8f0e0}
+.ac-green .asgi-label{color:#00b894}
+.ac-purple{background:#f0efff;border:0.125rem solid #d5ccff}
+.ac-purple .asgi-label{color:#6c5ce7}
+@media(max-width:37.5rem){.asgi-grid{grid-template-columns:1fr}}
+
+/* ── Not-do table ── */
+.notdo-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:50rem;margin:2rem auto;padding:0 1.5rem}
+.notdo-col{border-radius:1rem;padding:1.25rem 1.5rem}
+.nd-yes{background:#e8f8f5;border:0.125rem solid #b8f0e0}
+.nd-yes h4{color:#00b894;margin-bottom:0.75rem;font-size:0.95rem}
+.nd-no{background:#fef5e7;border:0.125rem solid #fdd9b5}
+.nd-no h4{color:#e17055;margin-bottom:0.75rem;font-size:0.95rem}
+.nd-item{font-size:0.85rem;line-height:1.8;color:#444;display:flex;align-items:baseline;gap:0.5rem}
+.nd-icon{font-size:0.8rem;flex-shrink:0}
+@media(max-width:37.5rem){.notdo-grid{grid-template-columns:1fr}}
+
+/* ── Story Flow Diagram (Section 01) ── */
+.story-flow{display:flex;flex-direction:column;align-items:center;max-width:28rem;margin:2rem auto;padding:0 1.5rem}
+.sf-step{width:100%;border-radius:0.75rem;padding:0.9rem 1.25rem;box-sizing:border-box}
+.sf-step-title{font-family:'Fira Code',monospace;font-size:0.85rem;font-weight:700;margin-bottom:0.25rem}
+.sf-step-desc{font-size:0.8rem;line-height:1.5}
+.sf-client{background:#2d3436;border:0.0625rem solid #636e72}
+.sf-client .sf-step-title{color:#dfe6e9}
+.sf-client .sf-step-desc{color:#b2bec3}
+.sf-uvicorn{background:#e3f2fd;border:0.125rem solid #90caf9}
+.sf-uvicorn .sf-step-title{color:#0984e3}
+.sf-uvicorn .sf-step-desc{color:#444}
+.sf-fastapi{background:#e8f8f5;border:0.125rem solid #b8f0e0}
+.sf-fastapi .sf-step-title{color:#00b894}
+.sf-fastapi .sf-step-desc{color:#444}
+.sf-connector{display:flex;flex-direction:column;align-items:center;gap:0.25rem;width:100%;padding:0.25rem 0}
+.sf-conn-line{width:0.125rem;height:0.5rem;background:#ddd}
+.sf-conn-text{background:#f8f8f8;border-radius:1rem;font-family:'Fira Code',monospace;font-size:0.65rem;color:#888;padding:0.2rem 0.75rem;text-align:center;border:0.0625rem solid #eee}
+.sf-return-box{width:100%;border-radius:0.75rem;padding:0.75rem 1.25rem;box-sizing:border-box;background:#fafafa;border:0.125rem dashed #ccc;margin-top:0.5rem;text-align:center}
+.sf-return-box p{font-family:'Fira Code',monospace;font-size:0.75rem;color:#888;margin:0}
+
+/* ── ASGI Handshake Annotations (Section 04) ── */
+.asgi-annotation{font-family:'Fira Code',monospace;font-size:0.6rem;color:#b2bec3;margin-top:0.375rem;text-align:center;line-height:1.4}
+
+/* ── Quiz theming: Episode 2 ── */
+.quiz-ep2 .quiz-q-num{color:#0984e3;background:#e3f2fd}
+.quiz-ep2 .quiz-reveal-btn{color:#0984e3}
+.quiz-ep2 .quiz-opt-letter{color:#0984e3}
+.quiz-ep2 .quiz-option:hover{border-color:#0984e3;background:#eef6ff}
+.quiz-ep2 .quiz-answer-highlight{background:#e3f2fd;border-left:0.25rem solid #0984e3}
+.quiz-ep2 .quiz-sequence-item:hover{border-color:#0984e3;background:#eef6ff}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero part2-hero">
+  <div class="hero-badge">Episode 2 of 7</div>
+  <h1>Uvicorn — The Server<br>Behind FastAPI</h1>
+  <p style="color:rgba(255,255,255,0.95)">FastAPI never touches the network. That's Uvicorn's job. Here's how it parses HTTP at C speed — and exactly how it hands a request to your app.</p>
+
+  <div class="antenna-art">
+    <div class="signal-ring sr4"></div>
+    <div class="signal-ring sr3"></div>
+    <div class="signal-ring sr2"></div>
+    <div class="signal-ring sr1"></div>
+    <div class="antenna-mast"></div>
+    <div class="antenna-top"></div>
+    <div class="antenna-base"></div>
+    <div class="antenna-port-label">PORT 8000</div>
+  </div>
+  <div class="hero-label-text" style="font-family:'Fira Code',monospace;font-size:0.75rem;color:rgba(255,255,255,0.6);letter-spacing:0.125rem;text-align:center;margin-top:0.75rem">listening for connections</div>
+</section>
+<!-- END HERO -->
+
+<!-- SECTION 01: WHAT UVICORN ACTUALLY DOES -->
+<section class="section reveal">
+  <span class="section-num part2-num">01</span>
+  <h2>What Uvicorn Actually Does</h2>
+  <p>Before your Python code runs a single line, Uvicorn has already done a lot of work.</p>
+  <p>Here's what Uvicorn <em>owns</em>:</p>
+</section>
+
+<div class="owns-grid reveal">
+  <div class="owns-card">
+    <h4>&#128268; Opening a port</h4>
+    <p>Binds to <code style="color:#74b9ff">0.0.0.0:8000</code> (or wherever you point it) and listens for incoming TCP connections.</p>
+  </div>
+  <div class="owns-card">
+    <h4>&#128279; Accepting TCP connections</h4>
+    <p>When a client connects, Uvicorn accepts it and starts reading the raw bytes off the wire.</p>
+  </div>
+  <div class="owns-card">
+    <h4>&#128202; Parsing raw HTTP</h4>
+    <p>Turns a stream of bytes like <code style="color:#74b9ff">GET /users HTTP/1.1\r\nHost: ...</code> into structured Python objects.</p>
+  </div>
+  <div class="owns-card">
+    <h4>&#128222; Calling your app</h4>
+    <p>Packages the parsed request into a standard format (ASGI) and calls FastAPI. Collects the response and writes HTTP bytes back.</p>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p><span class="highlight">FastAPI never sees the network.</span> It never opens a socket. It never touches raw bytes. By the time your endpoint function runs, Uvicorn has already done the dirty work.</p>
+</section>
+
+<div class="story-flow reveal">
+  <div class="sf-step sf-client">
+    <div class="sf-step-title">&#128100; Client</div>
+    <div class="sf-step-desc">Browser or API caller initiates a connection to port 8000</div>
+  </div>
+  <div class="sf-connector">
+    <div class="sf-conn-line"></div>
+    <div class="sf-conn-text">raw HTTP bytes over TCP</div>
+    <div class="sf-conn-line"></div>
+  </div>
+  <div class="sf-step sf-uvicorn">
+    <div class="sf-step-title">&#9889; Uvicorn</div>
+    <div class="sf-step-desc">Accepts the TCP connection, reads the raw bytes, hands them to httptools (C)</div>
+  </div>
+  <div class="sf-connector">
+    <div class="sf-conn-line"></div>
+    <div class="sf-conn-text">parses &#8594; Python dict (scope)</div>
+    <div class="sf-conn-line"></div>
+  </div>
+  <div class="sf-step sf-uvicorn">
+    <div class="sf-step-title">&#128230; Uvicorn builds ASGI call</div>
+    <div class="sf-step-desc">Assembles <code>scope</code>, <code>receive</code>, and <code>send</code> — the three-argument contract</div>
+  </div>
+  <div class="sf-connector">
+    <div class="sf-conn-line"></div>
+    <div class="sf-conn-text">ASGI call: scope + receive + send</div>
+    <div class="sf-conn-line"></div>
+  </div>
+  <div class="sf-step sf-fastapi">
+    <div class="sf-step-title">&#9996;&#65039; FastAPI</div>
+    <div class="sf-step-desc">Routes the request, validates inputs, runs your endpoint function, calls <code>send()</code></div>
+  </div>
+  <div class="sf-connector">
+    <div class="sf-conn-line"></div>
+    <div class="sf-conn-text">formats HTTP response</div>
+    <div class="sf-conn-line"></div>
+  </div>
+  <div class="sf-step sf-uvicorn">
+    <div class="sf-step-title">&#9889; Uvicorn</div>
+    <div class="sf-step-desc">Collects <code>send()</code> calls, formats HTTP/1.1 status + headers + body</div>
+  </div>
+  <div class="sf-connector">
+    <div class="sf-conn-line"></div>
+    <div class="sf-conn-text">response bytes over TCP</div>
+    <div class="sf-conn-line"></div>
+  </div>
+  <div class="sf-step sf-client">
+    <div class="sf-step-title">&#128100; Client</div>
+    <div class="sf-step-desc">Receives the complete HTTP response</div>
+  </div>
+  <div class="sf-return-box">
+    <p>&#8593; response flows back up the same path it came down &#8593;</p>
+  </div>
+</div>
+
+<div class="analogy reveal">
+  <p>Think of Uvicorn as a <strong>mail room</strong>. Letters (HTTP requests) arrive in raw, physical form. The mail room opens them, sorts them, and delivers a clean, organized package to the right desk. The person at the desk (FastAPI) just works with the contents. They never touch the envelope, the postage, or the truck that delivered it.</p>
+</div>
+
+<!-- SECTION 02: WRITTEN IN PYTHON DOESN'T MEAN SLOW -->
+<section class="section reveal">
+  <span class="section-num part2-num">02</span>
+  <h2>"Written in Python" Doesn't Mean Slow</h2>
+  <p>The obvious question: Uvicorn is Python. Python is slow. So isn't Uvicorn slow?</p>
+  <p>No — because Uvicorn doesn't actually do the heavy lifting in Python.</p>
+  <p>The two most expensive operations in an HTTP server are:</p>
+  <ol style="line-height:2;margin-left:1.5rem">
+    <li><strong>Parsing HTTP</strong> — reading raw bytes and extracting the method, path, headers, and body</li>
+    <li><strong>Running the event loop</strong> — managing thousands of concurrent connections without blocking</li>
+  </ol>
+  <p>Uvicorn outsources <em>both</em> of these to <span class="highlight">C</span>.</p>
+</section>
+
+<div class="speed-pair reveal">
+  <div class="speed-card sc-blue">
+    <h4>httptools — C-speed HTTP parsing</h4>
+    <p>When you install Uvicorn with <code>[standard]</code> extras, you get <strong>httptools</strong> — a Python binding to <strong>llhttp</strong>, the same HTTP parser used inside Node.js. Written in C. Extremely fast. Uvicorn calls into it from Python, but the actual byte-crunching happens in C.</p>
+  </div>
+  <div class="speed-card sc-green">
+    <h4>uvloop — a C-based event loop</h4>
+    <p>Python's <code>asyncio</code> event loop is written in Python. <strong>uvloop</strong> replaces it with one written in C, wrapping <strong>libuv</strong> — the same async I/O library that powers Node.js. Your <code>async def</code> functions look the same; uvloop just runs the scheduler in C.</p>
+  </div>
+</div>
+
+<section class="section reveal">
+  <h3 style="font-size:1.15rem;color:#0984e3;margin-bottom:1rem">How httptools parses an HTTP request</h3>
+
+  <div class="code-block">
+    <pre><span class="code-comment"># Raw bytes arrive:</span>
+<span class="code-string">"GET /users HTTP/1.1\r\nHost: localhost\r\n\r\n"</span>
+              │
+              ▼
+      httptools <span class="code-comment">(C code — llhttp under the hood)</span>
+              │
+              ▼
+<span class="code-keyword">method</span>  = <span class="code-string">"GET"</span>
+<span class="code-keyword">path</span>    = <span class="code-string">"/users"</span>
+<span class="code-keyword">headers</span> = {<span class="code-string">"host"</span>: <span class="code-string">"localhost"</span>}
+<span class="code-keyword">body</span>    = <span class="code-string">b""</span></pre>
+  </div>
+
+  <p>Your Python code gets pre-parsed, clean Python objects. The byte-level work already happened in C.</p>
+
+  <h3 style="font-size:1.15rem;color:#00b894;margin-top:2rem;margin-bottom:1rem">asyncio vs uvloop</h3>
+</section>
+
+<div class="reveal" style="max-width:50rem;margin:0 auto;padding:0 1.5rem">
+  <div class="compare">
+    <div class="compare-card cc-red">
+      <div class="cc-title">Default asyncio</div>
+      <ul style="font-size:0.85rem;line-height:1.9;margin-left:1rem;color:#555">
+        <li>Python event loop</li>
+        <li>Slower, but fully portable</li>
+        <li>Ships with the standard library</li>
+      </ul>
+    </div>
+    <div class="compare-card cc-blue">
+      <div class="cc-title">uvloop</div>
+      <ul style="font-size:0.85rem;line-height:1.9;margin-left:1rem;color:#555">
+        <li>C event loop (wraps libuv)</li>
+        <li><strong>2–4x faster</strong> than asyncio</li>
+        <li>Same async/await interface — drop-in</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>Uvicorn does this automatically when uvloop is installed:</p>
+  <div class="code-block">
+    <pre><span class="code-keyword">import</span> uvloop
+
+<span class="code-comment"># Uvicorn swaps out the event loop before starting</span>
+asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())</pre>
+  </div>
+  <p>That one swap is responsible for a significant chunk of Uvicorn's speed advantage.</p>
+</section>
+
+<div class="analogy reveal">
+  <p>Python is the <strong>construction foreman</strong>. It reads the blueprints, gives instructions, and coordinates the job. But the actual digging, pouring, and lifting? That's done by <strong>heavy machinery</strong> (C). The foreman doesn't carry the concrete himself — he directs the machines that do.</p>
+</div>
+
+<!-- SECTION 03: HOW UVICORN HANDLES A CONNECTION -->
+<section class="section reveal">
+  <span class="section-num part2-num">03</span>
+  <h2>How Uvicorn Handles a Connection</h2>
+  <p>Let's trace a single request from the moment it arrives to the moment Uvicorn calls your app. This happens in microseconds, but there are real steps.</p>
+</section>
+
+<div class="timeline reveal" style="max-width:43.75rem;margin:2.5rem auto;padding:0 1.5rem 0 4rem">
+  <div class="timeline-item">
+    <div class="timeline-year">Step 1 — Listen</div>
+    <div class="timeline-text">Uvicorn binds to <code>port 8000</code>. The OS kernel now knows: anything arriving at port 8000 goes to Uvicorn.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">Step 2 — Accept connection</div>
+    <div class="timeline-text">A client connects. Uvicorn accepts the TCP connection. The event loop registers this connection for reading.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">Step 3 — Read bytes</div>
+    <div class="timeline-text">Bytes arrive. Uvicorn's event loop wakes up and reads them.<br><code>b"GET /users?active=true HTTP/1.1\r\nHost: localhost\r\n\r\n"</code></div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">Step 4 — Parse HTTP (via httptools)</div>
+    <div class="timeline-text">httptools processes the bytes and extracts: Method: <code>GET</code> &nbsp;|&nbsp; Path: <code>/users</code> &nbsp;|&nbsp; Query string: <code>active=true</code> &nbsp;|&nbsp; Headers: <code>{host: localhost}</code> &nbsp;|&nbsp; Body: <em>(empty)</em></div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">Step 5 — Build ASGI scope</div>
+    <div class="timeline-text">Uvicorn assembles a Python dict: <code>scope = {"type": "http", "method": "GET", "path": "/users", ...}</code> <span class="timeline-chip">the contract</span></div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">Step 6 — Call the FastAPI app</div>
+    <div class="timeline-text">Uvicorn calls: <code>await app(scope, receive, send)</code> — FastAPI takes over.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">Step 7 — Receive the response</div>
+    <div class="timeline-text">FastAPI calls <code>send</code> with the response headers and body. Uvicorn collects them.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">Step 8 — Format and send</div>
+    <div class="timeline-text">Uvicorn writes raw HTTP bytes back to the client: <code>"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n{...}"</code></div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>Each step is clear, fast, and isolated. Uvicorn doesn't know what your app does. FastAPI doesn't know how Uvicorn works. They communicate through <span class="highlight-green">one standard interface</span>.</p>
+</section>
+
+<!-- SECTION 04: THE ASGI HANDOFF IN DETAIL -->
+<section class="section reveal">
+  <span class="section-num part2-num">04</span>
+  <h2>The ASGI Handoff in Detail</h2>
+  <p>The moment Uvicorn hands control to FastAPI is the most important line in the whole server:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">await</span> app(scope, receive, send)</pre>
+  </div>
+
+  <p>Three arguments. That's the entire ASGI protocol.</p>
+</section>
+
+<div class="asgi-grid reveal">
+  <div class="asgi-card ac-blue">
+    <div class="asgi-label">scope</div>
+    <p>A plain Python dict. Read-only. Contains everything about the request: type, method, path, headers, query string, client IP.</p>
+  </div>
+  <div class="asgi-card ac-green">
+    <div class="asgi-label">receive</div>
+    <p>An async callable. Your app calls it to read the request body chunk by chunk. Enables streaming large payloads without loading everything into memory.</p>
+  </div>
+  <div class="asgi-card ac-purple">
+    <div class="asgi-label">send</div>
+    <p>An async callable. Your app calls it twice: once to send response headers, once (or more) to send the body. Uvicorn writes the bytes to the TCP socket.</p>
+  </div>
+</div>
+
+<section class="section reveal">
+  <h3 style="font-size:1.15rem;color:#0984e3;margin-bottom:1rem">scope — the request descriptor</h3>
+
+  <div class="code-block">
+    <pre>scope = {
+    <span class="code-string">"type"</span>:         <span class="code-string">"http"</span>,          <span class="code-comment"># "http", "websocket", or "lifespan"</span>
+    <span class="code-string">"asgi"</span>:         {<span class="code-string">"version"</span>: <span class="code-string">"3.0"</span>},
+    <span class="code-string">"http_version"</span>: <span class="code-string">"1.1"</span>,
+    <span class="code-string">"method"</span>:       <span class="code-string">"GET"</span>,
+    <span class="code-string">"path"</span>:         <span class="code-string">"/users"</span>,
+    <span class="code-string">"query_string"</span>: <span class="code-string">b"active=true"</span>,
+    <span class="code-string">"headers"</span>:      [
+        (<span class="code-string">b"host"</span>,   <span class="code-string">b"localhost:8000"</span>),
+        (<span class="code-string">b"accept"</span>, <span class="code-string">b"application/json"</span>),
+    ],
+    <span class="code-string">"client"</span>:       (<span class="code-string">"127.0.0.1"</span>, <span class="code-keyword">54321</span>), <span class="code-comment"># (IP, port) of the client</span>
+    <span class="code-string">"server"</span>:       (<span class="code-string">"127.0.0.1"</span>, <span class="code-keyword">8000</span>),  <span class="code-comment"># (IP, port) of this server</span>
+}</pre>
+  </div>
+
+  <p>FastAPI reads this dict and figures out how to route the request.</p>
+
+  <h3 style="font-size:1.15rem;color:#00b894;margin-top:2rem;margin-bottom:1rem">receive — reading the request body</h3>
+  <p><code>receive</code> is an async callable. For a <code>GET</code> request there's nothing to read, but for a <code>POST</code> with a JSON body:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment"># FastAPI calls this internally when it needs the body</span>
+event = <span class="code-keyword">await</span> receive()
+<span class="code-comment"># event looks like:</span>
+<span class="code-comment"># {</span>
+<span class="code-comment">#     "type": "http.request",</span>
+<span class="code-comment">#     "body": b'{"name": "Alice"}',</span>
+<span class="code-comment">#     "more_body": False</span>
+<span class="code-comment"># }</span></pre>
+  </div>
+
+  <p>The body isn't pushed at you all at once — you ask for it when you need it. This makes streaming large payloads possible without loading everything into memory.</p>
+
+  <h3 style="font-size:1.15rem;color:#6c5ce7;margin-top:2rem;margin-bottom:1rem">send — sending the response</h3>
+  <p><code>send</code> is an async callable. Your app calls it twice: once for the response headers, once (or more) for the body.</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment"># First call: send the response headers</span>
+<span class="code-keyword">await</span> send({
+    <span class="code-string">"type"</span>:    <span class="code-string">"http.response.start"</span>,
+    <span class="code-string">"status"</span>:  <span class="code-keyword">200</span>,
+    <span class="code-string">"headers"</span>: [
+        (<span class="code-string">b"content-type"</span>,   <span class="code-string">b"application/json"</span>),
+        (<span class="code-string">b"content-length"</span>, <span class="code-string">b"18"</span>),
+    ],
+})
+
+<span class="code-comment"># Second call: send the body</span>
+<span class="code-keyword">await</span> send({
+    <span class="code-string">"type"</span>:      <span class="code-string">"http.response.body"</span>,
+    <span class="code-string">"body"</span>:      <span class="code-string">b'{"name": "Alice"}'</span>,
+    <span class="code-string">"more_body"</span>: <span class="code-keyword">False</span>,  <span class="code-comment"># no more chunks after this</span>
+})</pre>
+  </div>
+
+  <p>Uvicorn listens for these <code>send</code> calls and writes the corresponding bytes back to the TCP connection.</p>
+
+  <h3 style="font-size:1.15rem;color:#e17055;margin-top:2rem;margin-bottom:1rem">The full handshake</h3>
+</section>
+
+<div class="reveal" style="max-width:50rem;margin:0 auto;padding:0 1.5rem">
+  <div class="flow" style="flex-direction:column;gap:0.75rem">
+    <div style="width:100%">
+      <div class="flow-box fb-orange" style="width:100%;text-align:left;padding:1rem 1.5rem">
+        <strong style="color:#e17055">Uvicorn says:</strong> <span style="color:#2d3436;font-family:'Fira Code',monospace;font-size:0.8rem">"Here's the scope, receive, and send."<br>await app(scope, receive, send)</span>
+      </div>
+      <div class="asgi-annotation">"I give you everything. You give me the response."</div>
+    </div>
+    <div class="flow-arrow" style="transform:rotate(90deg);align-self:center">&#10132;</div>
+    <div style="width:100%">
+      <div class="flow-box fb-green" style="width:100%;text-align:left;padding:1rem 1.5rem">
+        <strong style="color:#00b894">FastAPI:</strong> <span style="color:#2d3436;font-family:'Fira Code',monospace;font-size:0.8rem">reads scope &#8594; routes the request<br>await receive() &#8594; reads the body (if needed)<br>... runs your endpoint function ...<br>await send(headers)<br>await send(body)</span>
+      </div>
+      <div class="asgi-annotation">"I read, route, run, and respond."</div>
+    </div>
+    <div class="flow-arrow" style="transform:rotate(90deg);align-self:center">&#10132;</div>
+    <div style="width:100%">
+      <div class="flow-box fb-orange" style="width:100%;text-align:left;padding:1rem 1.5rem">
+        <strong style="color:#e17055">Uvicorn:</strong> <span style="color:#2d3436;font-family:'Fira Code',monospace;font-size:0.8rem">collects the send() calls &#8594; formats as HTTP &#8594; writes to TCP socket</span>
+      </div>
+      <div class="asgi-annotation">"I package it and send it home."</div>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>Neither side needs to know how the other is implemented. Uvicorn could be swapped for Hypercorn. FastAPI could be swapped for Starlette. As long as both speak <span class="highlight">ASGI</span>, it works.</p>
+</section>
+
+<!-- SECTION 05: UVICORN VS OTHER ASGI SERVERS -->
+<section class="section reveal">
+  <span class="section-num part2-num">05</span>
+  <h2>Uvicorn vs Other ASGI Servers</h2>
+  <p>Uvicorn isn't the only ASGI server. The ASGI spec is a standard — any server that implements it can run FastAPI.</p>
+</section>
+
+<div class="info-grid reveal" style="max-width:50rem;margin:2rem auto;padding:0 1.5rem;grid-template-columns:repeat(2,1fr)">
+  <div class="info-card ic-purple">
+    <div class="ic-title">Uvicorn</div>
+    <p style="font-size:0.85rem;line-height:1.7">Fastest, most popular. Uses uvloop + httptools. <strong>Default choice — start here.</strong></p>
+  </div>
+  <div class="info-card ic-green">
+    <div class="ic-title">Hypercorn</div>
+    <p style="font-size:0.85rem;line-height:1.7">Supports HTTP/2 and HTTP/3. Use when you need those protocols.</p>
+  </div>
+  <div class="info-card ic-orange">
+    <div class="ic-title">Daphne</div>
+    <p style="font-size:0.85rem;line-height:1.7">Built for Django Channels. Best if you're in the Django ecosystem.</p>
+  </div>
+  <div class="info-card ic-purple" style="background:#e8f8f5;border-color:#b8f0e0">
+    <div class="ic-title" style="color:#00b894">Granian</div>
+    <p style="font-size:0.85rem;line-height:1.7">Written in Rust. Very fast. Newer option with a growing ecosystem.</p>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>All of them speak ASGI. All of them call your FastAPI app the same way: <code>await app(scope, receive, send)</code></p>
+  <p>Switching servers is <span class="highlight-green">one command change</span>. Your FastAPI code doesn't change at all:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment"># Uvicorn</span>
+<span class="code-keyword">uvicorn</span> main:app
+
+<span class="code-comment"># Hypercorn (same app, different server)</span>
+<span class="code-keyword">hypercorn</span> main:app
+
+<span class="code-comment"># Granian</span>
+<span class="code-keyword">granian</span> --interface asgi main:app</pre>
+  </div>
+</section>
+
+<div class="analogy reveal">
+  <p>The ASGI interface is like an <strong>electrical outlet standard</strong>. Your appliance (FastAPI) has a plug. Any outlet (Uvicorn, Hypercorn, Daphne) that follows the standard will power it. You don't rewire the appliance when you change the outlet.</p>
+</div>
+
+<!-- SECTION 06: WHAT UVICORN DOES NOT DO -->
+<section class="section reveal">
+  <span class="section-num part2-num">06</span>
+  <h2>What Uvicorn Does NOT Do</h2>
+  <p>Uvicorn is deliberately narrow. Understanding its limits matters when you deploy.</p>
+
+  <p><strong style="color:#e17055">Uvicorn is not a process manager.</strong><br>
+  It runs one process. If that process crashes, your app is down. That's what Gunicorn is for — it spawns and supervises multiple Uvicorn workers.</p>
+
+  <p><strong style="color:#e17055">Uvicorn doesn't handle SSL in production.</strong><br>
+  You <em>can</em> pass <code>--ssl-certfile</code> and <code>--ssl-keyfile</code> to Uvicorn, and it works for development. But in production, SSL termination belongs to a reverse proxy like Nginx or a load balancer — they're much better at it.</p>
+
+  <p><strong style="color:#e17055">Uvicorn is not a reverse proxy.</strong><br>
+  It doesn't do load balancing across servers, caching, rate limiting, or path rewriting. Nginx or a cloud load balancer does that upstream.</p>
+
+  <p><strong style="color:#e17055">Uvicorn doesn't manage workers well on its own.</strong><br>
+  Running <code>uvicorn --workers 4</code> works, but you lose graceful restarts, automatic worker replacement, and the process management maturity that Gunicorn provides.</p>
+</section>
+
+<div class="notdo-grid reveal">
+  <div class="notdo-col nd-yes">
+    <h4>&#10003; What Uvicorn OWNS</h4>
+    <div class="nd-item"><span class="nd-icon">&#10003;</span> Accepting TCP connections</div>
+    <div class="nd-item"><span class="nd-icon">&#10003;</span> Parsing HTTP (via httptools)</div>
+    <div class="nd-item"><span class="nd-icon">&#10003;</span> Running the async event loop (via uvloop)</div>
+    <div class="nd-item"><span class="nd-icon">&#10003;</span> Calling your ASGI app</div>
+    <div class="nd-item"><span class="nd-icon">&#10003;</span> Sending HTTP responses</div>
+  </div>
+  <div class="notdo-col nd-no">
+    <h4>&#8594; What Uvicorn Delegates</h4>
+    <div class="nd-item"><span class="nd-icon">&#8594;</span> Process management &nbsp;&mdash;&nbsp; <strong>Gunicorn</strong></div>
+    <div class="nd-item"><span class="nd-icon">&#8594;</span> SSL termination &nbsp;&mdash;&nbsp; <strong>Nginx / Load balancer</strong></div>
+    <div class="nd-item"><span class="nd-icon">&#8594;</span> Reverse proxying &nbsp;&mdash;&nbsp; <strong>Nginx / Traefik</strong></div>
+    <div class="nd-item"><span class="nd-icon">&#8594;</span> Multiple servers &nbsp;&mdash;&nbsp; <strong>Cloud load balancer</strong></div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>This sharp boundary is a <span class="highlight-green">feature</span>. Uvicorn is excellent at one thing because it doesn't try to do everything.</p>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">Uvicorn is the HTTP server.</strong> FastAPI is the application. Uvicorn owns the network. FastAPI owns the logic.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">httptools</strong> — a C extension wrapping Node.js's llhttp HTTP parser. Parses HTTP at C speed. Ships with <code>uvicorn[standard]</code>.
+    </div>
+    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
+      <strong style="color:#6c5ce7">uvloop</strong> — a C extension wrapping libuv, Node.js's event loop. Replaces Python's asyncio. 2–4x faster. Same async/await interface.
+    </div>
+    <div style="background:#fef5e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">ASGI</strong> is the three-argument handshake: <code>await app(scope, receive, send)</code>. That's the entire protocol between server and app.
+    </div>
+    <div style="background:#ffeef7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e84393">
+      <strong style="color:#e84393">scope / receive / send</strong> — scope describes the request (dict), receive reads the body (async callable), send writes the response (async callable).
+    </div>
+    <div style="background:#e0fafa;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00cec9">
+      <strong style="color:#00cec9">Uvicorn is not</strong> a process manager, SSL endpoint, or reverse proxy. Know its boundaries — they're sharp by design.
+    </div>
+  </div>
+</section>
+
+<!-- PROBE YOUR THINKING QUIZ -->
+<section class="section reveal quiz-ep2">
+  <span class="section-num part2-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <!-- Q1 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 01</span>
+      <span class="quiz-type-tag">MULTIPLE CHOICE</span>
+    </div>
+    <p class="quiz-question">What does <code>uvloop</code> replace inside Uvicorn?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Python's built-in <code>http.server</code></button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>The <code>socket</code> module</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Python's default <code>asyncio</code> event loop</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>The GIL (Global Interpreter Lock)</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(C) Python's default <code>asyncio</code> event loop</strong></div>
+        <p class="quiz-answer-text"><code>uvloop</code> is a drop-in replacement written in Cython that wraps libuv (the same C library that powers Node.js). It makes the event loop 2–4x faster.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 02</span>
+      <span class="quiz-type-tag">TRUE / FALSE</span>
+    </div>
+    <p class="quiz-question">Uvicorn handles SSL/TLS termination in a production deployment.</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>True</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>False</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(B) False</strong></div>
+        <p class="quiz-answer-text">In production, SSL termination is handled by a reverse proxy like Nginx or a cloud load balancer. Uvicorn sits behind the proxy and receives plain HTTP. It <em>can</em> do SSL, but it shouldn't in production.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 03</span>
+      <span class="quiz-type-tag">MULTIPLE CHOICE</span>
+    </div>
+    <p class="quiz-question">You start Uvicorn with <code>--workers 4</code>. How many event loops are running?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>1 — all workers share the same event loop</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>4 — one per worker process</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>8 — two per worker (one for HTTP, one for WebSocket)</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>It depends on the number of CPU cores</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(B) 4 — one per worker process</strong></div>
+        <p class="quiz-answer-text">One per worker process. Each worker is a separate OS process with its own event loop, its own memory space, and its own copy of your application.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 04</span>
+      <span class="quiz-type-tag">MULTIPLE CHOICE</span>
+    </div>
+    <p class="quiz-question">Uvicorn uses <code>httptools</code> for HTTP parsing. What C library does <code>httptools</code> wrap?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>libcurl</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Node.js's llhttp parser</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Apache's APR</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Python's <code>http.parser</code></button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(B) Node.js's llhttp parser</strong></div>
+        <p class="quiz-answer-text"><code>httptools</code> is a Python binding for the same battle-tested HTTP parser used inside Node.js, giving Uvicorn near-C-speed HTTP parsing.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- NEXT EPISODE -->
+<section class="next-part" style="background:linear-gradient(135deg,#0984e3,#00cec9)">
+  <h2>Ready for Episode 3?</h2>
+  <p>Uvicorn uses an event loop to handle thousands of connections on a single thread. How? We'll build an event loop from scratch — and you'll finally understand why <code>async</code>/<code>await</code> makes FastAPI so much more efficient than Flask.</p>
+  <a href="part3.html" class="btn btn-white" style="color:#0984e3">Continue to Episode 3 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How FastAPI Works — Episode 2: Uvicorn — The Server Behind FastAPI | Unbox the Black Box" inlineStyle={inlineStyle} series={fastapiSeries} episodeNum={2} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

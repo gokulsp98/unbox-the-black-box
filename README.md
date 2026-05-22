@@ -6,56 +6,89 @@ A personal tech learning journal where complex topics become simple, visual, and
 
 ## Live Site
 
-Hosted on GitHub Pages — [View Site](#)
+Hosted on GitHub Pages — [View Site](https://gokulsp98.github.io/unbox-the-black-box/)
 
 ## Series
 
-### 01 — How Computers Think
-CPUs, instruction sets, binaries, 32 vs 64-bit, CPU vs GPU — the fundamentals of how every device works.
+### 01 — How Your Code Runs
+CPUs, instruction sets, binaries, compilers, interpreters — the fundamentals of how code becomes action.
 
-- [Episode 1: The Brain of Your Computer](cpu/part1.html)
-- [Episode 2: The Bigger Picture](cpu/part2.html)
+- Episode 1: The Brain of Your Computer
+- Episode 2: The Bigger Picture
+- Episode 3: C — The Journey to Binary
+- Episode 4: Java — Binary While Running
+- Episode 5: Python — Binary One Line At A Time
+- Episode 6: JavaScript — Binary In Your Browser
+- Episode 7: The Full Picture
 
-## Structure
+### 02 — How FastAPI Works
+Uvicorn, ASGI, event loops, coroutines, workers, routing, validation — every layer from `fastapi dev` to production.
 
-```
-├── index.html          # Homepage
-├── style.css           # Shared stylesheet
-└── cpu/
-    ├── part1.html      # CPU Series — Episode 1
-    └── part2.html      # CPU Series — Episode 2
-```
+- Episode 1: What Happens When You Hit It
+- Episode 2: Uvicorn — The Server Behind FastAPI
+- Episode 3: The Event Loop Inside Uvicorn
+- Episode 4: Coroutines — async/await
+- Episode 5: Workers — Scaling Across CPU Cores
+- Episode 6: FastAPI's Magic — Routing & Validation
+- Episode 7: The Full Production Stack
 
-## Tech
+## Tech Stack
 
-- Pure HTML, CSS, and vanilla JS
-- No frameworks, no build tools, no dependencies
-- Designed for GitHub Pages — just push and it's live
+- **Astro** — static site generator, outputs pure HTML/CSS/JS
+- No client-side frameworks or runtime dependencies
+- GitHub Pages via GitHub Actions (`deploy.yml`)
 - Scroll-reveal animations via IntersectionObserver
+- Interactive quizzes (FastAPI series) with click feedback
+- GoatCounter analytics
 - Fully responsive
+
+## Project Structure
+
+```
+├── astro.config.mjs            # Astro config (static, base path, file format)
+├── package.json
+├── public/
+│   └── style.css               # Shared stylesheet (unchanged from pre-Astro)
+├── src/
+│   ├── data/
+│   │   └── series.ts           # Series config (titles, slugs, progress)
+│   ├── layouts/
+│   │   ├── BaseLayout.astro    # HTML shell, head, footer, scripts
+│   │   ├── HomepageLayout.astro
+│   │   └── ArticleLayout.astro # Nav dropdown, optional quiz JS
+│   ├── components/
+│   │   ├── Nav.astro           # Homepage nav
+│   │   ├── ArticleNav.astro    # Episode dropdown nav
+│   │   ├── Footer.astro
+│   │   ├── GoatCounter.astro
+│   │   ├── RevealScript.astro
+│   │   ├── NavDropdownScript.astro
+│   │   └── QuizScript.astro
+│   └── pages/
+│       ├── index.astro         # Homepage
+│       ├── cpu/part1-7.astro   # CPU series (7 episodes)
+│       └── fastapi/part1-7.astro # FastAPI series (7 episodes)
+├── cpu/*.md                    # Markdown source files
+└── fastapi/*.md                # Markdown source files
+```
+
+## Development
+
+```bash
+npm install         # install dependencies
+npm run dev         # start dev server (localhost:4321)
+npm run build       # build to dist/
+npm run preview     # preview built site
+```
 
 ## Adding a New Series
 
-1. Create a folder (e.g. `networking/`)
-2. Add `part1.html` inside it, link `../style.css`
-3. Use the nav pattern: `<a href="../index.html" class="nav-title">Unbox the Black Box</a>`
-4. Add a series card to `index.html` in the `.series-grid`
-5. Keep page-specific styles inline, reusable styles in `style.css`
-
-## Future: Migration to Astro
-
-The current pure HTML setup works well for 2-3 series. Beyond that, the repeated nav/footer/script across every page becomes hard to maintain. Markdown content files (`cpu/part1.md`, `cpu/part2.md`) are already prepared for migration.
-
-When to migrate:
-- 4+ series or 10+ pages
-- Changing the nav/footer means editing every file manually
-
-What Astro gives you:
-- One layout template — nav, footer, scripts written once
-- Content stays in `.md` files with frontmatter
-- Homepage series grid auto-generates from content
-- Output is identical static HTML — same GitHub Pages hosting
+1. Add series config to `src/data/series.ts`
+2. Create a folder under `src/pages/` (e.g. `src/pages/networking/`)
+3. Create `.astro` pages using `ArticleLayout`
+4. Add a series card to `src/pages/index.astro`
+5. Keep page-specific styles in `inlineStyle` prop, shared styles in `public/style.css`
 
 ## Author
 
-Built with ❤️ by **Gokul**
+Built with love by **Gokul**

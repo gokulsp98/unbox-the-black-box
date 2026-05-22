@@ -1,0 +1,34 @@
+<script is:inline>
+document.querySelectorAll('.quiz-option').forEach(function(opt) {
+  opt.addEventListener('click', function() {
+    var card = opt.closest('.quiz-card');
+    if (card.classList.contains('answered')) return;
+    card.classList.add('answered');
+    var correct = card.querySelector('.quiz-option[data-correct]');
+    if (opt === correct) {
+      opt.classList.add('correct');
+    } else {
+      opt.classList.add('wrong');
+      if (correct) correct.classList.add('correct');
+    }
+    var answer = card.querySelector('.quiz-answer');
+    if (answer) answer.classList.add('open');
+    var btn = card.querySelector('.quiz-reveal-btn');
+    if (btn) {
+      btn.setAttribute('aria-expanded', 'true');
+      var chevron = btn.querySelector('.quiz-chevron');
+      if (chevron) chevron.textContent = '▴';
+    }
+  });
+});
+document.querySelectorAll('.quiz-reveal-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var card = btn.closest('.quiz-card');
+    var answer = card.querySelector('.quiz-answer');
+    var isOpen = answer.classList.contains('open');
+    answer.classList.toggle('open');
+    btn.setAttribute('aria-expanded', String(!isOpen));
+    btn.querySelector('.quiz-chevron').textContent = isOpen ? '▾' : '▴';
+  });
+});
+</script>

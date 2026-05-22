@@ -158,6 +158,35 @@ p{font-size:1.1rem;line-height:1.85;color:#555;margin-bottom:1rem}
 .gpu-dot{width:100%;aspect-ratio:1;border-radius:4px;background:#74b9ff;animation:gpuBlink 3s ease infinite}
 @keyframes gpuBlink{0%,100%{opacity:0.4}50%{opacity:1}}
 
+/* ── QUIZ / CHECKPOINT ── */
+.quiz-grid{display:flex;flex-direction:column;gap:3rem;margin-top:2.5rem}
+.quiz-card{background:#fff;border-radius:1.25rem;border:0.0625rem solid #eee;padding:2.25rem;box-shadow:0 0.25rem 1.25rem rgba(0,0,0,0.06);transition:all 0.3s}
+.quiz-card:hover{transform:translateY(-0.1875rem);box-shadow:0 0.5rem 1.75rem rgba(0,0,0,0.10)}
+.quiz-card-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem}
+.quiz-q-num{font-family:'Fira Code',monospace;font-size:0.75rem;font-weight:700;padding:0.2rem 0.75rem;border-radius:1.25rem;letter-spacing:0.0625rem}
+.quiz-type-tag{font-family:'Fira Code',monospace;font-size:0.62rem;font-weight:700;letter-spacing:0.09375rem;text-transform:uppercase;padding:0.2rem 0.6rem;border-radius:0.375rem;color:#888;background:#f4f4f4}
+.quiz-question{font-size:1.05rem;font-weight:700;line-height:1.75;color:#2d3436;margin-bottom:1.25rem}
+.quiz-options{list-style:none;padding:0;margin:0 0 1.25rem;display:flex;flex-direction:column;gap:0.5rem}
+.quiz-option{display:flex;align-items:center;gap:0.875rem;width:100%;text-align:left;background:#f9f9f9;border:0.0625rem solid #eee;border-radius:0.75rem;padding:0.75rem 1.125rem;font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:600;color:#2d3436;cursor:default;transition:all 0.25s}
+.quiz-opt-letter{font-family:'Fira Code',monospace;font-size:0.75rem;font-weight:700;flex-shrink:0}
+.quiz-option.correct{background:#e8f8f5;border-color:#00b894;color:#00b894;font-weight:800}
+.quiz-option.correct .quiz-opt-letter{color:#00b894}
+.quiz-option.wrong{background:#ffe0e0;border-color:#d63031;color:#d63031}
+.quiz-option.wrong .quiz-opt-letter{color:#d63031}
+.quiz-card.answered .quiz-option{pointer-events:none}
+.quiz-card.answered .quiz-option:not(.correct):not(.wrong){opacity:0.45}
+.quiz-reveal-btn{background:none;border:none;padding:0;font-family:'Fira Code',monospace;font-size:0.8rem;font-weight:700;cursor:pointer;letter-spacing:0.03125rem;transition:opacity 0.2s}
+.quiz-reveal-btn:hover{opacity:0.7}
+.quiz-chevron{display:inline-block;transition:transform 0.3s;margin-left:0.25rem}
+.quiz-answer{max-height:0;overflow:hidden;opacity:0;transition:max-height 0.4s cubic-bezier(0.25,0.46,0.45,0.94),opacity 0.3s ease}
+.quiz-answer.open{max-height:31.25rem;opacity:1}
+.quiz-answer-inner{border-top:0.0625rem solid #eee;margin-top:1.25rem;padding-top:1.25rem}
+.quiz-answer-highlight{border-radius:0.75rem;padding:0.875rem 1.25rem;margin-bottom:0.875rem;font-weight:800;font-size:0.95rem}
+.quiz-answer-text{font-size:0.93rem;line-height:1.75;color:#555;margin-bottom:0}
+.quiz-subtitle{color:#636e72;font-size:0.95rem;margin-top:-0.5rem}
+.quiz-sequence-items{list-style:none;padding:0;margin:0 0 1.25rem;display:flex;flex-wrap:wrap;gap:0.5rem}
+.quiz-sequence-item{background:#f9f9f9;border:0.0625rem solid #eee;border-radius:0.75rem;padding:0.5rem 1rem;font-family:'Fira Code',monospace;font-size:0.8rem;font-weight:600;color:#2d3436}
+
 /* ── RESPONSIVE ── */
 @media(max-width:37.5rem){
 .compare{grid-template-columns:1fr}
@@ -174,4 +203,7 @@ p{font-size:1.1rem;line-height:1.85;color:#555;margin-bottom:1rem}
 .nav-ep-text .nav-series-name{display:none}
 .nav-dropdown{min-width:13.75rem}
 .hero{padding:3.75rem 1.25rem 2.5rem}
+.quiz-card{padding:1.25rem}
+.quiz-option{padding:0.625rem 0.875rem;font-size:0.88rem}
+.quiz-question{font-size:0.95rem}
 }

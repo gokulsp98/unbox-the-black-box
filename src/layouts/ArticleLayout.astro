@@ -1,0 +1,23 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import ArticleNav from '../components/ArticleNav.astro';
+import NavDropdownScript from '../components/NavDropdownScript.astro';
+import QuizScript from '../components/QuizScript.astro';
+import type { Series } from '../data/series';
+
+interface Props {
+  title: string;
+  inlineStyle?: string;
+  series: Series;
+  episodeNum: number;
+  hasQuiz?: boolean;
+}
+
+const { title, inlineStyle, series, episodeNum, hasQuiz = false } = Astro.props;
+---
+<BaseLayout title={title} inlineStyle={inlineStyle}>
+  <ArticleNav series={series} episodeNum={episodeNum} />
+  <slot />
+  <NavDropdownScript />
+  {hasQuiz && <QuizScript />}
+</BaseLayout>

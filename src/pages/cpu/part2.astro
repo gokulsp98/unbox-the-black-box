@@ -1,11 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How Your Code Runs — Part 2: The Bigger Picture | Unbox the Black Box</title>
-<link rel="stylesheet" href="../style.css">
-<style>
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { cpuSeries } from '../../data/series';
+const inlineStyle = `
 /* ── PAGE-SPECIFIC: Part 2 accent color ── */
 ::selection{background:#e17055;color:#fff}
 
@@ -24,31 +20,8 @@
 .chip-3{bottom:0.75rem;left:0;background:rgba(85,239,196,0.2);color:#55efc4;border:1px solid rgba(85,239,196,0.3);animation-delay:1s}
 .chip-4{bottom:0.25rem;right:0;background:rgba(162,155,254,0.2);color:#a29bfe;border:1px solid rgba(162,155,254,0.3);animation-delay:1.5s}
 @keyframes chipFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-</style>
-</head>
-<body>
-
-<!-- NAV -->
-<nav class="nav">
-  <a href="../index.html" class="nav-title"><span class="nav-title-sub">Gokul's Learning Journal</span><span class="nav-title-main">Unbox the Black Box</span></a>
-  <div class="nav-ep" onclick="this.classList.toggle('open')">
-    <div class="nav-ep-text">
-      <span class="nav-series-name">How Your Code Runs</span>
-      <span class="nav-ep-current">Ep 2 of 7</span>
-    </div>
-    <div class="nav-progress"><div class="nav-progress-fill" style="width:28%"></div></div>
-    <span class="nav-ep-arrow">&#9660;</span>
-    <div class="nav-dropdown">
-      <a href="part1.html"><span class="ep-num">01</span> The Brain of Your Computer</a>
-      <a href="part2.html" class="active"><span class="ep-num">02</span> The Bigger Picture</a>
-      <a href="part3.html"><span class="ep-num">03</span> C: The Journey to Binary</a>
-      <a href="part4.html"><span class="ep-num">04</span> Java: Binary While Running</a>
-      <a href="part5.html"><span class="ep-num">05</span> Python: Binary One Line At A Time</a>
-      <a href="part6.html"><span class="ep-num">06</span> JavaScript: Binary In Your Browser</a>
-      <a href="part7.html"><span class="ep-num">07</span> The Full Picture</a>
-    </div>
-  </div>
-</nav>
+`;
+const bodyHtml = `
 
 <!-- HERO -->
 <section class="hero part2-hero">
@@ -337,31 +310,8 @@
   <p>Now that you know how CPUs work, let's see how your code actually becomes the binary the CPU understands — starting with C, the most direct path.</p>
   <a href="part3.html" class="btn btn-white" style="color:#00b894">Continue to Episode 3 &#10132;</a>
 </section>
-
-<footer class="footer">
-  <p>Unbox the Black Box - from confusion to clarity.<br>Built with ❤️ by <strong>Gokul</strong>.</p>
-</footer>
-
-<script>
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) entry.target.classList.add('visible');
-  });
-}, { threshold: 0.15 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-document.addEventListener('click', e => { if (!e.target.closest('.nav-ep')) document.querySelectorAll('.nav-ep').forEach(n => n.classList.remove('open')); });
-
-const grid = document.querySelector('.gpu-grid');
-if (grid) {
-  for (let i = 0; i < 100; i++) {
-    const dot = document.createElement('div');
-    dot.className = 'gpu-dot';
-    dot.style.animationDelay = (Math.random() * 2).toFixed(2) + 's';
-    grid.appendChild(dot);
-  }
-}
-</script>
-<script data-goatcounter="https://gokulsp.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
-</body>
-</html>
+`;
+---
+<ArticleLayout title="How Your Code Runs — Part 2: The Bigger Picture | Unbox the Black Box" inlineStyle={inlineStyle} series={cpuSeries} episodeNum={2}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>
