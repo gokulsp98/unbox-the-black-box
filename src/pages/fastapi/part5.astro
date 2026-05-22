@@ -404,7 +404,7 @@ workers = <span class="code-keyword">2</span> * multiprocessing.<span class="cod
 
 <section class="section reveal">
   <p>The choice isn't "one is better" — it's <span class="highlight">"what does your deployment infrastructure already handle?"</span></p>
-  <p>In a containerized environment where the orchestrator (Kubernetes, ECS) manages crash recovery and rolling restarts, Uvicorn's built-in workers are often sufficient. The container dies, the orchestrator restarts it — Gunicorn's worker supervision is redundant.</p>
+  <p>In a containerized environment where the orchestrator (Kubernetes, ECS) manages crash recovery and rolling restarts, Uvicorn's built-in workers are often sufficient. Uvicorn's <code>--workers</code> mode includes a basic process monitor of its own, so the same argument applies: when an orchestrator handles restarts at the container level, an extra layer of in-process supervision adds less value. The container dies, the orchestrator restarts it.</p>
   <p>For a traditional server setup, or high-traffic production where you need zero-downtime deploys without external tooling, <span class="highlight-orange">Gunicorn earns its place</span>.</p>
 </section>
 
@@ -593,7 +593,7 @@ workers = <span class="code-keyword">2</span> * multiprocessing.<span class="cod
     <div class="quiz-answer">
       <div class="quiz-answer-inner">
         <div class="quiz-answer-highlight">✓ Correct: <strong>(C) Master binds port → Master forks → Workers init app → Workers handle requests</strong></div>
-        <p class="quiz-answer-text">The master owns the socket and passes it to forked workers. Each worker loads its own copy of the FastAPI application.</p>
+        <p class="quiz-answer-text">This describes Gunicorn's pre-fork model specifically: the master owns the socket and passes it to forked workers via fork(), so workers inherit the file descriptor. Uvicorn's <code>--workers</code> flag uses spawn instead of fork, so each worker starts fresh and opens its own connection to the socket rather than inheriting it. Each worker still loads its own copy of the FastAPI application either way.</p>
       </div>
     </div>
   </div>

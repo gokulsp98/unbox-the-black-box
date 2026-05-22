@@ -69,7 +69,7 @@ const bodyHtml = `
   </div>
   <div class="bar-row">
     <span class="bar-label">64-bit</span>
-    <div class="bar" style="width:95%;background:linear-gradient(90deg,#6c5ce7,#0984e3)">16 billion GB (theoretical)</div>
+    <div class="bar" style="width:95%;background:linear-gradient(90deg,#6c5ce7,#0984e3)">18.4 exabytes theoretical (current chips use 48-bit virtual addresses: 256 TB)</div>
   </div>
 </div>
 
@@ -80,8 +80,8 @@ const bodyHtml = `
   <div class="code-block">
     <pre><span class="code-comment">// The death of 32-bit</span>
 <span class="code-keyword">2019</span>   macOS dropped 32-bit app support
-<span class="code-keyword">2021</span>   Ubuntu dropped 32-bit downloads
-<span class="code-keyword">2023</span>   Google Play requires 64-bit apps
+<span class="code-keyword">2019</span>   Ubuntu dropped 32-bit install images
+<span class="code-keyword">2021</span>   Google Play required 64-bit apps
 <span class="code-keyword">2025</span>   most Linux distros stopped 32-bit builds</pre>
   </div>
 </section>
@@ -117,23 +117,23 @@ const bodyHtml = `
 <div class="reveal" style="max-width:43.75rem;margin:0 auto;padding:0 1.5rem">
   <div class="flow" style="flex-direction:column;gap:1.25rem;align-items:stretch">
     <div class="flow-box fb-orange" style="text-align:left;min-width:auto">
-      <strong>8-bit</strong> (1970s) — could address <strong>256 bytes</strong> of RAM<br><small>Atari, Nintendo NES. Ran out quickly.</small>
+      <strong>8-bit</strong> (1970s) — processes <strong>8 bits at once</strong>; 16-bit address bus meant up to <strong>64 KB</strong> addressable<br><small>Atari, Nintendo NES. Ran out quickly.</small>
     </div>
     <div class="flow-box fb-orange" style="text-align:left;min-width:auto">
-      <strong>16-bit</strong> (1980s) — could address <strong>64 KB</strong> of RAM<br><small>Super Nintendo. Still tight.</small>
+      <strong>16-bit</strong> (1980s) — processes <strong>16 bits at once</strong>; actual addressable memory varied — the SNES used a 24-bit address bus allowing up to <strong>16 MB</strong><br><small>Super Nintendo. Still tight.</small>
     </div>
     <div class="flow-box fb-red" style="text-align:left;min-width:auto">
       <strong>32-bit</strong> (1990s–2000s) — could address <strong>4 GB</strong> of RAM<br><small>Hit the wall around 2005. Forced the upgrade.</small>
     </div>
     <div class="flow-box fb-purple" style="text-align:left;min-width:auto">
-      <strong>64-bit</strong> (2003–now) — could address <strong>16 billion GB</strong> of RAM<br><small>We're using 0.0000001% of this. No wall in sight.</small>
+      <strong>64-bit</strong> (2003–now) — theoretical max of <strong>18.4 exabytes</strong> (billions of gigabytes); current chips use 48-bit virtual addresses (256 TB practical limit)<br><small>No wall in sight for decades.</small>
     </div>
   </div>
 </div>
 
 <section class="section reveal">
   <p>Each jump happened because we <span class="highlight-orange">ran out of space</span>. The move from 32-bit to 64-bit solved a real problem — the 4 GB memory limit.</p>
-  <p>But 64-bit can theoretically address <span class="highlight">16 exabytes</span> of memory. The largest server in the world today uses about 12 TB — that's still less than 0.0001% of what 64-bit allows.</p>
+  <p>But 64-bit can theoretically address <span class="highlight">18.4 exabytes</span> of memory. Even the largest servers today use a few tens of terabytes at most — a tiny fraction of what 64-bit allows.</p>
   <p>There's simply <span class="highlight-green">no problem to solve</span>. Building a 128-bit CPU would be more complex, use more power, and solve a problem that won't exist for centuries.</p>
 </section>
 
@@ -277,7 +277,7 @@ const bodyHtml = `
   <div style="display:grid;gap:0.75rem;margin-top:1.25rem">
     <div style="background:#f0efff;padding:1.125rem 1.5rem;border-radius:0.875rem;display:flex;align-items:center;gap:1rem">
       <span style="font-size:2rem">&#128994;</span>
-      <div><strong style="color:#6c5ce7">Nvidia GPU + CUDA</strong> — ~90% of AI training market. Proprietary software lock-in.</div>
+      <div><strong style="color:#6c5ce7">Nvidia GPU + CUDA</strong> — over 80% of AI training market. Proprietary software lock-in.</div>
     </div>
     <div style="background:#e8f8f5;padding:1.125rem 1.5rem;border-radius:0.875rem;display:flex;align-items:center;gap:1rem">
       <span style="font-size:2rem">&#128993;</span>
@@ -394,7 +394,7 @@ const bodyHtml = `
     <div class="quiz-answer">
       <div class="quiz-answer-inner">
         <div class="quiz-answer-highlight">✓ Correct: <strong>(C) 64-bit can already address far more memory than any machine needs</strong></div>
-        <p class="quiz-answer-text">64-bit can theoretically address 16 exabytes of RAM. The largest servers today use about 12 TB — less than 0.0001% of that capacity. There's simply no reason for 128-bit.</p>
+        <p class="quiz-answer-text">64-bit can theoretically address 18.4 exabytes of RAM. Even the largest servers today use a few tens of terabytes at most — a tiny fraction of that capacity. There's simply no reason for 128-bit.</p>
       </div>
     </div>
   </div>

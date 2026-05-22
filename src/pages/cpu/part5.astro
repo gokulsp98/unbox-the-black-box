@@ -64,8 +64,8 @@ const bodyHtml = `
 <!-- HERO -->
 <section class="hero part5-hero">
   <div class="hero-badge">Episode 5 of 7</div>
-  <h1>Python: Binary One<br>Line At A Time</h1>
-  <p style="color:rgba(255,255,255,0.95)">No compile step. No bytecode you ever see. Python reads your code line by line, translates each to binary, and immediately forgets it.</p>
+  <h1>Python: One Bytecode<br>Instruction At A Time</h1>
+  <p style="color:rgba(255,255,255,0.95)">No compile step to native binary. Python compiles to bytecode behind the scenes, then its interpreter dispatches each instruction to pre-compiled C handlers — no new machine code is ever produced.</p>
 
   <div class="python-art">
     <div class="snake-body">
@@ -77,7 +77,7 @@ const bodyHtml = `
       <div class="snake-segment"></div>
       <div class="snake-segment"></div>
     </div>
-    <div class="python-label">line by line</div>
+    <div class="python-label">instruction by instruction</div>
   </div>
 </section>
 
@@ -86,7 +86,7 @@ const bodyHtml = `
   <span class="section-num part5-num">16</span>
   <h2>The Simplest Path (and the Slowest)</h2>
   <p>In Episode 3, we saw how C compiles to binary before you run the program. In Episode 4, Java compiles to bytecode, then the JVM creates binary at runtime. Python takes a third approach — the simplest, and the slowest.</p>
-  <p>There's no compile step you ever see. You just run your code directly:</p>
+  <p>There's no compile-to-native-binary step you ever see. You just run your code directly — Python quietly compiles it to bytecode first, then the interpreter takes over:</p>
 
   <div class="code-block">
     <pre><span class="code-keyword">python</span> hello.py
@@ -94,7 +94,7 @@ const bodyHtml = `
 <span class="code-comment">That's it. No gcc. No javac. Just run.</span></pre>
   </div>
 
-  <p>A program called the <span class="highlight-orange">interpreter</span> reads your source code line by line, translates each line to binary, the CPU executes it, and then it moves to the next line.</p>
+  <p>A program called the <span class="highlight-orange">interpreter</span> (CPython) compiles your source to bytecode, then reads each bytecode instruction and runs the corresponding pre-compiled C handler function. No new native binary is ever produced.</p>
 </section>
 
 <!-- FLOW DIAGRAM -->
@@ -106,9 +106,9 @@ const bodyHtml = `
     <div class="flow-arrow">&#10132;</div>
     <div class="flow-box fb-purple">.pyc<br><small>bytecode</small></div>
     <div class="flow-arrow">&#10132;</div>
-    <div class="flow-box fb-dark">Interpreter<br><small>line by line</small></div>
+    <div class="flow-box fb-dark">Interpreter<br><small>opcode by opcode</small></div>
     <div class="flow-arrow">&#10132;</div>
-    <div class="flow-box fb-green">CPU<br><small>one line at a time</small></div>
+    <div class="flow-box fb-green">CPU<br><small>via C handlers</small></div>
   </div>
 </div>
 
@@ -129,11 +129,11 @@ const bodyHtml = `
       <span style="color:#636e72">Done. No binary file created.</span>
     </div>
   </div>
-  <div class="interp-caption">The interpreter translates &amp; forgets — one line at a time</div>
+  <div class="interp-caption">CPython dispatches each bytecode opcode to a C handler — no new machine code is produced</div>
 </div>
 
 <section class="section reveal">
-  <p><strong>So when does Python code become binary?</strong> One instruction at a time, while running — and the binary is immediately forgotten after each line executes. It's never saved, never cached, never reused.</p>
+  <p><strong>So when does Python code become binary?</strong> It doesn't, in the usual sense. CPython's interpreter reads each bytecode instruction and calls the corresponding pre-compiled C function — the C runtime itself is native binary, but no new machine code is generated for your Python code. Nothing is compiled, cached, or reused on your behalf.</p>
   <p>And just like Java needs the JVM, Python needs the <span class="highlight-orange">Python interpreter</span> installed on the machine. Without it, <code>.py</code> files are just text files — the computer doesn't know what to do with them.</p>
 </section>
 
@@ -166,21 +166,21 @@ const bodyHtml = `
     </div>
     <div class="pyc-card pyc-python">
       <h4 style="color:#e17055">Python</h4>
-      <p>bytecode &rarr; CPython interpreter &rarr; <strong>reads line by line</strong> (slow, no JIT)</p>
+      <p>bytecode &rarr; CPython interpreter &rarr; <strong>C handlers, instruction by instruction</strong> (slow, no JIT)</p>
       <div class="pyc-flow">
         .pyc &rarr; CPython<br>
         &darr;<br>
-        interprets one by one<br>
+        dispatches C handler per opcode<br>
         &darr;<br>
-        <span style="color:#e17055">no native binary</span>
+        <span style="color:#e17055">no new native binary generated</span>
       </div>
     </div>
   </div>
 </div>
 
 <section class="section reveal">
-  <p>Java's JVM takes bytecode and <span class="highlight">compiles hot paths into native binary</span> that the CPU runs directly. Python's interpreter (called CPython) just <span class="highlight-orange">reads the bytecode instructions one by one</span> and executes them — no JIT, no native binary compilation.</p>
-  <p>So the <code>.pyc</code> file saves Python from re-parsing your source code every time — that's a small speedup. But the actual execution is still interpreted line by line. The bytecode never becomes native binary.</p>
+  <p>Java's JVM takes bytecode and <span class="highlight">compiles hot paths into native binary</span> that the CPU runs directly. Python's interpreter (called CPython) <span class="highlight-orange">dispatches each bytecode instruction to a pre-compiled C handler function</span> — no JIT, no new machine code generated.</p>
+  <p>So the <code>.pyc</code> file saves Python from re-parsing your source code every time — this meaningfully speeds up import and startup time. But bytecode execution speed is unchanged; instructions are still handled one by one. The bytecode never becomes native binary.</p>
 </section>
 
 <div class="analogy reveal">
@@ -262,7 +262,7 @@ result = data * 2
 
 <!-- PYTHON GETTING FASTER -->
 <div class="analogy reveal">
-  <p><strong>Python is getting faster.</strong> Python 3.13+ introduced an experimental <span class="highlight">JIT compiler</span> — just like Java's. It watches for hot code paths and compiles them to binary. It's early, but the speed gap between Python and Java is starting to close.</p>
+  <p><strong>Python is getting faster.</strong> Python 3.13+ introduced an experimental <span class="highlight">JIT compiler</span> — just like Java's. It watches for hot code paths and compiles them to binary. It's early and disabled by default: it requires a special build flag (<code>--enable-experimental-jit</code>) and a runtime flag (<code>PYTHON_JIT=1</code>). Standard Python distributions don't include it yet, but the speed gap between Python and Java is starting to close.</p>
 </div>
 
 <!-- RECAP -->
@@ -272,16 +272,16 @@ result = data * 2
 
   <div style="display:grid;gap:1rem;margin-top:1.25rem">
     <div style="background:#fef5e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #e17055">
-      <strong style="color:#e17055">Python interprets line by line</strong> — the interpreter translates each bytecode instruction to binary, executes it, and immediately forgets it. No JIT, no cached binary.
+      <strong style="color:#e17055">CPython dispatches, not translates</strong> — the interpreter reads each bytecode instruction and calls the corresponding pre-compiled C handler function. No new native binary is ever produced. No JIT, no cached machine code.
     </div>
     <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #6c5ce7">
-      <strong style="color:#6c5ce7">.pyc files exist but don't help much</strong> — they save re-parsing time, but execution is still interpreted. Both Java and Python compile to bytecode — the difference is what happens next.
+      <strong style="color:#6c5ce7">.pyc files speed up startup</strong> — they save re-parsing source code, which meaningfully reduces import and startup time. Bytecode execution speed itself is unchanged. Both Java and Python compile to bytecode — the difference is what happens next.
     </div>
     <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #00b894">
       <strong style="color:#00b894">Python is a glue language</strong> — the heavy work runs in C libraries at native binary speed. Python just orchestrates it. That's why AI uses Python.
     </div>
     <div style="background:#ffeef7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #e84393">
-      <strong style="color:#e84393">Slowest to run, fastest to write</strong> — developer time matters more than CPU time for most tasks. And Python 3.13+ is experimenting with JIT to close the gap.
+      <strong style="color:#e84393">Slowest to run, fastest to write</strong> — developer time matters more than CPU time for most tasks. Python 3.13+ has an experimental JIT (disabled by default) that could close the gap over time.
     </div>
   </div>
 </section>
@@ -302,14 +302,14 @@ result = data * 2
     <ul class="quiz-options">
       <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>It's saved to a .pyc file for next time</button></li>
       <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>It's cached in memory like Java's JIT</button></li>
-      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>It's immediately discarded — translated, executed, forgotten</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>No native binary is produced — CPython runs a pre-compiled C handler for that opcode</button></li>
       <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>It's stored in the __pycache__ folder</button></li>
     </ul>
     <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
     <div class="quiz-answer">
       <div class="quiz-answer-inner">
-        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) It's immediately discarded — translated, executed, forgotten</strong></div>
-        <p class="quiz-answer-text">CPython translates each bytecode instruction to native binary, executes it, then throws the binary away. Even if the same line runs in a loop 1,000 times, it retranslates every time.</p>
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) No new native binary is produced — CPython runs pre-compiled C handlers</strong></div>
+        <p class="quiz-answer-text">CPython's interpreter dispatches each bytecode opcode to a pre-compiled C handler function. No new machine code is ever generated. Unlike Java's JIT, nothing is compiled or cached — the C runtime handles each instruction every single time.</p>
       </div>
     </div>
   </div>
@@ -369,7 +369,7 @@ result = data * 2
     <div class="quiz-answer">
       <div class="quiz-answer-inner">
         <div class="quiz-answer-highlight">✓ Correct: <strong>(C) Python 3.13+ introduced an experimental JIT compiler</strong></div>
-        <p class="quiz-answer-text">CPython is gaining a JIT compiler similar to Java's — watching for hot paths and compiling them to native binary. It's experimental, but it could significantly close the speed gap.</p>
+        <p class="quiz-answer-text">CPython 3.13 added an experimental JIT compiler that watches for hot paths and compiles them to native binary. It's disabled by default and requires special build and runtime flags — standard Python distributions don't ship with it yet. But it's a meaningful step toward closing the speed gap.</p>
       </div>
     </div>
   </div>
@@ -385,6 +385,6 @@ result = data * 2
 </section>
 `;
 ---
-<ArticleLayout title="How Your Code Runs — Episode 5: Python — Binary One Line At A Time | Unbox the Black Box" inlineStyle={inlineStyle} series={cpuSeries} episodeNum={5} hasQuiz={true}>
+<ArticleLayout title="How Your Code Runs — Episode 5: Python — One Bytecode Instruction At A Time | Unbox the Black Box" inlineStyle={inlineStyle} series={cpuSeries} episodeNum={5} hasQuiz={true}>
 <Fragment set:html={bodyHtml} />
 </ArticleLayout>

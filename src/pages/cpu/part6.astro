@@ -89,7 +89,7 @@ const bodyHtml = `
   <span class="section-num part6-num">17</span>
   <h2>Ship Source Code, Not Binary</h2>
   <p>JavaScript is unique — it's the only major language where <span class="highlight">you ship source code directly to the user</span>. When you visit a website, your browser downloads <code>.js</code> files — raw source code — and runs them.</p>
-  <p>There's no compile step, no bytecode file, nothing installed on the user's machine. The browser does everything.</p>
+  <p>There's no ahead-of-time compile step — you don't compile JavaScript before shipping it. The browser downloads raw source and handles everything at runtime.</p>
   <p>But how does it become binary? Chrome's <span class="highlight-orange">V8 engine</span> handles the entire journey:</p>
 </section>
 
@@ -102,7 +102,7 @@ const bodyHtml = `
     <div class="flow-arrow">&#10132;</div>
     <div class="flow-box fb-purple">bytecode<br><small>in memory</small></div>
     <div class="flow-arrow">&#10132;</div>
-    <div class="flow-box fb-dark">JIT<br><small>compiles</small></div>
+    <div class="flow-box fb-dark">Ignition&rarr;TurboFan<br><small>JIT compiles</small></div>
     <div class="flow-arrow">&#10132;</div>
     <div class="flow-box fb-green">CPU<br><small>binary in memory</small></div>
   </div>
@@ -143,7 +143,7 @@ const bodyHtml = `
 </div>
 
 <section class="section reveal">
-  <p>V8 works a lot like Java's JVM — it interprets bytecode first, then JIT compiles frequently-run code into native binary. The JIT is so aggressive that JavaScript sometimes runs <span class="highlight-green">faster than Java</span>.</p>
+  <p>V8 works a lot like Java's JVM — it interprets bytecode first (via Ignition), then TurboFan JIT-compiles frequently-run hot paths into native binary. The JIT is so aggressive that in specific optimized scenarios, V8 can produce code <span class="highlight-green">competitive with Java's JIT</span>.</p>
   <p>The key difference from every other language: <span class="highlight">you don't install anything</span>. No compiler, no JVM, no interpreter. The browser <em>is</em> the runtime. Every computer with a browser can run JavaScript — that's why it powers the entire web.</p>
 </section>
 
@@ -167,7 +167,7 @@ const bodyHtml = `
       <strong style="color:#0984e3">JavaScript ships source code</strong> — you don't compile, you don't build bytecode. The browser downloads raw .js files and the engine handles everything.
     </div>
     <div style="background:#fef5e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #feca57">
-      <strong style="color:#e17055">V8 uses JIT</strong> — just like Java's JVM. It interprets bytecode first, then compiles hot paths to native binary. So aggressive it sometimes beats Java.
+      <strong style="color:#e17055">V8 uses two-tier compilation</strong> — Ignition interprets bytecode first, then TurboFan JIT-compiles hot paths to native binary. In specific optimized scenarios it can rival Java's JIT.
     </div>
     <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #00b894">
       <strong style="color:#00b894">No installation needed</strong> — the browser is the runtime. Every computer with a browser can run JavaScript. That's why it powers the entire web.
@@ -201,7 +201,7 @@ const bodyHtml = `
     <div class="quiz-answer">
       <div class="quiz-answer-inner">
         <div class="quiz-answer-highlight">✓ Correct: <strong>(B) The JavaScript engine inside Chrome that compiles JS to native binary using JIT</strong></div>
-        <p class="quiz-answer-text">V8 is Google Chrome's JavaScript engine. It uses aggressive JIT compilation to turn JavaScript source code into optimized native binary — sometimes making JS faster than Java.</p>
+        <p class="quiz-answer-text">V8 is Google Chrome's JavaScript engine. It uses a two-tier pipeline: Ignition interprets bytecode first, then TurboFan JIT-compiles hot paths into optimized native binary.</p>
       </div>
     </div>
   </div>
@@ -250,7 +250,7 @@ const bodyHtml = `
     <div class="quiz-card-header">
       <span class="quiz-q-num">Q 04</span>
     </div>
-    <p class="quiz-question">How can JavaScript sometimes run faster than Java?</p>
+    <p class="quiz-question">How can V8 produce code competitive with Java's JIT in specific scenarios?</p>
     <ul class="quiz-options">
       <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>JavaScript uses less memory</button></li>
       <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Browsers have special CPU instructions for JavaScript</button></li>
@@ -261,7 +261,7 @@ const bodyHtml = `
     <div class="quiz-answer">
       <div class="quiz-answer-inner">
         <div class="quiz-answer-highlight">✓ Correct: <strong>(C) V8's aggressive JIT optimization compiles hot paths to highly optimized native binary</strong></div>
-        <p class="quiz-answer-text">V8 doesn't just compile — it aggressively optimizes. It uses techniques like hidden classes and inline caching to produce native binary that's sometimes faster than Java's JIT output.</p>
+        <p class="quiz-answer-text">V8 uses hidden classes and inline caching as optimization feedback mechanisms that guide TurboFan — V8's optimizing compiler — to produce highly optimized native binary for hot code paths.</p>
       </div>
     </div>
   </div>

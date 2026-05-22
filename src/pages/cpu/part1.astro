@@ -166,14 +166,14 @@ const bodyHtml = `
 </div>
 
 <section class="section reveal">
-  <p>This also explains <span class="highlight">backward compatibility</span>. Every new x86_64 chip supports the base instructions from 1999 plus optional newer ones:</p>
+  <p>This also explains <span class="highlight">backward compatibility</span>. Every new x86_64 chip supports the base instructions from 2003 plus optional newer ones:</p>
 
   <div class="code-block">
     <pre><span class="code-comment">// x86_64 instruction set</span>
-<span class="code-keyword">Base instructions</span> (1999)    <span class="code-arrow">←</span>  <span class="code-string">every chip supports these</span>
-<span class="code-keyword">SSE4</span> (2006)                 <span class="code-arrow">←</span>  <span class="code-string">most chips have it</span>
+<span class="code-keyword">Base instructions</span> (2003)    <span class="code-arrow">←</span>  <span class="code-string">every chip supports these</span>
+<span class="code-keyword">SSE4</span> (2008)                 <span class="code-arrow">←</span>  <span class="code-string">most chips have it</span>
 <span class="code-keyword">AVX</span>  (2011)                 <span class="code-arrow">←</span>  <span class="code-string">optional, common</span>
-<span class="code-keyword">AVX-512</span> (2017)              <span class="code-arrow">←</span>  <span class="code-string">optional, only some chips</span></pre>
+<span class="code-keyword">AVX-512</span> (2016)              <span class="code-arrow">←</span>  <span class="code-string">optional, only some chips</span></pre>
   </div>
 
   <p>Compilers use the base instructions by default, so the binary runs on <em>any</em> x86_64 chip — old or new. Newer extensions are opt-in. That's why a program compiled in 2010 still works on a chip from 2025.</p>
@@ -201,7 +201,7 @@ const bodyHtml = `
 
 <section class="section reveal">
   <p>A binary compiled for x86_64 <span class="highlight-orange">won't run</span> on an ARM64 chip, and vice versa. They speak different languages. That's why software often needs to be compiled separately for each.</p>
-  <p>Together, these two instruction sets cover <span class="highlight">99% of all computing devices</span> in the world.</p>
+  <p>Together, these two instruction sets cover <span class="highlight">the vast majority of all computing devices</span> in the world.</p>
 
   <h3 style="margin-top:2.5rem;font-size:1.4rem;color:#6c5ce7">So how many versions of software do you need?</h3>
   <p>A binary needs two things to match: the <span class="highlight">instruction set</span> and the <span class="highlight-orange">operating system</span>. Combine them, and you get one binary per combination:</p>
@@ -215,7 +215,7 @@ const bodyHtml = `
 <span class="code-keyword">macOS</span>     + x86_64   <span class="code-arrow">→</span>  <span class="code-string">1 binary</span>   <span class="code-comment">(older Intel Macs)</span>
 <span class="code-keyword">Windows</span>   + x86_64   <span class="code-arrow">→</span>  <span class="code-string">1 binary</span>   <span class="code-comment">(all Windows PCs)</span>
 
-<span class="code-comment">Just 5 binaries cover 99% of machines on Earth.</span></pre>
+<span class="code-comment">Just 5 binaries cover nearly all machines on Earth.</span></pre>
   </div>
 
   <p>That's it. Not hundreds. Not one per chip model. Just one per OS + instruction set pair.</p>
@@ -252,22 +252,18 @@ const bodyHtml = `
   </div>
   <div class="timeline-item">
     <div class="timeline-year">1982</div>
-    <div class="timeline-text">Intel 80<strong>186</strong> arrives</div>
-  </div>
-  <div class="timeline-item">
-    <div class="timeline-year">1985</div>
     <div class="timeline-text">Intel 80<strong>286</strong> — people notice the pattern</div>
   </div>
   <div class="timeline-item">
-    <div class="timeline-year">1989</div>
+    <div class="timeline-year">1985</div>
     <div class="timeline-text">Intel 80<strong>386</strong> — everyone starts calling the family <strong>"x86"</strong> <span class="timeline-chip">the name sticks</span></div>
   </div>
   <div class="timeline-item">
-    <div class="timeline-year">1993</div>
-    <div class="timeline-text">Intel 80486 — last numbered chip</div>
+    <div class="timeline-year">1989</div>
+    <div class="timeline-text">Intel 80<strong>486</strong> — last numbered chip</div>
   </div>
   <div class="timeline-item">
-    <div class="timeline-year">1995</div>
+    <div class="timeline-year">1993</div>
     <div class="timeline-text">Intel <strong>Pentium</strong> — stopped using numbers, but the instruction set stayed "x86"</div>
   </div>
   <div class="timeline-item" style="margin-top:2.5rem">
@@ -400,7 +396,7 @@ const bodyHtml = `
     <div class="quiz-card-header">
       <span class="quiz-q-num">Q 03</span>
     </div>
-    <p class="quiz-question">Which two instruction sets cover 99% of all computing devices?</p>
+    <p class="quiz-question">Which two instruction sets cover the vast majority of all computing devices?</p>
     <ul class="quiz-options">
       <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>RISC-V and MIPS</button></li>
       <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>ARM64 and RISC-V</button></li>

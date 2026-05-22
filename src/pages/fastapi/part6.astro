@@ -482,7 +482,7 @@ bearer_scheme = HTTPBearer()
   <span class="section-num part6-num">06</span>
   <h2>Auto-Generated OpenAPI Docs</h2>
   <p>One of the most impressive things FastAPI does is generate complete API documentation with zero extra code. Start any FastAPI app and visit <code>/docs</code> — you get a live Swagger UI. Visit <code>/redoc</code> — you get ReDoc. Both are generated from a single JSON file at <code>/openapi.json</code>.</p>
-  <p>FastAPI builds that JSON at startup by inspecting every registered route:</p>
+  <p>FastAPI generates that JSON lazily — on the first request to <code>/openapi.json</code> — by inspecting every registered route, then caches the result for all subsequent requests:</p>
 
   <div class="code-block">
     <pre><span class="code-comment">For each route, FastAPI reads:</span>
@@ -593,6 +593,7 @@ app.add_middleware(
 <section class="section reveal">
   <p>The <code>call_next(request)</code> line hands control to the next middleware (or the router). Everything before it runs on the way in; everything after runs on the way out.</p>
   <p>Starlette implements the middleware pipeline — FastAPI inherits it and lets you plug in as many layers as you need. Common middleware: CORS headers, request logging, auth checks, response compression, rate limiting.</p>
+  <p style="background:#f0efff;border-left:0.25rem solid #6c5ce7;padding:1rem 1.25rem;border-radius:0.5rem;color:#555"><strong style="color:#6c5ce7">Registration order note:</strong> Starlette applies middleware in <strong>reverse registration order</strong>. The last middleware you add with <code>add_middleware()</code> becomes the outermost layer — it runs first on the way in and last on the way out. Keep this in mind when order matters (e.g., your auth middleware should typically be added after CORS so CORS runs outermost and preflight requests are handled before auth checks).</p>
   <p style="background:#fef5e7;border-left:0.25rem solid #e17055;padding:1rem 1.25rem;border-radius:0.5rem;color:#555"><strong style="color:#e17055">Watch out:</strong> Middleware runs on every request, including static files, the <code>/docs</code> endpoint, and health checks. Keep middleware lean — expensive work here multiplies across all traffic.</p>
 </section>
 
@@ -635,24 +636,14 @@ app.add_middleware(
   <div style="font-family:'Fira Code',monospace;font-size:0.55rem;color:#888;text-align:center;margin:0.125rem 0 0.125rem 1.25rem">matched route + raw param strings</div>
 
   <div class="pipeline-step">
-    <div class="pipeline-dot pd-pink">DI</div>
+    <div class="pipeline-dot pd-pink">DI+V</div>
     <div class="pipeline-content">
-      <div class="pipeline-title">FastAPI dependency resolution</div>
-      <div class="pipeline-desc">Walks the <code>Depends()</code> tree bottom-up. Runs each dependency in order. Any dependency raises <code>HTTPException</code> → stops here, returns error immediately.</div>
+      <div class="pipeline-title">Dependency Resolution + Pydantic Validation</div>
+      <div class="pipeline-desc">These happen together during endpoint resolution, not as strictly sequential steps. FastAPI walks the <code>Depends()</code> tree bottom-up, running dependencies in order, while simultaneously coercing and validating path params, query params, and the request body via Pydantic. A dependency raising <code>HTTPException</code> or a validation failure both stop the pipeline immediately and return an error. In practice the phases interleave — a dependency may itself declare typed parameters that Pydantic validates.</div>
     </div>
   </div>
   <div class="pipeline-connector"></div>
-  <div style="font-family:'Fira Code',monospace;font-size:0.55rem;color:#888;text-align:center;margin:0.125rem 0 0.125rem 1.25rem">resolved dependency values (user, db session…)</div>
-
-  <div class="pipeline-step">
-    <div class="pipeline-dot pd-green">&#10003;</div>
-    <div class="pipeline-content">
-      <div class="pipeline-title">Pydantic validation (input)</div>
-      <div class="pipeline-desc">Coerces path params to declared types. Parses query params with defaults. Deserializes and validates request body against the Pydantic model. Any failure → 422, stops here.</div>
-    </div>
-  </div>
-  <div class="pipeline-connector"></div>
-  <div style="font-family:'Fira Code',monospace;font-size:0.55rem;color:#888;text-align:center;margin:0.125rem 0 0.125rem 1.25rem">typed Python objects, guaranteed clean</div>
+  <div style="font-family:'Fira Code',monospace;font-size:0.55rem;color:#888;text-align:center;margin:0.125rem 0 0.125rem 1.25rem">resolved deps + typed Python objects, guaranteed clean</div>
 
   <div class="pipeline-step">
     <div class="pipeline-dot pd-green">fn</div>
@@ -729,13 +720,13 @@ app.add_middleware(
       <strong><code>Depends()</code> lets you declare reusable logic</strong> that runs before your endpoint — database sessions, auth checks, shared config. Dependencies can chain; FastAPI resolves the whole tree bottom-up.
     </div>
     <div class="recap-item ri-teal">
-      <strong><code>/docs</code> and <code>/redoc</code> are free</strong> — FastAPI generates OpenAPI JSON from your routes and type hints at startup. Your code is your documentation. They can never drift apart.
+      <strong><code>/docs</code> and <code>/redoc</code> are free</strong> — FastAPI generates OpenAPI JSON lazily on the first request to <code>/openapi.json</code>, then caches it. Your code is your documentation. They can never drift apart.
     </div>
     <div class="recap-item ri-dark">
       <strong>Middleware wraps every request</strong> — runs before routing on the way in, after your function on the way out. Starlette implements the pipeline; FastAPI inherits it.
     </div>
     <div class="recap-item ri-green" style="border-left-color:#6c5ce7;background:#f0efff">
-      <strong style="color:#6c5ce7">The full pipeline:</strong> Middleware → Router → Dependencies → Validation → Your function → Output validation → Middleware → Response.
+      <strong style="color:#6c5ce7">The full pipeline:</strong> Middleware → Router → Dependency Resolution + Validation → Your function → Output validation → Middleware → Response.
     </div>
   </div>
 </section>
@@ -783,7 +774,7 @@ app.add_middleware(
     <div class="quiz-answer">
       <div class="quiz-answer-inner">
         <div class="quiz-answer-highlight">✓ Correct: <strong>(A) True</strong></div>
-        <p class="quiz-answer-text">FastAPI generates the OpenAPI schema dynamically from your Python type hints and Pydantic models. There's no separate config file to update. Change the code, restart the server, and <code>/docs</code> shows the new schema instantly.</p>
+        <p class="quiz-answer-text">FastAPI generates the OpenAPI schema from your Python type hints and Pydantic models, but it does so lazily — on the first request to <code>/openapi.json</code> — and then caches the result. That means the schema reflects whatever code was loaded at startup. If you change a Pydantic model field, you need to restart the server for the new schema to take effect. After a restart, <code>/docs</code> shows the updated schema on the very next visit.</p>
       </div>
     </div>
   </div>

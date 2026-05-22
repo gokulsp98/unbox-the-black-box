@@ -229,7 +229,8 @@ const bodyHtml = `
     <span class="code-keyword">if</span> no  <span class="code-arrow">→</span> check again</pre>
   </div>
 
-  <p>That's it. No blocking. No waiting. Always checking. The moment something is ready, it runs the right handler. The moment that handler needs to wait for I/O, it steps aside and the loop moves on to the next ready event.</p>
+  <p>That's the idea — but the real loop doesn't spin in a tight busy-poll. Under the hood it calls <code>selector.select()</code>, which efficiently <em>blocks</em> (sleeps the thread) until an I/O event or timer fires, then wakes up. No CPU is wasted spinning while nothing is ready.</p>
+  <p>The moment something is ready, the loop wakes, runs the right handler, and the moment that handler needs to wait for I/O, it steps aside and the loop moves on to the next ready event.</p>
   <p><strong>One thread. One CPU core. Thousands of simultaneous connections.</strong></p>
 </section>
 
@@ -489,7 +490,7 @@ result = <span class="code-keyword">await</span> db.execute(<span class="code-st
 <section class="section reveal">
   <span class="section-num part3-num">06</span>
   <h2>uvloop: The C-Powered Event Loop</h2>
-  <p>Python's built-in event loop — in the <code>asyncio</code> standard library — is written in pure Python. It works. It's reliable. But it's not as fast as it could be.</p>
+  <p>Python's built-in event loop — in the <code>asyncio</code> standard library — works and is reliable. CPython ships a C-accelerated implementation (the <code>_asyncio</code> C extension) for performance-critical paths, with a pure Python fallback. But even the C-accelerated asyncio isn't as fast as it could be.</p>
   <p>Uvicorn swaps it out for <span class="highlight">uvloop</span>.</p>
 </section>
 
@@ -497,12 +498,12 @@ result = <span class="code-keyword">await</span> db.execute(<span class="code-st
   <div class="uvloop-card uvc-python">
     <div class="uvl-icon">&#128013;</div>
     <h5>asyncio (default)</h5>
-    <p>Python's built-in event loop. Pure Python implementation. Works everywhere. Baseline speed.</p>
+    <p>Python's built-in event loop. C-accelerated in CPython (pure Python fallback exists). Works everywhere. Baseline speed.</p>
   </div>
   <div class="uvloop-card uvc-uvloop">
     <div class="uvl-icon">&#9889;</div>
     <h5>uvloop</h5>
-    <p>Reimplements the event loop in C. Same Python API you already use. 2–4x faster than asyncio.</p>
+    <p>Reimplements the event loop in Cython (compiled to C), built on top of libuv. Same Python API you already use. 2–4x faster than asyncio.</p>
   </div>
   <div class="uvloop-card uvc-libuv">
     <div class="uvl-icon">&#128296;</div>
@@ -520,15 +521,18 @@ result = <span class="code-keyword">await</span> db.execute(<span class="code-st
 result = <span class="code-keyword">await</span> db.fetch_one(query)</pre>
   </div>
 
-  <p>Uvicorn enables it automatically at startup:</p>
+  <p>Uvicorn enables it automatically at startup — but only when the standard extras are installed:</p>
 
   <div class="code-block">
-    <pre><span class="code-comment"># Inside Uvicorn's startup code (simplified)</span>
+    <pre><span class="code-comment"># Install uvicorn with the standard extras (includes uvloop + httptools)</span>
+pip install <span class="code-string">"uvicorn[standard]"</span>
+
+<span class="code-comment"># Inside Uvicorn's startup code (simplified)</span>
 <span class="code-keyword">import</span> uvloop
 uvloop.install()  <span class="code-comment">  # replaces asyncio's default loop with uvloop</span></pre>
   </div>
 
-  <p>You don't configure anything. You just get a faster event loop for free.</p>
+  <p>A plain <code>pip install uvicorn</code> does <em>not</em> include uvloop. With <code>uvicorn[standard]</code> installed, Uvicorn uses uvloop automatically (except on Windows and PyPy, where it falls back to the default asyncio loop).</p>
 </section>
 
 <div class="analogy reveal">
@@ -621,7 +625,7 @@ uvloop.install()  <span class="code-comment">  # replaces asyncio's default loop
       <strong style="color:#e17055">The golden rule:</strong> <code>async def</code> + <code>await</code> = good. <code>async def</code> + blocking calls = catastrophic. Regular <code>def</code> + blocking calls = FastAPI puts it in a thread pool, which is safe.
     </div>
     <div style="background:#e0fafa;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00cec9">
-      <strong style="color:#00cec9">uvloop replaces Python's event loop with C</strong> — same API, 2–4x faster. Uvicorn uses it automatically, powered by the same libuv that runs Node.js.
+      <strong style="color:#00cec9">uvloop replaces Python's event loop with a Cython-based implementation</strong> — same API, 2–4x faster, built on libuv (the same library that powers Node.js). Requires <code>pip install uvicorn[standard]</code>; Uvicorn then uses it automatically on Linux/macOS.
     </div>
     <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
       <strong style="color:#6c5ce7">The event loop is concurrency, not parallelism</strong> — one thread, tasks interleave, they don't run simultaneously. For multiple CPU cores, you need multiple workers.

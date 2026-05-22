@@ -221,7 +221,7 @@ const bodyHtml = `
     <li><strong>Parsing HTTP</strong> — reading raw bytes and extracting the method, path, headers, and body</li>
     <li><strong>Running the event loop</strong> — managing thousands of concurrent connections without blocking</li>
   </ol>
-  <p>Uvicorn outsources <em>both</em> of these to <span class="highlight">C</span>.</p>
+  <p>Uvicorn outsources <em>both</em> of these to <span class="highlight">C</span> — but only when you install it with the <code>standard</code> extras (<code>pip install uvicorn[standard]</code>). A plain <code>pip install uvicorn</code> falls back to Python's built-in <code>asyncio</code> event loop and a pure-Python HTTP parser.</p>
 </section>
 
 <div class="speed-pair reveal">
@@ -230,8 +230,8 @@ const bodyHtml = `
     <p>When you install Uvicorn with <code>[standard]</code> extras, you get <strong>httptools</strong> — a Python binding to <strong>llhttp</strong>, the same HTTP parser used inside Node.js. Written in C. Extremely fast. Uvicorn calls into it from Python, but the actual byte-crunching happens in C.</p>
   </div>
   <div class="speed-card sc-green">
-    <h4>uvloop — a C-based event loop</h4>
-    <p>Python's <code>asyncio</code> event loop is written in Python. <strong>uvloop</strong> replaces it with one written in C, wrapping <strong>libuv</strong> — the same async I/O library that powers Node.js. Your <code>async def</code> functions look the same; uvloop just runs the scheduler in C.</p>
+    <h4>uvloop — a Cython-based event loop</h4>
+    <p>Python's <code>asyncio</code> event loop is written in Python. <strong>uvloop</strong> replaces it with one written in Cython (which compiles to C), wrapping <strong>libuv</strong> — the same async I/O library that powers Node.js. Your <code>async def</code> functions look the same; uvloop just runs the scheduler at C speed.</p>
   </div>
 </div>
 
@@ -270,7 +270,7 @@ const bodyHtml = `
     <div class="compare-card cc-blue">
       <div class="cc-title">uvloop</div>
       <ul style="font-size:0.85rem;line-height:1.9;margin-left:1rem;color:#555">
-        <li>C event loop (wraps libuv)</li>
+        <li>Cython event loop (wraps libuv, compiles to C)</li>
         <li><strong>2–4x faster</strong> than asyncio</li>
         <li>Same async/await interface — drop-in</li>
       </ul>
@@ -355,7 +355,7 @@ asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())</pre>
 <div class="asgi-grid reveal">
   <div class="asgi-card ac-blue">
     <div class="asgi-label">scope</div>
-    <p>A plain Python dict. Read-only. Contains everything about the request: type, method, path, headers, query string, client IP.</p>
+    <p>A plain Python dict. Contains everything about the request: type, method, path, headers, query string, client IP. Mutable — middleware can and does add or modify keys; endpoints typically just read from it.</p>
   </div>
   <div class="asgi-card ac-green">
     <div class="asgi-label">receive</div>
@@ -523,7 +523,7 @@ event = <span class="code-keyword">await</span> receive()
   It doesn't do load balancing across servers, caching, rate limiting, or path rewriting. Nginx or a cloud load balancer does that upstream.</p>
 
   <p><strong style="color:#e17055">Uvicorn doesn't manage workers well on its own.</strong><br>
-  Running <code>uvicorn --workers 4</code> works, but you lose graceful restarts, automatic worker replacement, and the process management maturity that Gunicorn provides.</p>
+  Running <code>uvicorn --workers 4</code> works and includes basic crash recovery, but it lacks Gunicorn's mature process management — graceful restarts (zero-downtime deploys), robust signal handling, and battle-tested worker supervision.</p>
 </section>
 
 <div class="notdo-grid reveal">
@@ -561,7 +561,7 @@ event = <span class="code-keyword">await</span> receive()
       <strong style="color:#00b894">httptools</strong> — a C extension wrapping Node.js's llhttp HTTP parser. Parses HTTP at C speed. Ships with <code>uvicorn[standard]</code>.
     </div>
     <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
-      <strong style="color:#6c5ce7">uvloop</strong> — a C extension wrapping libuv, Node.js's event loop. Replaces Python's asyncio. 2–4x faster. Same async/await interface.
+      <strong style="color:#6c5ce7">uvloop</strong> — a Cython extension wrapping libuv, Node.js's event loop. Replaces Python's asyncio. 2–4x faster. Same async/await interface.
     </div>
     <div style="background:#fef5e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
       <strong style="color:#e17055">ASGI</strong> is the three-argument handshake: <code>await app(scope, receive, send)</code>. That's the entire protocol between server and app.

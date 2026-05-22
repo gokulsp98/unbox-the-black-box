@@ -120,7 +120,7 @@ const bodyHtml = `
   <div class="lang-card lc-java">
     <h4 style="color:#6c5ce7">Java</h4>
     <div class="lang-when">Binary: while it's running (JVM)</div>
-    <p style="font-size:0.85rem;color:#555">Bytecode on disk. JVM creates binary at runtime. JIT makes it fast.</p>
+    <p style="font-size:0.85rem;color:#555">Bytecode (.class) on disk. JVM creates native binary at runtime via JIT. Fast for long-running compute-heavy tasks.</p>
     <div class="lang-flow">
       Hello.java<br>
       &darr; javac &rarr; .class (bytecode)<br>
@@ -130,13 +130,13 @@ const bodyHtml = `
   </div>
   <div class="lang-card lc-python">
     <h4 style="color:#e17055">Python</h4>
-    <div class="lang-when">Binary: one line at a time</div>
-    <p style="font-size:0.85rem;color:#555">Bytecode cached as .pyc. Interpreter reads it line by line. Slowest.</p>
+    <div class="lang-when">Binary: one instruction at a time</div>
+    <p style="font-size:0.85rem;color:#555">Bytecode cached as .pyc in __pycache__. Interpreter executes one instruction at a time. Slowest.</p>
     <div class="lang-flow">
       hello.py<br>
       &darr; CPython &rarr; .pyc (bytecode)<br>
       &darr; CPython interpreter<br>
-      &darr; binary one line at a time
+      &darr; executes bytecode instruction by instruction
     </div>
   </div>
   <div class="lang-card lc-js">
@@ -161,12 +161,13 @@ const bodyHtml = `
 
 <span class="code-keyword">C</span>             Before you run it        <span class="code-string">Yes (permanent)</span>    <span class="code-string">Fastest</span>
 
-<span class="code-keyword">Java</span>          While running (JVM)      <span class="code-string">No (in memory)</span>     <span class="code-string">Fast (after warm-up)</span>
+<span class="code-keyword">Java</span>          While running (JVM)      <span class="code-string">.class on disk;</span>    <span class="code-string">Fast (after warm-up)</span>
+                                       <span class="code-string">JIT code in memory</span>
 
 <span class="code-keyword">JavaScript</span>    While running (V8)       <span class="code-string">No (in browser)</span>    <span class="code-string">Fast (V8 JIT)</span>
 
-<span class="code-keyword">Python</span>        While running            <span class="code-string">No (forgotten)</span>     <span class="code-string">Slowest</span>
-              (one line at a time)
+<span class="code-keyword">Python</span>        While running            <span class="code-string">Bytecode (.pyc)</span>    <span class="code-string">Slowest</span>
+              (instruction by instr.)  <span class="code-string">cached on disk</span>
 </pre>
   </div>
 </section>
@@ -251,12 +252,12 @@ const bodyHtml = `
   <div class="why-card wc-purple">
     <span class="why-lang" style="background:#f0efff;color:#6c5ce7">Java</span>
     <h4>Banking, enterprise, Android?</h4>
-    <p>Portability, reliability, and good performance. JVM creates binary at runtime, JIT makes it nearly as fast as C. One codebase runs everywhere.</p>
+    <p>Portability, reliability, and good performance. JVM creates binary at runtime, JIT closes the gap to C for compute-heavy workloads. One codebase runs everywhere. (Kotlin has been Google's preferred Android language since 2019, though Java still works.)</p>
   </div>
   <div class="why-card wc-blue">
     <span class="why-lang" style="background:#e3f2fd;color:#0984e3">JavaScript</span>
     <h4>Website or web app?</h4>
-    <p>The only language browsers understand natively. No installation, no compilation — the browser handles everything. V8's JIT makes it surprisingly fast.</p>
+    <p>The language every browser runs natively (alongside WebAssembly). No installation, no compilation — the browser handles everything. V8's JIT makes it surprisingly fast.</p>
   </div>
   <div class="why-card wc-amber">
     <span class="why-lang" style="background:#fef5e7;color:#e17055">Python</span>

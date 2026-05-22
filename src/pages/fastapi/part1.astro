@@ -380,7 +380,7 @@ app = FastAPI()
 <span class="code-keyword">{"message":"Hello, world!"}</span></pre>
   </div>
 
-  <p>Total time: usually <span class="highlight-green">under 1 millisecond</span> for a simple endpoint.</p>
+  <p>Total time: can be <span class="highlight-green">under 1 millisecond</span> for a simple endpoint on modern hardware.</p>
 </section>
 
 <!-- SECTION 06: ASGI -->
@@ -424,7 +424,7 @@ app = FastAPI()
 <span class="code-keyword">One request</span>   Blocks the thread       Can pause, let others run
 <span class="code-keyword">Concurrency</span>   One request per thread   Thousands per thread
 <span class="code-keyword">Server</span>        Gunicorn (native)       Uvicorn
-<span class="code-keyword">Frameworks</span>    Flask, Django           FastAPI, Django Channels</pre>
+<span class="code-keyword">Frameworks</span>    Flask, Django           FastAPI, Starlette, Django 3.0+</pre>
   </div>
 
   <p>ASGI exists because async Python (<code>async</code>/<code>await</code>) made it possible to handle many requests with a single thread — which is exactly what makes FastAPI fast. We'll dig deep into this in Episodes 3 and 4.</p>
@@ -442,9 +442,8 @@ app = FastAPI()
     <div class="flow-box fb-green">FastAPI<br><small>your interface</small></div>
     <div class="flow-arrow">&#10132;</div>
     <div class="flow-box fb-purple">Starlette<br><small>ASGI framework</small></div>
-    <div class="flow-arrow">&#10132;</div>
-    <div class="flow-box fb-dark">AnyIO<br><small>async compat</small></div>
   </div>
+  <p style="font-size:0.8rem;color:#636e72;text-align:center;margin-top:0.75rem;font-family:'Fira Code',monospace">Note: Starlette uses AnyIO internally for async compatibility — AnyIO is not a layer requests pass through.</p>
 </div>
 
 <section class="section reveal">
@@ -486,7 +485,7 @@ app = FastAPI()
         <div class="mm-note mm-note-green">routes &#183; validates &#183; returns JSON</div>
       </div>
     </div>
-    <div class="mm-note" style="margin-top:0.625rem">1 request gets CPU at a time</div>
+    <div class="mm-note" style="margin-top:0.625rem">Many requests in-flight, one gets CPU at any instant</div>
   </div>
 </div>
 
@@ -586,7 +585,7 @@ app = FastAPI()
     <div class="quiz-card-header">
       <span class="quiz-q-num">Q 02</span>
     </div>
-    <p class="quiz-question">A request arrives from a browser. Put these layers in the correct order it passes through:</p>
+    <p class="quiz-question">A request arrives from a browser. In production, put these layers in the correct order it passes through:</p>
     <ul class="quiz-options">
       <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Client → FastAPI → Uvicorn → Gunicorn → Your Function</button></li>
       <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Client → Gunicorn → Uvicorn → FastAPI → Your Function</button></li>

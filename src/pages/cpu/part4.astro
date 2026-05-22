@@ -98,7 +98,7 @@ const bodyHtml = `
   <div class="info-card ic-purple">
     <h4>Memory Bugs</h4>
     <p>C gives you full control of memory — you manually allocate it and free it. One mistake and your program <strong>crashes, corrupts data, or gets hacked</strong>.</p>
-    <p>Buffer overflows have been the #1 security vulnerability for decades.</p>
+    <p>Buffer overflows were historically the #1 security vulnerability for decades.</p>
   </div>
   <div class="info-card ic-green">
     <h4>Development Speed</h4>
@@ -120,7 +120,7 @@ const bodyHtml = `
 
 <div class="analogy reveal">
   <p><strong>"What if we compile to a fake CPU's instructions, then build that fake CPU on every platform?"</strong></p>
-  <p>That fake CPU is the <span class="highlight">JVM (Java Virtual Machine)</span>. And this one idea solved the portability problem completely.</p>
+  <p>That fake CPU is the <span class="highlight">JVM (Java Virtual Machine)</span>. And this one idea largely solved the portability problem — WORA works well in practice, though subtle platform differences can still surface.</p>
 </div>
 
 <section class="section reveal">
@@ -131,7 +131,7 @@ const bodyHtml = `
   <div class="code-block">
     <pre><span class="code-keyword">javac</span> Hello.java <span class="code-arrow">→</span> <span class="code-string">Hello.class</span> <span class="code-comment">(bytecode)</span>
 
-<span class="code-comment">Bytecode is NOT binary. The CPU can't run it.</span>
+<span class="code-comment">Bytecode is not native machine code. The CPU can't run it directly.</span>
 <span class="code-comment">It's instructions for a fictional computer — the JVM.</span></pre>
   </div>
 
@@ -185,7 +185,7 @@ const bodyHtml = `
 
 <section class="section reveal">
   <p>This is Java's famous <span class="highlight">"Write once, run anywhere."</span></p>
-  <p>But here's the key difference from C: <span class="highlight-orange">the binary is never saved to disk.</span> It lives in memory, gets used, and disappears when the program stops. The JVM creates it fresh every time you run the program.</p>
+  <p>But here's the key difference from C: <span class="highlight-orange">the binary is never saved to disk.</span> It lives in memory, gets used, and disappears when the program stops. The JVM creates it fresh every time you run the program. (Tools like GraalVM Native Image can compile Java ahead-of-time to a permanent binary file, but that's a different approach — standard HotSpot JVM always works in memory.)</p>
   <p>And unlike C, you <span class="highlight-orange">need the JVM installed</span> on the machine to run Java programs. Without it, <code>.class</code> files are useless — just like a DVD is useless without a DVD player.</p>
 </section>
 
@@ -222,7 +222,7 @@ const bodyHtml = `
   <div class="code-block">
     <pre><span class="code-comment">// JIT in action</span>
 
-<span class="code-string">First 100 calls</span> to calculatePrice():
+<span class="code-string">First ~1,500 calls</span> to calculatePrice():
   <span class="code-arrow">→</span> JVM interprets bytecode <span class="code-comment">(slow — translating on the fly)</span>
 
 JVM notices: <span class="code-keyword">"this function is HOT"</span>
@@ -270,7 +270,7 @@ JVM compiles it to native binary once, caches it in memory.
       <strong style="color:#6c5ce7">Java compiles to bytecode</strong> — instructions for a fictional CPU (the JVM). The same .class file runs on any platform with a JVM installed.
     </div>
     <div style="background:#fef5e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #e17055">
-      <strong style="color:#e17055">Binary is created at runtime</strong> — the JVM translates bytecode to native binary in memory. It's never saved to disk — created fresh every run.
+      <strong style="color:#e17055">Binary is created at runtime</strong> — the JVM translates bytecode to native binary in memory. In standard HotSpot JVM it's never saved to disk — created fresh every run.
     </div>
     <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #00b894">
       <strong style="color:#00b894">JIT makes Java fast</strong> — the JVM watches for hot paths and compiles them to native binary. After warm-up, Java runs at near C speed.
@@ -294,14 +294,14 @@ JVM compiles it to native binary once, caches it in memory.
     <ul class="quiz-options">
       <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Compiles everything to native binary before running</button></li>
       <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Uses JIT to compile hot paths like Java</button></li>
-      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Reads and translates bytecode one instruction at a time, line by line</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Runs pre-compiled C handler code for each bytecode instruction</button></li>
       <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Sends bytecode directly to the CPU</button></li>
     </ul>
     <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
     <div class="quiz-answer">
       <div class="quiz-answer-inner">
-        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) Reads and translates bytecode one instruction at a time, line by line</strong></div>
-        <p class="quiz-answer-text">CPython interprets bytecode line by line — translating each instruction to binary, executing it, and immediately discarding the binary. It never saves native binary like C or caches hot paths like Java's JIT.</p>
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) Runs pre-compiled C handler code for each bytecode instruction</strong></div>
+        <p class="quiz-answer-text">CPython's interpreter (ceval.c) dispatches each bytecode opcode to a pre-compiled C handler function — no new native binary is ever produced. It never caches machine code the way Java's JIT does.</p>
       </div>
     </div>
   </div>
@@ -321,7 +321,7 @@ JVM compiles it to native binary once, caches it in memory.
     <div class="quiz-answer">
       <div class="quiz-answer-inner">
         <div class="quiz-answer-highlight">✓ Correct: <strong>(B) Cached bytecode — speeds up parsing, but execution is still interpreted</strong></div>
-        <p class="quiz-answer-text">.pyc files cache the bytecode so Python doesn't have to re-parse the source each time. But the bytecode is still interpreted line by line — it doesn't make execution faster.</p>
+        <p class="quiz-answer-text">.pyc files cache the bytecode so Python doesn't have to re-parse the source each time — this speeds up import and startup time. But bytecode execution speed is unchanged; the interpreter still processes instructions one by one.</p>
       </div>
     </div>
   </div>
