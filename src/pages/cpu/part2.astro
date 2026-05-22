@@ -20,6 +20,13 @@ const inlineStyle = `
 .chip-3{bottom:0.75rem;left:0;background:rgba(85,239,196,0.2);color:#55efc4;border:1px solid rgba(85,239,196,0.3);animation-delay:1s}
 .chip-4{bottom:0.25rem;right:0;background:rgba(162,155,254,0.2);color:#a29bfe;border:1px solid rgba(162,155,254,0.3);animation-delay:1.5s}
 @keyframes chipFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* ── Quiz theming: Episode 2 ── */
+.quiz-ep2 .quiz-q-num{color:#0984e3;background:#e3f2fd}
+.quiz-ep2 .quiz-reveal-btn{color:#0984e3}
+.quiz-ep2 .quiz-opt-letter{color:#0984e3}
+.quiz-ep2 .quiz-option:hover{border-color:#0984e3;background:#f0f7ff}
+.quiz-ep2 .quiz-answer-highlight{background:#e3f2fd;border-left:0.25rem solid #0984e3}
 `;
 const bodyHtml = `
 
@@ -304,6 +311,97 @@ const bodyHtml = `
   </div>
 </section>
 
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep2">
+  <span class="section-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 01</span>
+    </div>
+    <p class="quiz-question">What is the maximum RAM a 32-bit CPU can address?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>2 GB</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>4 GB</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>16 GB</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>64 GB</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) 4 GB</strong></div>
+        <p class="quiz-answer-text">A 32-bit address bus can reference 2^32 = ~4.3 billion bytes, which is roughly 4 GB. This hard limit was hit around 2005 and drove the shift to 64-bit.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 02</span>
+    </div>
+    <p class="quiz-question">What's the key difference between a CPU and a GPU?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>GPUs are faster at everything</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>CPUs can only do math, GPUs can do logic</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>CPUs have few complex cores; GPUs have thousands of simple cores for parallel work</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>CPUs use binary; GPUs use hexadecimal</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) CPUs have few complex cores; GPUs have thousands of simple cores for parallel work</strong></div>
+        <p class="quiz-answer-text">A CPU is like a professor — a few cores that handle complex tasks. A GPU is like 10,000 students — thousands of simple cores that do the same operation in parallel. This makes GPUs ideal for matrix multiplication and AI training.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 03</span>
+    </div>
+    <p class="quiz-question">Which instruction set ownership model does RISC-V use?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Proprietary — only one company can make chips</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Licensed — pay a fee to use the design</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Open source — free for anyone to use and modify</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Government-controlled — only approved manufacturers</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) Open source — free for anyone to use and modify</strong></div>
+        <p class="quiz-answer-text">RISC-V is an open-source instruction set — anyone can design and build chips using it without paying licensing fees. It's like the Linux of chip design.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 04</span>
+    </div>
+    <p class="quiz-question">Why isn't there a 128-bit CPU?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>The technology doesn't exist yet</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>128-bit would be too slow</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>64-bit can already address far more memory than any machine needs</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Operating systems can't support it</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) 64-bit can already address far more memory than any machine needs</strong></div>
+        <p class="quiz-answer-text">64-bit can theoretically address 16 exabytes of RAM. The largest servers today use about 12 TB — less than 0.0001% of that capacity. There's simply no reason for 128-bit.</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
 <!-- END -->
 <section class="next-part" style="background:linear-gradient(135deg,#00b894,#00cec9)">
   <h2>Ready for Episode 3?</h2>
@@ -312,6 +410,6 @@ const bodyHtml = `
 </section>
 `;
 ---
-<ArticleLayout title="How Your Code Runs — Part 2: The Bigger Picture | Unbox the Black Box" inlineStyle={inlineStyle} series={cpuSeries} episodeNum={2}>
+<ArticleLayout title="How Your Code Runs — Part 2: The Bigger Picture | Unbox the Black Box" inlineStyle={inlineStyle} series={cpuSeries} episodeNum={2} hasQuiz={true}>
 <Fragment set:html={bodyHtml} />
 </ArticleLayout>

@@ -17,7 +17,7 @@ export const cpuSeries: Series = {
   id: 'cpu',
   name: 'How Your Code Runs',
   folder: 'cpu',
-  hasQuiz: false,
+  hasQuiz: true,
   episodes: [
     { num: 1, slug: 'part1', title: 'The Brain of Your Computer', progress: 14 },
     { num: 2, slug: 'part2', title: 'The Bigger Picture', progress: 28 },

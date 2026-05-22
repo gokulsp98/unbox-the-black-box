@@ -50,6 +50,13 @@ const inlineStyle = `
 .node-icon{font-size:2.5rem;flex-shrink:0}
 .node-text{font-size:0.9rem;color:#dfe6e9;line-height:1.7}
 .node-text strong{color:#00b894}
+
+/* ── Quiz theming: Episode 6 ── */
+.quiz-ep6 .quiz-q-num{color:#6c5ce7;background:#f0efff}
+.quiz-ep6 .quiz-reveal-btn{color:#6c5ce7}
+.quiz-ep6 .quiz-opt-letter{color:#6c5ce7}
+.quiz-ep6 .quiz-option:hover{border-color:#6c5ce7;background:#f8f7ff}
+.quiz-ep6 .quiz-answer-highlight{background:#f0efff;border-left:0.25rem solid #6c5ce7}
 `;
 const bodyHtml = `
 
@@ -171,6 +178,97 @@ const bodyHtml = `
   </div>
 </section>
 
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep6">
+  <span class="section-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 01</span>
+    </div>
+    <p class="quiz-question">What is the V8 engine?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>A car engine used by Google employees</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>The JavaScript engine inside Chrome that compiles JS to native binary using JIT</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>A Python interpreter built by Google</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>A tool for compressing JavaScript files</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) The JavaScript engine inside Chrome that compiles JS to native binary using JIT</strong></div>
+        <p class="quiz-answer-text">V8 is Google Chrome's JavaScript engine. It uses aggressive JIT compilation to turn JavaScript source code into optimized native binary — sometimes making JS faster than Java.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 02</span>
+    </div>
+    <p class="quiz-question">Why doesn't JavaScript need users to install a runtime?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>JavaScript compiles to native binary like C</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>JavaScript runs directly on the CPU without any runtime</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>The browser IS the runtime — every computer already has one</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>The operating system includes a JS interpreter</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) The browser IS the runtime — every computer already has one</strong></div>
+        <p class="quiz-answer-text">Unlike Python (needs an interpreter) or Java (needs a JVM), JavaScript's runtime is the web browser — which is already installed on virtually every device. You ship source code and the browser handles execution.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 03</span>
+    </div>
+    <p class="quiz-question">What is Node.js?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>A new programming language based on JavaScript</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>V8 extracted from the browser so JavaScript can run on servers</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>A JavaScript compiler that produces native binaries</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>A web browser made by Node Inc.</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) V8 extracted from the browser so JavaScript can run on servers</strong></div>
+        <p class="quiz-answer-text">Node.js takes Chrome's V8 engine and runs it outside the browser — letting you use JavaScript for server-side code, command-line tools, and more.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 04</span>
+    </div>
+    <p class="quiz-question">How can JavaScript sometimes run faster than Java?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>JavaScript uses less memory</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Browsers have special CPU instructions for JavaScript</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>V8's aggressive JIT optimization compiles hot paths to highly optimized native binary</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>JavaScript skips the bytecode step entirely</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) V8's aggressive JIT optimization compiles hot paths to highly optimized native binary</strong></div>
+        <p class="quiz-answer-text">V8 doesn't just compile — it aggressively optimizes. It uses techniques like hidden classes and inline caching to produce native binary that's sometimes faster than Java's JIT output.</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
 <!-- NEXT EPISODE -->
 <section class="next-part" style="background:linear-gradient(135deg,#feca57,#0984e3)">
   <h2>Ready for the Finale?</h2>
@@ -179,6 +277,6 @@ const bodyHtml = `
 </section>
 `;
 ---
-<ArticleLayout title="How Your Code Runs — Episode 6: JavaScript — Binary Inside Your Browser | Unbox the Black Box" inlineStyle={inlineStyle} series={cpuSeries} episodeNum={6}>
+<ArticleLayout title="How Your Code Runs — Episode 6: JavaScript — Binary Inside Your Browser | Unbox the Black Box" inlineStyle={inlineStyle} series={cpuSeries} episodeNum={6} hasQuiz={true}>
 <Fragment set:html={bodyHtml} />
 </ArticleLayout>

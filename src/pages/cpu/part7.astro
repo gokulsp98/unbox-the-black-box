@@ -67,6 +67,13 @@ const inlineStyle = `
 .finale-banner h2{color:#fff;font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:0.75rem}
 .finale-banner p{color:rgba(255,255,255,0.9);max-width:34.375rem;margin:0 auto 1.75rem;font-size:1.05rem}
 .finale-badge{display:inline-block;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);padding:0.5rem 1.25rem;border-radius:1.875rem;font-size:0.85rem;font-weight:700;letter-spacing:1px;margin-bottom:1.25rem}
+
+/* ── Quiz theming: Episode 7 ── */
+.quiz-ep7 .quiz-q-num{color:#0984e3;background:#e3f2fd}
+.quiz-ep7 .quiz-reveal-btn{color:#0984e3}
+.quiz-ep7 .quiz-opt-letter{color:#0984e3}
+.quiz-ep7 .quiz-option:hover{border-color:#0984e3;background:#f0f7ff}
+.quiz-ep7 .quiz-answer-highlight{background:#e3f2fd;border-left:0.25rem solid #0984e3}
 `;
 const bodyHtml = `
 
@@ -283,6 +290,97 @@ const bodyHtml = `
   </div>
 </section>
 
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep7">
+  <span class="section-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 01</span>
+    </div>
+    <p class="quiz-question">Which language creates its binary at compile time and saves it permanently to disk?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">A</span>C</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Java</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Python</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>JavaScript</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(A) C</strong></div>
+        <p class="quiz-answer-text">C compiles once to a binary file that's saved on disk. No runtime, no interpreter — just run the binary directly. Java creates binary at runtime via JIT, Python interprets line by line, and JavaScript is JIT-compiled in the browser.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 02</span>
+    </div>
+    <p class="quiz-question">You need maximum performance for a systems-level program. Which language gives you the fastest execution?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Python — it's the most popular</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>JavaScript — V8 is very fast</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>C — pre-compiled native binary with no runtime overhead</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Java — JIT makes it the fastest</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) C — pre-compiled native binary with no runtime overhead</strong></div>
+        <p class="quiz-answer-text">C produces a pre-compiled binary that runs directly on the CPU with zero overhead. No interpreter, no JVM, no JIT warm-up — just raw speed. This is why operating systems, databases, and game engines are written in C/C++.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 03</span>
+    </div>
+    <p class="quiz-question">What do C, Java, Python, and JavaScript all have in common?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>They all use JIT compilation</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>They all produce the same binary format</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>They all must eventually become binary — the CPU only understands ones and zeros</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>They all require an interpreter to run</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) They all must eventually become binary — the CPU only understands ones and zeros</strong></div>
+        <p class="quiz-answer-text">No matter how different these languages look, they all end up as binary. The only question is WHEN and HOW: C does it before running, Java and JS do it while running, Python does it one line at a time.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 04</span>
+    </div>
+    <p class="quiz-question">Which language would you choose for a quick data analysis script where development speed matters most?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>C — it's the fastest execution</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Java — it runs on any platform</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Python — fastest to write, with powerful data science libraries</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>JavaScript — it runs in the browser</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) Python — fastest to write, with powerful data science libraries</strong></div>
+        <p class="quiz-answer-text">Python trades execution speed for developer speed. For data analysis, the bottleneck is writing code, not running it — and Python's ecosystem (NumPy, pandas, matplotlib) makes it the clear choice.</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
 <!-- FINALE BANNER -->
 <section class="finale-banner">
   <div class="finale-badge">SERIES COMPLETE</div>
@@ -292,6 +390,6 @@ const bodyHtml = `
 </section>
 `;
 ---
-<ArticleLayout title="How Your Code Runs — Episode 7: The Full Picture | Unbox the Black Box" inlineStyle={inlineStyle} series={cpuSeries} episodeNum={7}>
+<ArticleLayout title="How Your Code Runs — Episode 7: The Full Picture | Unbox the Black Box" inlineStyle={inlineStyle} series={cpuSeries} episodeNum={7} hasQuiz={true}>
 <Fragment set:html={bodyHtml} />
 </ArticleLayout>

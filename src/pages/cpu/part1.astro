@@ -48,6 +48,13 @@ const inlineStyle = `
 @media(max-width:37.5rem){
 .chip-grid{grid-template-columns:1fr}
 }
+
+/* ── Quiz theming: Episode 1 ── */
+.quiz-ep1 .quiz-q-num{color:#6c5ce7;background:#f0efff}
+.quiz-ep1 .quiz-reveal-btn{color:#6c5ce7}
+.quiz-ep1 .quiz-opt-letter{color:#6c5ce7}
+.quiz-ep1 .quiz-option:hover{border-color:#6c5ce7;background:#f8f7ff}
+.quiz-ep1 .quiz-answer-highlight{background:#f0efff;border-left:0.25rem solid #6c5ce7}
 `;
 const bodyHtml = `
 
@@ -341,6 +348,97 @@ const bodyHtml = `
   </div>
 </section>
 
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep1">
+  <span class="section-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 01</span>
+    </div>
+    <p class="quiz-question">What does a compiler do?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Runs your code directly on the CPU</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Translates human-readable code into binary</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Connects your computer to the internet</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Stores data in memory</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) Translates human-readable code into binary</strong></div>
+        <p class="quiz-answer-text">A compiler takes the code you write (in C, Java, etc.) and translates it into binary — the only language a CPU understands.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 02</span>
+    </div>
+    <p class="quiz-question">What is an instruction set?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>A list of apps installed on your computer</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>The operating system's startup sequence</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>The fixed vocabulary of commands a CPU understands</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>A programming language like Python or Java</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) The fixed vocabulary of commands a CPU understands</strong></div>
+        <p class="quiz-answer-text">Every CPU has a fixed set of commands it knows — ADD, MOV, CMP, JMP, etc. This vocabulary is its instruction set. Different CPU families speak different instruction sets.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 03</span>
+    </div>
+    <p class="quiz-question">Which two instruction sets cover 99% of all computing devices?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>RISC-V and MIPS</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>ARM64 and RISC-V</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>x86_64 and ARM64</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>x86_64 and MIPS</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) x86_64 and ARM64</strong></div>
+        <p class="quiz-answer-text">x86_64 (Intel/AMD) dominates desktops, laptops, and servers. ARM64 dominates phones, tablets, and newer laptops. Together they power virtually every device you use.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header">
+      <span class="quiz-q-num">Q 04</span>
+    </div>
+    <p class="quiz-question">Who created the 64-bit extension for the x86 instruction set?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Intel</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>AMD</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>ARM Holdings</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Qualcomm</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) AMD</strong></div>
+        <p class="quiz-answer-text">AMD created the 64-bit extension (AMD64) in 2003. Intel then adopted AMD's design — which is why x86_64 is also called amd64.</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
 <!-- NEXT PART -->
 <section class="next-part" style="background:linear-gradient(135deg,#6c5ce7,#a29bfe)">
   <h2>Ready for Episode 2?</h2>
@@ -349,6 +447,6 @@ const bodyHtml = `
 </section>
 `;
 ---
-<ArticleLayout title="How Your Code Runs — Part 1: The Brain | Unbox the Black Box" inlineStyle={inlineStyle} series={cpuSeries} episodeNum={1}>
+<ArticleLayout title="How Your Code Runs — Part 1: The Brain | Unbox the Black Box" inlineStyle={inlineStyle} series={cpuSeries} episodeNum={1} hasQuiz={true}>
 <Fragment set:html={bodyHtml} />
 </ArticleLayout>
