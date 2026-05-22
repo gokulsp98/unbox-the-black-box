@@ -311,7 +311,7 @@ app = FastAPI()
 
   <h3 style="margin-top:2rem;font-size:1.2rem;color:#6c5ce7">Can Uvicorn run in production without Gunicorn?</h3>
   <p>Yes — and many apps do, especially in containers where Kubernetes or ECS handles restarts and scaling. Uvicorn even has a <code>--workers 4</code> flag to spawn multiple processes.</p>
-  <p>But Uvicorn is primarily a <span class="highlight">single-process ASGI server</span> — process management isn't its core strength. Gunicorn is purpose-built for it: graceful restarts (zero-downtime deploys), automatic crash recovery, pre-fork model. For high-traffic production without a container orchestrator, Gunicorn adds that layer of robustness.</p>
+  <p>But Uvicorn is primarily a <span class="highlight">single-process ASGI server</span> — process management isn't its core strength. Gunicorn is purpose-built for it: battle-tested process management, pre-fork model, and mature signal handling. For high-traffic production without a container orchestrator, Gunicorn adds that layer of robustness.</p>
 
   <h3 style="margin-top:2rem;font-size:1.2rem;color:#00b894">Why not just use Gunicorn alone?</h3>
   <p>Gunicorn was built for <span class="highlight-orange">WSGI</span> — the older, synchronous Python web standard. It doesn't natively speak <span class="highlight">ASGI</span> (the async standard FastAPI uses). So Gunicorn manages the processes, but each process runs a Uvicorn worker that handles the actual async HTTP.</p>

@@ -144,24 +144,24 @@ const bodyHtml = `
 </section>
 
 <div class="gil-viz reveal">
-  <div style="font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#e17055;margin-bottom:0.75rem;text-align:center;letter-spacing:0.0625rem">ONE PROCESS, FOUR CORES — ONLY ONE WORKS</div>
+  <div style="font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#e17055;margin-bottom:0.75rem;text-align:center;letter-spacing:0.0625rem">ONE PYTHON PROCESS — ONLY ONE THREAD RUNS PYTHON AT A TIME</div>
   <div class="core-row">
     <div class="core-row-label">Core 1</div>
     <div class="core-bar core-bar-active">&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608; running Python</div>
   </div>
   <div class="core-row">
     <div class="core-row-label">Core 2</div>
-    <div class="core-bar core-bar-idle">idle — GIL is taken</div>
+    <div class="core-bar core-bar-idle">can't run Python — GIL held by Thread 1</div>
   </div>
   <div class="core-row">
     <div class="core-row-label">Core 3</div>
-    <div class="core-bar core-bar-idle">idle — GIL is taken</div>
+    <div class="core-bar core-bar-idle">can't run Python — GIL held by Thread 1</div>
   </div>
   <div class="core-row">
     <div class="core-row-label">Core 4</div>
-    <div class="core-bar core-bar-idle">idle — GIL is taken</div>
+    <div class="core-bar core-bar-idle">can't run Python — GIL held by Thread 1</div>
   </div>
-  <div style="font-family:'Fira Code',monospace;font-size:0.6rem;color:#636e72;text-align:center;margin-top:0.75rem">the GIL locks the other 3 cores out — 75% of your CPU is wasted</div>
+  <div style="font-family:'Fira Code',monospace;font-size:0.6rem;color:#636e72;text-align:center;margin-top:0.75rem">the GIL prevents other Python threads from running bytecode — only one thread executes Python at a time</div>
 </div>
 
 <section class="section reveal">

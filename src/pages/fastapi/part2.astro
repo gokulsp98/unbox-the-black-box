@@ -221,13 +221,13 @@ const bodyHtml = `
     <li><strong>Parsing HTTP</strong> — reading raw bytes and extracting the method, path, headers, and body</li>
     <li><strong>Running the event loop</strong> — managing thousands of concurrent connections without blocking</li>
   </ol>
-  <p>Uvicorn outsources <em>both</em> of these to <span class="highlight">C</span> — but only when you install it with the <code>standard</code> extras (<code>pip install uvicorn[standard]</code>). A plain <code>pip install uvicorn</code> falls back to Python's built-in <code>asyncio</code> event loop and a pure-Python HTTP parser.</p>
+  <p>Uvicorn outsources <em>both</em> of these to <span class="highlight">Cython-based C extensions</span> — but only when you install it with the <code>standard</code> extras (<code>pip install uvicorn[standard]</code>). A plain <code>pip install uvicorn</code> falls back to Python's built-in <code>asyncio</code> event loop and a pure-Python HTTP parser.</p>
 </section>
 
 <div class="speed-pair reveal">
   <div class="speed-card sc-blue">
     <h4>httptools — C-speed HTTP parsing</h4>
-    <p>When you install Uvicorn with <code>[standard]</code> extras, you get <strong>httptools</strong> — a Python binding to <strong>llhttp</strong>, the same HTTP parser used inside Node.js. Written in C. Extremely fast. Uvicorn calls into it from Python, but the actual byte-crunching happens in C.</p>
+    <p>When you install Uvicorn with <code>[standard]</code> extras, you get <strong>httptools</strong> — a Cython extension wrapping <strong>llhttp</strong>, the same C HTTP parser used inside Node.js. The binding is written in Cython; the actual byte-crunching happens in C. Extremely fast.</p>
   </div>
   <div class="speed-card sc-green">
     <h4>uvloop — a Cython-based event loop</h4>
@@ -243,7 +243,7 @@ const bodyHtml = `
 <span class="code-string">"GET /users HTTP/1.1\r\nHost: localhost\r\n\r\n"</span>
               │
               ▼
-      httptools <span class="code-comment">(C code — llhttp under the hood)</span>
+      httptools <span class="code-comment">(Cython wrapping llhttp — C parsing under the hood)</span>
               │
               ▼
 <span class="code-keyword">method</span>  = <span class="code-string">"GET"</span>
@@ -262,9 +262,9 @@ const bodyHtml = `
     <div class="compare-card cc-red">
       <div class="cc-title">Default asyncio</div>
       <ul style="font-size:0.85rem;line-height:1.9;margin-left:1rem;color:#555">
-        <li>Python event loop</li>
-        <li>Slower, but fully portable</li>
-        <li>Ships with the standard library</li>
+        <li>C-accelerated event loop in CPython (pure Python fallback exists)</li>
+        <li>Portable — ships with the standard library</li>
+        <li>Slower than uvloop, but no extra install needed</li>
       </ul>
     </div>
     <div class="compare-card cc-blue">
@@ -523,7 +523,7 @@ event = <span class="code-keyword">await</span> receive()
   It doesn't do load balancing across servers, caching, rate limiting, or path rewriting. Nginx or a cloud load balancer does that upstream.</p>
 
   <p><strong style="color:#e17055">Uvicorn doesn't manage workers well on its own.</strong><br>
-  Running <code>uvicorn --workers 4</code> works and includes basic crash recovery, but it lacks Gunicorn's mature process management — graceful restarts (zero-downtime deploys), robust signal handling, and battle-tested worker supervision.</p>
+  Running <code>uvicorn --workers 4</code> works and includes crash recovery and SIGHUP-based graceful restarts, but Gunicorn's process management is more mature and battle-tested in high-traffic production environments.</p>
 </section>
 
 <div class="notdo-grid reveal">

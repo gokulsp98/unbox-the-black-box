@@ -354,20 +354,16 @@ server {
 
 <div class="timeline reveal" style="max-width:43.75rem;margin:1.5rem auto;padding:0 1.5rem 0 4rem">
   <div class="timeline-item">
-    <div class="timeline-year">Step 1</div>
-    <div class="timeline-text">Old workers finish their current requests and stop accepting new ones</div>
-  </div>
-  <div class="timeline-item">
-    <div class="timeline-year">Step 2</div>
-    <div class="timeline-text">Gunicorn spawns new workers with the updated code</div>
+    <div class="timeline-year">Step 1 + 2<br><small style="font-weight:400;opacity:0.7">(simultaneous)</small></div>
+    <div class="timeline-text">Old workers stop accepting new connections and begin draining in-flight requests. Gunicorn immediately spawns new workers with the updated code.</div>
   </div>
   <div class="timeline-item">
     <div class="timeline-year">Step 3</div>
-    <div class="timeline-text">New workers initialize and begin accepting traffic once ready</div>
+    <div class="timeline-text">New workers initialize — incoming requests may queue briefly until the new workers are ready to accept traffic. The duration depends on your app's startup time.</div>
   </div>
   <div class="timeline-item">
     <div class="timeline-year">Result</div>
-    <div class="timeline-text">In-flight requests on old workers complete cleanly. There is a brief window during new worker startup where capacity is reduced — incoming requests may queue or be briefly delayed. For true zero-downtime restarts, <code>SIGUSR2</code> is preferred: it keeps the old master alive while spinning up an entirely new master and worker fleet in parallel.</div>
+    <div class="timeline-text">In-flight requests on old workers complete cleanly. For apps with fast startup, the gap is negligible. For slow-starting apps, use <code>SIGUSR2</code> instead — it keeps the old master and workers alive and serving traffic while spinning up an entirely new master and worker fleet, achieving true zero-downtime restarts.</div>
   </div>
 </div>
 
@@ -543,7 +539,7 @@ RDS (managed Postgres)
   </div>
   <div class="cloud-card cc-simple">
     <span class="cloud-badge">SIMPLE PLATFORMS</span>
-    <div style="font-family:'Fira Code',monospace;font-size:0.6rem;color:#636e72;margin-bottom:0.5rem">you control everything</div>
+    <div style="font-family:'Fira Code',monospace;font-size:0.6rem;color:#636e72;margin-bottom:0.5rem">managed edge layer</div>
     <h4>Railway · Render · Fly.io</h4>
     <p>These platforms handle the Nginx equivalent automatically. Push a Dockerfile and they provide SSL, load balancing, and a public URL. This is the fastest path to production.</p>
     <div class="cloud-flow">
@@ -613,7 +609,7 @@ handler = Mangum(app)</pre>
         </tr>
         <tr>
           <td><span class="lo-name lo-uvicorn">Uvicorn</span></td>
-          <td>TCP connections, raw HTTP parsing, ASGI protocol implementation, event loop management, HTTP/1.1 and HTTP/2</td>
+          <td>TCP connections, raw HTTP parsing, ASGI protocol implementation, event loop management, HTTP/1.1 and WebSockets</td>
         </tr>
         <tr>
           <td><span class="lo-name lo-fastapi">FastAPI</span></td>
@@ -663,7 +659,7 @@ handler = Mangum(app)</pre>
     <div class="recap-ep">Ep 4</div>
     <div class="recap-body">
       <h4>Coroutines: async/await and how FastAPI uses them</h4>
-      <p>We unpacked what <code>async def</code> actually creates — a coroutine object, not a running function. We traced <code>await</code> step by step: suspend, yield control, resume. We saw the one silent mistake that kills async performance: blocking code inside an async function without <code>run_in_executor</code>.</p>
+      <p>We unpacked what <code>async def</code> actually creates — a coroutine object, not a running function. We traced <code>await</code> step by step: suspend, yield control, resume. We saw the one silent mistake that kills async performance: blocking code inside an async function without <code>run_in_threadpool</code>.</p>
     </div>
   </div>
   <div class="recap-item">

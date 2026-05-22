@@ -178,8 +178,8 @@ const bodyHtml = `
   </div>
   <div class="platform-card">
     <span class="platform-icon">&#128424;</span>
-    <div class="platform-name">Windows x86</div>
-    <div class="platform-binary">JVM &rarr; x86 binary</div>
+    <div class="platform-name">Windows x86_64</div>
+    <div class="platform-binary">JVM &rarr; x86_64 binary</div>
   </div>
 </div>
 
@@ -222,7 +222,7 @@ const bodyHtml = `
   <div class="code-block">
     <pre><span class="code-comment">// JIT in action</span>
 
-<span class="code-string">First ~1,500 calls</span> to calculatePrice():
+<span class="code-string">First few hundred calls</span> to calculatePrice():
   <span class="code-arrow">→</span> JVM interprets bytecode <span class="code-comment">(slow — translating on the fly)</span>
 
 JVM notices: <span class="code-keyword">"this function is HOT"</span>

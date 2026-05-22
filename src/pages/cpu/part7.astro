@@ -136,7 +136,7 @@ const bodyHtml = `
       hello.py<br>
       &darr; CPython &rarr; .pyc (bytecode)<br>
       &darr; CPython interpreter<br>
-      &darr; executes bytecode instruction by instruction
+      &darr; dispatches each opcode to a pre-compiled C handler
     </div>
   </div>
   <div class="lang-card lc-js">
@@ -166,8 +166,8 @@ const bodyHtml = `
 
 <span class="code-keyword">JavaScript</span>    While running (V8)       <span class="code-string">No (in browser)</span>    <span class="code-string">Fast (V8 JIT)</span>
 
-<span class="code-keyword">Python</span>        While running            <span class="code-string">Bytecode (.pyc)</span>    <span class="code-string">Slowest</span>
-              (instruction by instr.)  <span class="code-string">cached on disk</span>
+<span class="code-keyword">Python</span>        Never produced —         <span class="code-string">Bytecode (.pyc)</span>    <span class="code-string">Slowest</span>
+              C handlers run bytecode  <span class="code-string">cached on disk</span>
 </pre>
   </div>
 </section>
@@ -280,7 +280,7 @@ const bodyHtml = `
       <strong style="color:#00b894">Everything becomes binary</strong> — the CPU only understands binary. This hasn't changed since Episode 1. Every language must produce it.
     </div>
     <div style="background:#fef5e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #e17055">
-      <strong style="color:#e17055">C</strong> compiles before running. <strong style="color:#6c5ce7">Java</strong> compiles at runtime via JVM. <strong style="color:#e17055">Python</strong> interprets line by line. <strong style="color:#0984e3">JavaScript</strong> lets the browser handle everything.
+      <strong style="color:#e17055">C</strong> compiles before running. <strong style="color:#6c5ce7">Java</strong> compiles at runtime via JVM. <strong style="color:#e17055">Python</strong> dispatches bytecode to C handlers one instruction at a time. <strong style="color:#0984e3">JavaScript</strong> lets the browser handle everything.
     </div>
     <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:4px solid #0984e3">
       <strong style="color:#0984e3">Python is a glue language</strong> — the heavy work runs in C libraries at native binary speed. Python just orchestrates it.
@@ -314,7 +314,7 @@ const bodyHtml = `
     <div class="quiz-answer">
       <div class="quiz-answer-inner">
         <div class="quiz-answer-highlight">✓ Correct: <strong>(A) C</strong></div>
-        <p class="quiz-answer-text">C compiles once to a binary file that's saved on disk. No runtime, no interpreter — just run the binary directly. Java creates binary at runtime via JIT, Python interprets line by line, and JavaScript is JIT-compiled in the browser.</p>
+        <p class="quiz-answer-text">C compiles once to a binary file that's saved on disk. No runtime, no interpreter — just run the binary directly. Java creates binary at runtime via JIT, Python dispatches bytecode to C handlers one instruction at a time, and JavaScript is JIT-compiled in the browser.</p>
       </div>
     </div>
   </div>
@@ -354,7 +354,7 @@ const bodyHtml = `
     <div class="quiz-answer">
       <div class="quiz-answer-inner">
         <div class="quiz-answer-highlight">✓ Correct: <strong>(C) They all must eventually become binary — the CPU only understands ones and zeros</strong></div>
-        <p class="quiz-answer-text">No matter how different these languages look, they all end up as binary. The only question is WHEN and HOW: C does it before running, Java and JS do it while running, Python does it one line at a time.</p>
+        <p class="quiz-answer-text">No matter how different these languages look, they all end up as binary. The only question is WHEN and HOW: C does it before running, Java and JS do it while running, Python dispatches each bytecode opcode to a pre-compiled C handler.</p>
       </div>
     </div>
   </div>

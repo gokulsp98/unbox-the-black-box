@@ -363,7 +363,7 @@ const bodyHtml = `
 You have sync libraries (psycopg2, requests, SQLAlchemy sync)?
   → use <span class="code-keyword">def</span>
 
-You have mixed? → separate them, or use run_in_executor manually</pre>
+You have mixed? → separate them, or use run_in_threadpool manually</pre>
   </div>
 </section>
 
@@ -435,23 +435,23 @@ You have mixed? → separate them, or use run_in_executor manually</pre>
     <div class="timing-row">
       <span class="timing-name">user</span>
       <div class="timing-track">
-        <div class="timing-bar" style="background:#00b894;width:62.5%"><span class="timing-ms">50ms</span></div>
+        <div class="timing-bar" style="background:#00b894;position:absolute;left:0%;width:62.5%"><span class="timing-ms">50ms</span></div>
       </div>
     </div>
     <div class="timing-row">
       <span class="timing-name">orders</span>
       <div class="timing-track">
-        <div class="timing-bar" style="background:#00b894;width:100%"><span class="timing-ms">80ms</span></div>
+        <div class="timing-bar" style="background:#00b894;position:absolute;left:3%;width:94%"><span class="timing-ms">80ms</span></div>
       </div>
     </div>
     <div class="timing-row">
       <span class="timing-name">notifs</span>
       <div class="timing-track">
-        <div class="timing-bar" style="background:#00b894;width:37.5%"><span class="timing-ms">30ms</span></div>
+        <div class="timing-bar" style="background:#00b894;position:absolute;left:6%;width:37.5%"><span class="timing-ms">30ms</span></div>
       </div>
     </div>
     <div class="timing-total good">= 80ms (slowest one wins)</div>
-    <div class="timing-annotation">all three fire at once — total = slowest one</div>
+    <div class="timing-annotation">each starts as the previous hits its first await — total = slowest one</div>
   </div>
 </div>
 

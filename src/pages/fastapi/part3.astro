@@ -396,10 +396,10 @@ const bodyHtml = `
     <div class="bp-track-wrap">
       <div class="bp-req gb-teal" style="left:0%;width:3%;background:#00cec9">A</div>
       <div class="bp-req" style="left:3%;width:90%;background:rgba(0,206,201,0.2);border:0.0625rem solid rgba(0,206,201,0.5);color:#00cec9;font-size:0.45rem">A awaits sleep — loop is free</div>
-      <div class="bp-req gb-blue" style="left:3%;width:30%;top:1.75rem;background:#0984e3">B runs immediately</div>
-      <div class="bp-req gb-purple" style="left:3%;width:25%;top:3.1rem;background:#6c5ce7">C runs immediately</div>
+      <div class="bp-req gb-blue" style="left:3%;width:30%;top:1.75rem;background:#0984e3">B starts next</div>
+      <div class="bp-req gb-purple" style="left:8%;width:25%;top:3.1rem;background:#6c5ce7">C starts after B awaits</div>
     </div>
-    <p style="font-size:0.75rem;color:#00cec9;margin-top:0.625rem">B and C start right away. A wakes up after 5s.</p>
+    <p style="font-size:0.75rem;color:#00cec9;margin-top:0.625rem">A awaits → B starts. B awaits → C starts. A wakes up after 5s.</p>
     <div style="font-family:'Fira Code',monospace;font-size:0.6rem;margin-top:0.5rem;text-align:center;color:#636e72">1 thread, 3 requests running — zero wasted time</div>
   </div>
 </div>

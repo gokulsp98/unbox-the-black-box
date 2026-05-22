@@ -262,7 +262,7 @@ result = data * 2
 
 <!-- PYTHON GETTING FASTER -->
 <div class="analogy reveal">
-  <p><strong>Python is getting faster.</strong> Python 3.13+ introduced an experimental <span class="highlight">JIT compiler</span> — just like Java's. It watches for hot code paths and compiles them to binary. It's early and disabled by default: it requires a special build flag (<code>--enable-experimental-jit</code>) and a runtime flag (<code>PYTHON_JIT=1</code>). Standard Python distributions don't include it yet, but the speed gap between Python and Java is starting to close.</p>
+  <p><strong>Python is getting faster.</strong> Python 3.13+ introduced an experimental <span class="highlight">JIT compiler</span> — similar in goal to Java's — it watches for hot code paths and compiles them to native code. The mechanism is different (a copy-and-patch JIT rather than Java's profiling JIT), but the idea is the same. It's early and disabled by default: it requires a special build flag (<code>--enable-experimental-jit</code>) and a runtime flag (<code>PYTHON_JIT=1</code>). Standard Python distributions don't include it yet, but the speed gap between Python and Java is starting to close.</p>
 </div>
 
 <!-- RECAP -->

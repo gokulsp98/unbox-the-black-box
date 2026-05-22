@@ -593,7 +593,7 @@ app.add_middleware(
 <section class="section reveal">
   <p>The <code>call_next(request)</code> line hands control to the next middleware (or the router). Everything before it runs on the way in; everything after runs on the way out.</p>
   <p>Starlette implements the middleware pipeline — FastAPI inherits it and lets you plug in as many layers as you need. Common middleware: CORS headers, request logging, auth checks, response compression, rate limiting.</p>
-  <p style="background:#f0efff;border-left:0.25rem solid #6c5ce7;padding:1rem 1.25rem;border-radius:0.5rem;color:#555"><strong style="color:#6c5ce7">Registration order note:</strong> Starlette applies middleware in <strong>reverse registration order</strong>. The last middleware you add with <code>add_middleware()</code> becomes the outermost layer — it runs first on the way in and last on the way out. Keep this in mind when order matters (e.g., your auth middleware should typically be added after CORS so CORS runs outermost and preflight requests are handled before auth checks).</p>
+  <p style="background:#f0efff;border-left:0.25rem solid #6c5ce7;padding:1rem 1.25rem;border-radius:0.5rem;color:#555"><strong style="color:#6c5ce7">Registration order note:</strong> Starlette applies middleware in <strong>reverse registration order</strong>. The last middleware you add with <code>add_middleware()</code> becomes the outermost layer — it runs first on the way in and last on the way out. Keep this in mind when order matters (e.g., add your auth middleware first, then CORS last — the last-added middleware becomes outermost, so CORS runs first and preflight requests are handled before auth checks).</p>
   <p style="background:#fef5e7;border-left:0.25rem solid #e17055;padding:1rem 1.25rem;border-radius:0.5rem;color:#555"><strong style="color:#e17055">Watch out:</strong> Middleware runs on every request, including static files, the <code>/docs</code> endpoint, and health checks. Keep middleware lean — expensive work here multiplies across all traffic.</p>
 </section>
 
@@ -767,14 +767,14 @@ app.add_middleware(
     </div>
     <p class="quiz-question">If you change a field in your Pydantic model, the <code>/docs</code> page automatically reflects the change on the next request.</p>
     <ul class="quiz-options">
-      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">A</span>True</button></li>
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>False</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>True</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>False</button></li>
     </ul>
     <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
     <div class="quiz-answer">
       <div class="quiz-answer-inner">
-        <div class="quiz-answer-highlight">✓ Correct: <strong>(A) True</strong></div>
-        <p class="quiz-answer-text">FastAPI generates the OpenAPI schema from your Python type hints and Pydantic models, but it does so lazily — on the first request to <code>/openapi.json</code> — and then caches the result. That means the schema reflects whatever code was loaded at startup. If you change a Pydantic model field, you need to restart the server for the new schema to take effect. After a restart, <code>/docs</code> shows the updated schema on the very next visit.</p>
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) False</strong></div>
+        <p class="quiz-answer-text">FastAPI generates the OpenAPI schema lazily — on the first request to <code>/openapi.json</code> — and then caches the result. The schema reflects whatever code was loaded at startup. If you change a Pydantic model field, you need to <strong>restart the server</strong> for the new schema to take effect. After a restart, <code>/docs</code> shows the updated schema on the very next visit.</p>
       </div>
     </div>
   </div>
