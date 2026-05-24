@@ -8,6 +8,8 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "astro": "^5.8.0"
+    "@resvg/resvg-js": "^2.6.2",
+    "astro": "^5.8.0",
+    "satori": "^0.26.0"
   }
 }

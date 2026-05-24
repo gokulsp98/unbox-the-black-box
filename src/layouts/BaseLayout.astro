@@ -6,10 +6,19 @@ import GoatCounter from '../components/GoatCounter.astro';
 interface Props {
   title: string;
   inlineStyle?: string;
+  description?: string;
+  ogImagePath?: string;
+  canonicalPath?: string;
+  ogType?: 'website' | 'article';
 }
 
-const { title, inlineStyle } = Astro.props;
+const { title, inlineStyle, description, ogImagePath, canonicalPath, ogType = 'article' } = Astro.props;
+const siteUrl = 'https://gokulsp98.github.io';
 const base = import.meta.env.BASE_URL;
+
+const resolvedDescription = description ?? 'Complex tech topics broken into clear, visual, story-driven episodes. No assumed knowledge — just clear explanations.';
+const resolvedOgImage = ogImagePath ?? `${siteUrl}${base}og/home.png`;
+const canonicalUrl = canonicalPath ? `${siteUrl}${canonicalPath}` : `${siteUrl}${base}`;
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -17,6 +26,23 @@ const base = import.meta.env.BASE_URL;
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title}</title>
+<meta name="description" content={resolvedDescription}>
+<link rel="canonical" href={canonicalUrl}>
+
+<meta property="og:type" content={ogType}>
+<meta property="og:site_name" content="Unbox the Black Box">
+<meta property="og:title" content={title}>
+<meta property="og:description" content={resolvedDescription}>
+<meta property="og:image" content={resolvedOgImage}>
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content={canonicalUrl}>
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content={title}>
+<meta name="twitter:description" content={resolvedDescription}>
+<meta name="twitter:image" content={resolvedOgImage}>
+
 <link rel="stylesheet" href={`${base}style.css`}>
 {inlineStyle && <style set:html={inlineStyle} />}
 </head>

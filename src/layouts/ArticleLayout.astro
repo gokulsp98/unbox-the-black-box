@@ -14,8 +14,22 @@ interface Props {
 }
 
 const { title, inlineStyle, series, episodeNum, hasQuiz = false } = Astro.props;
+const siteUrl = 'https://gokulsp98.github.io';
+const base = import.meta.env.BASE_URL;
+
+const episode = series.episodes.find(ep => ep.num === episodeNum)!;
+const ogImagePath = `${siteUrl}${base}og/${series.id}/${episode.slug}.png`;
+const canonicalPath = `${base}${series.folder}/${episode.slug}.html`;
+const description = `Episode ${episodeNum} of ${series.episodes.length} in "${series.name}" — ${episode.title}. Visual, story-driven deep-dive.`;
 ---
-<BaseLayout title={title} inlineStyle={inlineStyle}>
+<BaseLayout
+  title={title}
+  inlineStyle={inlineStyle}
+  description={description}
+  ogImagePath={ogImagePath}
+  canonicalPath={canonicalPath}
+  ogType="article"
+>
   <ArticleNav series={series} episodeNum={episodeNum} />
   <slot />
   <NavDropdownScript />
