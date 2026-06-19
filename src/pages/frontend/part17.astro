@@ -2,307 +2,356 @@
 import ArticleLayout from '../../layouts/ArticleLayout.astro';
 import { frontendSeries } from '../../data/series';
 const inlineStyle = `
-.fe17-hero{background:linear-gradient(135deg,#e17055 0%,#fdcb6e 100%)}
-.fe17-num{color:#e17055;background:#fdf2ef}
+/* ── Hero ── */
+.fe17-hero{background:linear-gradient(135deg,#264de4 0%,#2965f1 40%,#00b894 100%)}
 
-/* ── Hero Art: Utility class chips ── */
-.tw-art{margin:2.5rem auto 0;display:flex;flex-direction:column;align-items:center;gap:0.75rem;animation:fadeInUp 1.5s ease}
-.tw-chips{display:flex;flex-wrap:wrap;gap:0.375rem;justify-content:center;max-width:18rem}
-.tw-chip{font-family:'Fira Code',monospace;font-size:0.6rem;font-weight:700;padding:0.3rem 0.625rem;border-radius:0.375rem;animation:chipPop 0.4s ease both}
-.tc1{background:rgba(116,185,255,0.4);color:#fff;border:0.0625rem solid rgba(116,185,255,0.7);animation-delay:0.1s}
-.tc2{background:rgba(85,239,196,0.4);color:#fff;border:0.0625rem solid rgba(85,239,196,0.7);animation-delay:0.2s}
-.tc3{background:rgba(253,203,110,0.4);color:#fff;border:0.0625rem solid rgba(253,203,110,0.7);animation-delay:0.3s}
-.tc4{background:rgba(225,112,85,0.4);color:#fff;border:0.0625rem solid rgba(225,112,85,0.7);animation-delay:0.4s}
-.tc5{background:rgba(162,155,254,0.4);color:#fff;border:0.0625rem solid rgba(162,155,254,0.7);animation-delay:0.5s}
-.tc6{background:rgba(116,185,255,0.4);color:#fff;border:0.0625rem solid rgba(116,185,255,0.7);animation-delay:0.6s}
-.tc7{background:rgba(85,239,196,0.4);color:#fff;border:0.0625rem solid rgba(85,239,196,0.7);animation-delay:0.7s}
-.tc8{background:rgba(253,203,110,0.4);color:#fff;border:0.0625rem solid rgba(253,203,110,0.7);animation-delay:0.8s}
-.tc9{background:rgba(225,112,85,0.4);color:#fff;border:0.0625rem solid rgba(225,112,85,0.7);animation-delay:0.9s}
-.tc10{background:rgba(162,155,254,0.4);color:#fff;border:0.0625rem solid rgba(162,155,254,0.7);animation-delay:1s}
-@keyframes chipPop{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
-.tw-label{font-family:'Fira Code',monospace;font-size:0.65rem;color:rgba(255,255,255,0.65)}
+/* ── CSS evolution ladder ── */
+.css-art{margin:2.5rem auto 0;display:flex;flex-direction:column;align-items:center;gap:0.5rem}
+.css-rung{font-family:'Fira Code',monospace;font-size:0.72rem;padding:0.35rem 1.1rem;border-radius:0.5rem;background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.9);border:0.0625rem solid rgba(255,255,255,0.2);animation:cssRise 0.4s ease both}
+.css-rung:nth-child(1){animation-delay:0.05s}
+.css-rung:nth-child(2){animation-delay:0.18s}
+.css-rung:nth-child(3){animation-delay:0.31s}
+.css-rung:nth-child(4){animation-delay:0.44s;background:rgba(255,255,255,0.22);font-weight:700}
+@keyframes cssRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-/* ── CSS problem cards ── */
-.problem-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:0.75rem;max-width:44rem;margin:1.5rem auto;padding:0 1.5rem}
-.problem-card{background:#fff;border:0.0625rem solid #f0f0f0;border-radius:0.75rem;padding:1rem 1.25rem;border-left:0.25rem solid #e17055}
-.problem-card strong{color:#2d3436;display:block;margin-bottom:0.25rem}
-.problem-card p{font-size:0.85rem;color:#636e72;margin:0}
+.fe17-num{color:#264de4;background:#eef2ff}
 
-/* ── Class reference ── */
-.class-ref{max-width:40rem;margin:1.5rem auto;padding:0 1.5rem}
-.cr-box{background:#1e272e;border-radius:1rem;padding:1.25rem 1.5rem;border:0.0625rem solid #485460}
-.cr-title{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#b2bec3;letter-spacing:0.125rem;margin-bottom:1rem}
-.cr-row{display:flex;align-items:baseline;gap:0.75rem;margin-bottom:0.5rem;flex-wrap:wrap}
-.cr-class{font-family:'Fira Code',monospace;font-size:0.75rem;font-weight:700;color:#55efc4;min-width:9rem}
-.cr-arrow{color:#636e72;font-size:0.8rem}
-.cr-css{font-family:'Fira Code',monospace;font-size:0.7rem;color:#fdcb6e}
+/* ── Box model diagram ── */
+.box-model{display:flex;flex-direction:column;align-items:center;margin:1.25rem auto;max-width:22rem;gap:0}
+.bm-layer{width:100%;padding:0.6rem 0;text-align:center;font-size:0.78rem;font-weight:600;border-radius:0.5rem;margin-bottom:0.25rem}
+.bm-margin{background:#fdf2ef;color:#e17055;border:0.125rem dashed #e17055}
+.bm-border{background:#f0efff;color:#6c5ce7;border:0.125rem solid #6c5ce7}
+.bm-padding{background:#e8f8f5;color:#00b894;border:0.125rem solid #00b894}
+.bm-content{background:#e3f2fd;color:#0984e3;border:0.125rem solid #0984e3;padding:1rem 0}
+
+/* ── Specificity table ── */
+.spec-table{width:100%;border-collapse:collapse;margin-top:1.25rem;font-size:0.88rem}
+.spec-table th{background:#eef2ff;color:#264de4;padding:0.6rem 0.9rem;text-align:left;border-bottom:0.125rem solid #ddd}
+.spec-table td{padding:0.55rem 0.9rem;border-bottom:0.0625rem solid #eee;font-family:'Fira Code',monospace;font-size:0.82rem}
+.spec-table tr:nth-child(even) td{background:#fafafa}
+.spec-win{color:#00b894;font-weight:700}
+.spec-lose{color:#d63031}
+
+/* ── Global scope demo ── */
+.chaos-demo{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.25rem}
+@media(max-width:600px){.chaos-demo{grid-template-columns:1fr}}
+
+/* ── SCSS before/after ── */
+.scss-compare{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.25rem}
+@media(max-width:600px){.scss-compare{grid-template-columns:1fr}}
+.scss-col-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;padding:0.25rem 0.6rem;border-radius:0.3rem;margin-bottom:0.5rem;display:inline-block}
+.scss-bad{background:#fdf2ef;color:#e17055}
+.scss-good{background:#e8f8f5;color:#00b894}
 
 /* ── Quiz theming ep17 ── */
-.quiz-ep17 .quiz-q-num{color:#e17055;background:#fdf2ef}
-.quiz-ep17 .quiz-reveal-btn{color:#e17055}
-.quiz-ep17 .quiz-opt-letter{color:#e17055}
-.quiz-ep17 .quiz-option:hover{border-color:#e17055;background:#fdf2ef}
-.quiz-ep17 .quiz-answer-highlight{background:#fdf2ef;border-left:0.25rem solid #e17055}
+.quiz-ep17f .quiz-q-num{color:#264de4;background:#eef2ff}
+.quiz-ep17f .quiz-reveal-btn{color:#264de4}
+.quiz-ep17f .quiz-opt-letter{color:#264de4}
+.quiz-ep17f .quiz-option:hover{border-color:#264de4;background:#eef2ff}
+.quiz-ep17f .quiz-answer-highlight{background:#eef2ff;border-left:0.25rem solid #264de4}
 `;
 const bodyHtml = `
 
 <!-- HERO -->
 <section class="hero fe17-hero">
-  <div class="hero-badge">Episode 17 of 22</div>
-  <h1>Tailwind CSS</h1>
-  <p style="color:rgba(255,255,255,0.95)">Stop writing CSS files. Apply pre-built utility classes directly in your HTML. Every class does exactly one thing.</p>
-  <div class="tw-art">
-    <div class="tw-chips">
-      <span class="tw-chip tc1">tw-flex</span>
-      <span class="tw-chip tc2">tw-gap-4</span>
-      <span class="tw-chip tc3">tw-px-8</span>
-      <span class="tw-chip tc4">tw-mt-8</span>
-      <span class="tw-chip tc5">tw-text-white</span>
-      <span class="tw-chip tc6">tw-flex-col</span>
-      <span class="tw-chip tc7">tw-rounded</span>
-      <span class="tw-chip tc8">tw-justify-between</span>
-      <span class="tw-chip tc9">tw-border-t-4</span>
-      <span class="tw-chip tc10">tw-items-center</span>
-    </div>
-    <span class="tw-label">pre-written. one job each. apply directly in HTML.</span>
+  <div class="hero-badge">Episode 17 of 23</div>
+  <h1>CSS —<br>The Language of Style</h1>
+  <p style="color:rgba(255,255,255,0.95)">HTML gives a page structure. CSS gives it appearance. Invented in 1996 to separate content from presentation — but plain CSS had problems that took 25 years of tooling to solve.</p>
+  <div class="css-art">
+    <div class="css-rung">1996 — CSS1: colors, fonts, margins</div>
+    <div class="css-rung">1998 — CSS2: layout, positioning, floats</div>
+    <div class="css-rung">2006 — SCSS/Sass: variables, nesting, mixins</div>
+    <div class="css-rung">2017+ — CSS3 modules: flexbox, grid, custom properties</div>
   </div>
 </section>
 
 <!-- SECTION 1 -->
 <section class="section reveal">
   <span class="section-num fe17-num">01</span>
-  <h2>The Problems With Regular CSS</h2>
-  <p>Before understanding Tailwind, you need to understand what it is solving. Writing CSS manually has four specific problems that get worse as a project grows:</p>
-</section>
+  <h2>Before CSS: Presentation Mixed Into HTML</h2>
+  <p>When the web started, there was no CSS. Developers who wanted visual design had to put presentation directly into HTML tags:</p>
 
-<div class="problem-grid reveal">
-  <div class="problem-card">
-    <strong>Naming is exhausting</strong>
-    <p>.submit-button-wrapper-inner — what is that? You spend real time inventing class names for every element.</p>
+  <div class="code-block">
+    <pre><span class="code-comment">&lt;!-- Early web: presentation tangled into structure --&gt;</span>
+&lt;<span class="code-keyword">font</span> color=<span class="code-string">"red"</span> size=<span class="code-string">"3"</span>&gt;Important text&lt;/<span class="code-keyword">font</span>&gt;
+&lt;<span class="code-keyword">table</span> bgcolor=<span class="code-string">"#000000"</span> border=<span class="code-string">"1"</span>&gt;...&lt;/<span class="code-keyword">table</span>&gt;
+&lt;<span class="code-keyword">b</span>&gt;&lt;<span class="code-keyword">i</span>&gt;Bold italic&lt;/<span class="code-keyword">i</span>&gt;&lt;/<span class="code-keyword">b</span>&gt;</pre>
   </div>
-  <div class="problem-card">
-    <strong>CSS grows forever</strong>
-    <p>You add styles, you never delete them. Scared to remove anything in case it breaks something else. The file balloons.</p>
-  </div>
-  <div class="problem-card">
-    <strong>Inconsistency creeps in</strong>
-    <p>Dev 1 uses padding: 10px. Dev 2 uses padding: 12px. Dev 3 uses padding: 9px. Everything looks slightly off.</p>
-  </div>
-  <div class="problem-card">
-    <strong>Constant file switching</strong>
-    <p>Write HTML → switch to CSS file → add style → switch back → repeat 100 times a day. Breaks your flow.</p>
-  </div>
-</div>
+
+  <p>The problems were obvious: to change a colour across a 50-page site, you had to edit every single HTML file. Structure and design were impossible to maintain separately.</p>
+  <p>In 1994, <span class="highlight">Håkon Wium Lie</span> — working at CERN alongside Tim Berners-Lee — proposed CSS. The idea: put all visual rules in a separate file, link it to HTML, and let the browser combine them. <span class="highlight">CSS 1 became a W3C standard in December 1996.</span></p>
+</section>
 
 <!-- SECTION 2 -->
 <section class="section reveal">
   <span class="section-num fe17-num">02</span>
-  <h2>What Tailwind Is</h2>
-  <p>Tailwind is a CSS framework that gives you thousands of <span class="highlight">pre-written utility classes</span>. Instead of writing CSS yourself and applying it via class names you invented, you apply Tailwind's pre-made classes directly in your HTML.</p>
+  <h2>What CSS Does: Selectors + Properties</h2>
+  <p>CSS is a collection of rules. Each rule has a <span class="highlight">selector</span> (what to target) and <span class="highlight">declarations</span> (what to change):</p>
 
   <div class="code-block">
-    <pre><span class="code-comment">&lt;!-- Without Tailwind: invent a name, write CSS separately --&gt;</span>
-<span class="code-keyword">&lt;button</span> <span class="code-string">class="submit-button"</span><span class="code-keyword">&gt;</span>Click me<span class="code-keyword">&lt;/button&gt;</span>
+    <pre><span class="code-comment">/* selector  { property: value; } */</span>
 
-<span class="code-comment">/* In some CSS file, far away */</span>
-<span class="code-keyword">.submit-button</span> {
-  background-color: blue; color: white;
-  padding: 0.5rem 1rem; border-radius: 0.25rem;
+<span class="code-keyword">h1</span> {
+  color: <span class="code-string">#264de4</span>;
+  font-size: <span class="code-string">2rem</span>;
+  margin-bottom: <span class="code-string">1rem</span>;
 }
 
-<span class="code-comment">&lt;!-- With Tailwind: no CSS file needed --&gt;</span>
-<span class="code-keyword">&lt;button</span> <span class="code-string">class="tw-bg-blue-500 tw-text-white tw-px-4 tw-py-2 tw-rounded"</span><span class="code-keyword">&gt;</span>
-  Click me
-<span class="code-keyword">&lt;/button&gt;</span></pre>
+<span class="code-keyword">.card</span> {           <span class="code-comment">/* class selector */</span>
+  background: <span class="code-string">#fff</span>;
+  border-radius: <span class="code-string">0.5rem</span>;
+  padding: <span class="code-string">1.5rem</span>;
+}
+
+<span class="code-keyword">#submit-btn</span> {     <span class="code-comment">/* ID selector */</span>
+  background: <span class="code-string">#0984e3</span>;
+  color: <span class="code-string">#fff</span>;
+}</pre>
   </div>
 
-  <p>Each class does exactly <span class="highlight-orange">one thing</span>. You read the class names and immediately know what the element looks like.</p>
+  <p>The browser reads the HTML, builds the DOM (Episode 4), then applies all CSS rules to each node in the tree. The result is the rendered page.</p>
 </section>
 
 <!-- SECTION 3 -->
 <section class="section reveal">
   <span class="section-num fe17-num">03</span>
-  <h2>The Pattern: Property-Value</h2>
-  <p>Tailwind class names follow a readable pattern: <span class="highlight">property shorthand - value</span>. Once you learn the pattern, you can guess any class name.</p>
-</section>
+  <h2>The Cascade: Which Rule Wins?</h2>
+  <p>CSS stands for <span class="highlight">Cascading Style Sheets</span>. The cascade is the algorithm that decides which rule applies when multiple rules target the same element. The key concept is <span class="highlight">specificity</span>.</p>
 
-<div class="class-ref reveal">
-  <div class="cr-box">
-    <div class="cr-title">TAILWIND CLASS &#8594; CSS IT GENERATES</div>
-    <div class="cr-row"><span class="cr-class">tw-flex</span><span class="cr-arrow">&#8594;</span><span class="cr-css">display: flex</span></div>
-    <div class="cr-row"><span class="cr-class">tw-flex-col</span><span class="cr-arrow">&#8594;</span><span class="cr-css">flex-direction: column</span></div>
-    <div class="cr-row"><span class="cr-class">tw-flex-row</span><span class="cr-arrow">&#8594;</span><span class="cr-css">flex-direction: row</span></div>
-    <div class="cr-row"><span class="cr-class">tw-gap-4</span><span class="cr-arrow">&#8594;</span><span class="cr-css">gap: 1rem</span></div>
-    <div class="cr-row"><span class="cr-class">tw-gap-8</span><span class="cr-arrow">&#8594;</span><span class="cr-css">gap: 2rem</span></div>
-    <div class="cr-row"><span class="cr-class">tw-px-4</span><span class="cr-arrow">&#8594;</span><span class="cr-css">padding-left: 1rem; padding-right: 1rem</span></div>
-    <div class="cr-row"><span class="cr-class">tw-py-2</span><span class="cr-arrow">&#8594;</span><span class="cr-css">padding-top: 0.5rem; padding-bottom: 0.5rem</span></div>
-    <div class="cr-row"><span class="cr-class">tw-mt-8</span><span class="cr-arrow">&#8594;</span><span class="cr-css">margin-top: 2rem</span></div>
-    <div class="cr-row"><span class="cr-class">tw-my-2</span><span class="cr-arrow">&#8594;</span><span class="cr-css">margin-top: 0.5rem; margin-bottom: 0.5rem</span></div>
-    <div class="cr-row"><span class="cr-class">tw-justify-between</span><span class="cr-arrow">&#8594;</span><span class="cr-css">justify-content: space-between</span></div>
-    <div class="cr-row"><span class="cr-class">tw-items-center</span><span class="cr-arrow">&#8594;</span><span class="cr-css">align-items: center</span></div>
-    <div class="cr-row"><span class="cr-class">tw-border-t-4</span><span class="cr-arrow">&#8594;</span><span class="cr-css">border-top-width: 4px</span></div>
-    <div class="cr-row"><span class="cr-class">tw-text-xs</span><span class="cr-arrow">&#8594;</span><span class="cr-css">font-size: 0.75rem</span></div>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Selector type</th><th>Example</th><th>Specificity</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Inline style</td><td><code>style="color:red"</code></td><td class="spec-win">highest</td></tr>
+      <tr><td>ID selector</td><td><code>#submit-btn</code></td><td class="spec-win">high</td></tr>
+      <tr><td>Class selector</td><td><code>.card</code></td><td>medium</td></tr>
+      <tr><td>Element selector</td><td><code>h1</code>, <code>div</code></td><td class="spec-lose">lowest</td></tr>
+    </tbody>
+  </table>
+
+  <p style="margin-top:1.25rem">If two rules have the same specificity, the one that appears <strong>later in the file wins</strong>. This is the cascade — rules flow down and later ones override earlier ones at equal specificity.</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">/* Both target the same h1 — which wins? */</span>
+<span class="code-keyword">h1</span> { color: red; }         <span class="code-comment">/* element selector — low */</span>
+<span class="code-keyword">.title</span> { color: blue; }    <span class="code-comment">/* class selector — wins */</span></pre>
   </div>
-</div>
+</section>
 
 <!-- SECTION 4 -->
 <section class="section reveal">
   <span class="section-num fe17-num">04</span>
-  <h2>The tw- Prefix — Why This Repo Is Different</h2>
-  <p>Standard Tailwind classes have no prefix: <code style="font-size:0.875rem">flex</code>, <code style="font-size:0.875rem">gap-4</code>, <code style="font-size:0.875rem">px-4</code>.</p>
-  <p>But in this repo every class has <code style="font-size:0.875rem">tw-</code> in front: <code style="font-size:0.875rem">tw-flex</code>, <code style="font-size:0.875rem">tw-gap-4</code>. Why?</p>
-  <p>This repo uses <span class="highlight">both Tailwind and Vuetify</span> — two CSS frameworks at the same time. Without a prefix, their class names would clash and break each other's styles.</p>
+  <h2>The Box Model</h2>
+  <p>Every HTML element is a rectangular box. CSS's <span class="highlight">box model</span> describes the four layers that make up that box:</p>
 
-  <div class="code-block">
-    <pre><span class="code-comment">// Without prefix — potential clash</span>
-<span class="code-string">flex</span>   <span class="code-comment">← is this Tailwind or Vuetify?</span>
-
-<span class="code-comment">// With tw- prefix — no ambiguity</span>
-<span class="code-string">tw-flex</span>   <span class="code-comment">← clearly Tailwind</span>
-<span class="code-string">v-flex</span>    <span class="code-comment">← clearly Vuetify</span></pre>
+  <div class="box-model">
+    <div class="bm-layer bm-margin">margin — space outside the border (pushes other elements away)</div>
+    <div class="bm-layer bm-border">border — the visible edge line</div>
+    <div class="bm-layer bm-padding">padding — space between border and content</div>
+    <div class="bm-layer bm-content">content — text, image, or child elements</div>
   </div>
 
-  <p>This prefix is configured in <code style="font-size:0.875rem">tailwind.config.js</code>:</p>
+  <p style="margin-top:1.25rem">There is a famous gotcha: by default, when you set <code style="font-size:0.875rem">width: 200px</code>, that only counts the <em>content</em>. Padding and border are added on top — so the element ends up wider than 200px. This surprises almost every developer once.</p>
 
   <div class="code-block">
-    <pre><span class="code-keyword">export default</span> {
-  <span class="code-string">prefix: 'tw-'</span>,   <span class="code-comment">← this one line adds tw- to every class</span>
-  presets: [tailwindConfig],
-  content: [<span class="code-string">'./src/**/*.vue'</span>, <span class="code-string">'./src/**/*.js'</span>],
-}</pre>
+    <pre><span class="code-comment">/* The fix — applied globally in almost every project */</span>
+*, *::before, *::after {
+  box-sizing: border-box;  <span class="code-comment">/* width includes border + padding */</span>
+}
+
+<span class="code-comment">/* Now: width:200px means 200px total, always */</span></pre>
   </div>
 </section>
 
 <!-- SECTION 5 -->
 <section class="section reveal">
   <span class="section-num fe17-num">05</span>
-  <h2>All Classes Are Predefined</h2>
-  <p>You never write the CSS behind Tailwind classes. Tailwind already wrote them. They live in <code style="font-size:0.875rem">node_modules/tailwindcss/</code>.</p>
-  <p>You just pick from what already exists and apply the class name. No CSS file needed on your side.</p>
-  <p>ACV has also added <span class="highlight-orange">custom classes</span> in the shared Vuejs package — brand-specific colours like <code style="font-size:0.875rem">tw-text-grey-dark</code> and <code style="font-size:0.875rem">tw-border-t-primary-dark</code>. These are ACV's own Tailwind extensions on top of the standard set.</p>
+  <h2>The Problem with Plain CSS at Scale</h2>
+  <p>CSS works fine for small sites. But in a large app like dealmaker-ui with hundreds of components, plain CSS has serious problems:</p>
+
+  <div class="chaos-demo">
+    <div style="background:#fdf2ef;padding:1.1rem 1.25rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Global scope</strong>
+      <p style="font-size:0.88rem;margin-top:0.5rem;line-height:1.6">Every CSS rule applies everywhere. A <code>.button</code> class in one component file affects every element with <code>class="button"</code> across the entire app. One developer's change breaks another component.</p>
+    </div>
+    <div style="background:#fdf2ef;padding:1.1rem 1.25rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">No variables (originally)</strong>
+      <p style="font-size:0.88rem;margin-top:0.5rem;line-height:1.6">The brand primary colour appears in 50 files. When it changes, you update 50 files — and drift creeps in when different developers use slightly different hex values.</p>
+    </div>
+    <div style="background:#fdf2ef;padding:1.1rem 1.25rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">No nesting</strong>
+      <p style="font-size:0.88rem;margin-top:0.5rem;line-height:1.6">To style a button inside a card, you write <code>.card .button {...}</code> as a flat, separate rule. Deep relationships mean long repetitive selectors spread across the file.</p>
+    </div>
+    <div style="background:#fdf2ef;padding:1.1rem 1.25rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Repetition</strong>
+      <p style="font-size:0.88rem;margin-top:0.5rem;line-height:1.6">The same set of rules (flex centre, border-radius, box-shadow) appears in dozens of places with no way to name and reuse them.</p>
+    </div>
+  </div>
 </section>
 
 <!-- SECTION 6 -->
 <section class="section reveal">
   <span class="section-num fe17-num">06</span>
-  <h2>@apply — Using Tailwind Inside SCSS</h2>
-  <p>Sometimes you cannot add classes directly to an HTML element — for example when styling the internals of a third-party component. Tailwind's <code style="font-size:0.875rem">@apply</code> lets you use utility classes inside SCSS files:</p>
+  <h2>SCSS — CSS With Superpowers</h2>
+  <p>In 2006, Hampton Catlin created <span class="highlight">Sass</span> (Syntactically Awesome Stylesheets), and the SCSS syntax followed (which looks like regular CSS with extras). SCSS compiles to plain CSS — the browser never sees SCSS directly. Vite handles the compilation. The dealmaker-ui repo uses <code style="font-size:0.875rem">.scss</code> files throughout.</p>
 
-  <div class="code-block">
-    <pre><span class="code-comment">/* Inside a .vue file's &lt;style&gt; section */</span>
-<span class="code-keyword">.auction-log-notes</span> {
-  ::v-deep <span class="code-keyword">.acv-cta-table__records</span> {
-    <span class="code-keyword">@apply</span> <span class="code-string">tw-border-t-4 tw-border-t-primary-dark tw-mb-4</span>;
+  <div class="scss-compare">
+    <div>
+      <span class="scss-col-label scss-bad">Plain CSS — repetitive</span>
+      <div class="code-block" style="margin-top:0">
+        <pre><span class="code-comment">/* No variables */</span>
+.btn { background: <span class="code-string">#0984e3</span>; }
+.link { color: <span class="code-string">#0984e3</span>; }
+.border { border-color: <span class="code-string">#0984e3</span>; }
+
+<span class="code-comment">/* Flat selectors */</span>
+.card { ... }
+.card .title { ... }
+.card .title:hover { ... }</pre>
+      </div>
+    </div>
+    <div>
+      <span class="scss-col-label scss-good">SCSS — clean</span>
+      <div class="code-block" style="margin-top:0">
+        <pre><span class="code-comment">/* Variable */</span>
+$primary: <span class="code-string">#0984e3</span>;
+.btn { background: $primary; }
+.link { color: $primary; }
+
+<span class="code-comment">/* Nesting */</span>
+.card {
+  .title {
+    &amp;:hover { ... }
   }
 }</pre>
+      </div>
+    </div>
   </div>
 
-  <p>This applies three Tailwind utilities to a deeply nested element without touching the HTML. This is real code from this repo.</p>
+  <p style="margin-top:1.25rem">SCSS also adds <code style="font-size:0.875rem">@mixin</code> (reusable rule groups you call like functions) and <code style="font-size:0.875rem">@use</code> / <code style="font-size:0.875rem">@import</code> for splitting styles into multiple files that compile into one CSS output.</p>
 </section>
 
 <!-- SECTION 7 -->
 <section class="section reveal">
   <span class="section-num fe17-num">07</span>
-  <h2>Purging — How Production Stays Small</h2>
-  <p>Tailwind has thousands of possible utility classes. If all of them were included in the final CSS file, it would be enormous. Instead, Tailwind <span class="highlight">purges</span> unused classes during production build:</p>
+  <h2>CSS Custom Properties — Native Variables</h2>
+  <p>In 2015, CSS finally gained native variables called <span class="highlight">custom properties</span>. Unlike SCSS variables, these survive into the browser — you can read and change them with JavaScript at runtime.</p>
 
-  <div class="flow reveal" style="max-width:44rem;margin:1.5rem auto">
-    <div class="flow-box fb-purple">All Tailwind classes<br><small>~3MB of CSS</small></div>
-    <div class="flow-arrow">&#10132;</div>
-    <div class="flow-box fb-orange">Scan all .vue and .js files<br><small>find every tw- class used</small></div>
-    <div class="flow-arrow">&#10132;</div>
-    <div class="flow-box fb-green">Only used classes<br><small>~10KB of CSS</small></div>
+  <div class="code-block">
+    <pre><span class="code-comment">/* Defined on :root — available everywhere */</span>
+:root {
+  --primary: <span class="code-string">#0984e3</span>;
+  --radius: <span class="code-string">0.5rem</span>;
+}
+
+<span class="code-comment">/* Used anywhere */</span>
+.button {
+  background: var(--primary);
+  border-radius: var(--radius);
+}</pre>
   </div>
 
-  <p>The <code style="font-size:0.875rem">content</code> field in tailwind.config.js tells Tailwind where to scan: <code style="font-size:0.875rem">./src/**/*.vue</code> and <code style="font-size:0.875rem">./src/**/*.js</code>. Every unused class is stripped. The final CSS file is tiny.</p>
+  <p>SCSS variables are replaced at compile time and disappear from the output. CSS custom properties are actual browser features: they stay in the output CSS, are visible in DevTools, and can be updated with JavaScript — useful for dark mode or runtime theming.</p>
+  <p>Both have their place: SCSS for nesting, mixins, and compile-time logic; custom properties for runtime values that need to change.</p>
 </section>
 
 <!-- RECAP -->
 <section class="section reveal">
-  <span class="section-num fe17-num">RECAP</span>
+  <span class="section-num">RECAP</span>
   <h2>What We Learned</h2>
   <div style="display:grid;gap:1rem;margin-top:1.25rem">
-    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
-      <strong style="color:#e17055">Tailwind solves four CSS problems</strong> — naming, ever-growing files, inconsistency, and constant file switching.
+    <div style="background:#eef2ff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #264de4">
+      <strong style="color:#264de4">CSS origin</strong> — Håkon Wium Lie, 1996. Separates presentation (CSS) from structure (HTML). One file styles an entire site.
     </div>
     <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
-      <strong style="color:#0984e3">All classes are predefined</strong> — Tailwind already wrote the CSS. You just pick class names and apply them in HTML. No CSS file needed.
+      <strong style="color:#0984e3">Cascade &amp; specificity</strong> — ID beats class beats element selector. Equal specificity: later rule wins. <code>box-sizing: border-box</code> fixes the width gotcha.
     </div>
-    <div style="background:#fef9e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #f9ca24">
-      <strong style="color:#e17055">This repo uses tw- prefix</strong> — because it uses both Tailwind and Vuetify. The prefix prevents class name conflicts. Configured in tailwind.config.js.
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Plain CSS problems at scale</strong> — global scope, no variables, no nesting, repetition. Fine for small sites, painful for large apps.
     </div>
     <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
-      <strong style="color:#00b894">Purging keeps production small</strong> — Tailwind scans your files, keeps only classes you actually used, removes everything else.
+      <strong style="color:#00b894">SCSS</strong> — adds variables ($var), nesting, mixins. Compiles to plain CSS at build time. Used throughout dealmaker-ui.
+    </div>
+    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
+      <strong style="color:#6c5ce7">CSS custom properties</strong> — native browser variables (--primary: #blue). Survive to runtime, changeable via JavaScript. Different from SCSS variables which disappear at compile time.
     </div>
   </div>
 </section>
 
 <!-- CHECKPOINT QUIZ -->
-<section class="section reveal quiz-ep17">
-  <span class="section-num fe17-num">CHECKPOINT</span>
+<section class="section reveal quiz-ep17f">
+  <span class="section-num">CHECKPOINT</span>
   <h2>Probe Your Thinking</h2>
   <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
   <div class="quiz-grid">
 
-    <div class="quiz-card">
-      <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
-      <p class="quiz-question">What does the Tailwind class tw-flex do?</p>
-      <ul class="quiz-options">
-        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Adds a flexible border around the element</button></li>
-        <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Sets display: flex on the element</button></li>
-        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Makes the element flexible in width</button></li>
-        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Wraps child elements automatically</button></li>
-      </ul>
-      <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
-      <div class="quiz-answer"><div class="quiz-answer-inner">
-        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) Sets display: flex</strong></div>
-        <p class="quiz-answer-text">tw-flex is a pre-written Tailwind class that applies display: flex to an element, making it a flex container. Each Tailwind class does exactly one CSS property.</p>
-      </div></div>
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
+    <p class="quiz-question">What problem did CSS solve when it was introduced in 1996?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>It replaced JavaScript for making pages interactive</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>It allowed pages to load faster by removing images</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>It separated presentation from structure — styles moved out of HTML tags into a separate file</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>It let developers write styles using JavaScript syntax</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(C) It separated presentation from structure — styles moved out of HTML tags into a separate file</strong></div>
+        <p class="quiz-answer-text">Before CSS, visual styles were embedded directly in HTML: &lt;font color="red"&gt;, bgcolor attributes on tables, nested bold and italic tags. To change a colour across an entire site, you had to edit every HTML file. CSS moved all presentation into a single .css file that could be linked from any page — change the CSS file once and the whole site updates.</p>
+      </div>
     </div>
+  </div>
 
-    <div class="quiz-card">
-      <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
-      <p class="quiz-question">Why does this repo use tw- prefix on all Tailwind classes?</p>
-      <ul class="quiz-options">
-        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>It's a Tailwind requirement for Vue projects</button></li>
-        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>It makes the code more readable</button></li>
-        <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>To prevent class name conflicts between Tailwind and Vuetify</button></li>
-        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>To reduce the final CSS bundle size</button></li>
-      </ul>
-      <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
-      <div class="quiz-answer"><div class="quiz-answer-inner">
-        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) To prevent class name conflicts between Tailwind and Vuetify</strong></div>
-        <p class="quiz-answer-text">This repo uses both Tailwind and Vuetify. Without a prefix their class names could clash. The tw- prefix is configured in tailwind.config.js and keeps the two frameworks completely separate.</p>
-      </div></div>
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
+    <p class="quiz-question">Two CSS rules both target the same element — <code>.card h2</code> and <code>h2</code>. Which one wins and why?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>The rule that appears first in the file</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>The shorter selector always wins</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>.card h2 wins — it includes a class selector which has higher specificity than a plain element selector</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>The last rule in the file always wins regardless of selector type</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(C) .card h2 wins — class selector has higher specificity than element selector</strong></div>
+        <p class="quiz-answer-text">.card h2 combines a class (.card) with an element (h2). Class selectors have higher specificity than element selectors, so this combined rule beats a plain h2 rule regardless of file order. The cascade compares specificity first — only when specificity is exactly equal does file order matter (later wins).</p>
+      </div>
     </div>
+  </div>
 
-    <div class="quiz-card">
-      <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
-      <p class="quiz-question">What does "purging" mean in the context of Tailwind?</p>
-      <ul class="quiz-options">
-        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Removing unused JavaScript from the bundle</button></li>
-        <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Scanning your code and removing Tailwind classes that were never used</button></li>
-        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Clearing the browser cache after deployment</button></li>
-        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Deleting node_modules before a fresh install</button></li>
-      </ul>
-      <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
-      <div class="quiz-answer"><div class="quiz-answer-inner">
-        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) Removing unused Tailwind classes from the final CSS</strong></div>
-        <p class="quiz-answer-text">Tailwind ships with thousands of utility classes. Purging scans your .vue and .js files during build, keeps only the classes you actually used, and removes everything else — shrinking the final CSS from ~3MB to ~10KB.</p>
-      </div></div>
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
+    <p class="quiz-question">What is the key difference between an SCSS variable ($primary) and a CSS custom property (--primary)?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>SCSS variables work in the browser; CSS custom properties only work during the build</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>They are the same thing — CSS custom properties are just newer syntax for SCSS variables</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>SCSS variables are replaced at compile time and disappear; CSS custom properties survive in the browser and can be changed with JavaScript at runtime</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>SCSS variables support more property types than CSS custom properties</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(C) SCSS variables replaced at compile time; CSS custom properties survive into the browser</strong></div>
+        <p class="quiz-answer-text">When Vite compiles SCSS, $primary: #0984e3 gets substituted everywhere it appears — the output CSS contains literal hex values, no variable references. CSS custom properties (--primary: #0984e3) are actual browser features: they remain in the output CSS, are readable in DevTools, and can be updated with JavaScript at runtime — useful for dark mode or live theming without a rebuild.</p>
+      </div>
     </div>
+  </div>
 
   </div>
 </section>
 
 <!-- NEXT -->
-<section class="next-part" style="background:linear-gradient(135deg,#e17055,#0984e3)">
+<section class="next-part" style="background:linear-gradient(135deg,#264de4,#00b894)">
   <h2>Ready for Episode 18?</h2>
-  <p>Tailwind keeps CSS clean. ESLint and Stylelint keep JavaScript and CSS correct. Episode 18 covers what linters are, how they work, and how this repo configures them.</p>
+  <p>We know what CSS is. Now — what if you never wrote custom CSS at all? Tailwind takes a completely different approach: predefined utility classes applied directly in your HTML.</p>
   <a href="part18.html" class="btn btn-white">Continue to Episode 18 &#10132;</a>
 </section>
 `;
 ---
-<ArticleLayout title="How the Frontend Works — Ep 17: Tailwind CSS | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={17} hasQuiz={true}>
+<ArticleLayout title="How the Frontend Works — Part 17: CSS — The Language of Style | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={17} hasQuiz={true}>
 <Fragment set:html={bodyHtml} />
 </ArticleLayout>

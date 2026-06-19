@@ -2,332 +2,307 @@
 import ArticleLayout from '../../layouts/ArticleLayout.astro';
 import { frontendSeries } from '../../data/series';
 const inlineStyle = `
-/* ── Hero ── */
-.fe18-hero{background:linear-gradient(135deg,#00b894 0%,#00cec9 50%,#0984e3 100%)}
+.fe17-hero{background:linear-gradient(135deg,#e17055 0%,#fdcb6e 100%)}
+.fe17-num{color:#e17055;background:#fdf2ef}
 
-/* ── Lint check animation ── */
-.lint-art{margin:2.5rem auto 0;display:flex;flex-direction:column;align-items:center;gap:0.75rem}
-.lint-row{display:flex;align-items:center;gap:0.75rem;font-family:'Fira Code',monospace;font-size:0.78rem}
-.lint-code{padding:0.35rem 0.9rem;border-radius:0.5rem;background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.9);border:0.0625rem solid rgba(255,255,255,0.2)}
-.lint-badge{padding:0.25rem 0.75rem;border-radius:1rem;font-size:0.7rem;font-weight:700;animation:lintFade 0.5s ease both}
-.lint-badge.err{background:#ff7675;color:#fff;animation-delay:0.3s}
-.lint-badge.ok{background:#55efc4;color:#1a1a2e;animation-delay:0.6s}
-@keyframes lintFade{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
+/* ── Hero Art: Utility class chips ── */
+.tw-art{margin:2.5rem auto 0;display:flex;flex-direction:column;align-items:center;gap:0.75rem;animation:fadeInUp 1.5s ease}
+.tw-chips{display:flex;flex-wrap:wrap;gap:0.375rem;justify-content:center;max-width:18rem}
+.tw-chip{font-family:'Fira Code',monospace;font-size:0.6rem;font-weight:700;padding:0.3rem 0.625rem;border-radius:0.375rem;animation:chipPop 0.4s ease both}
+.tc1{background:rgba(116,185,255,0.4);color:#fff;border:0.0625rem solid rgba(116,185,255,0.7);animation-delay:0.1s}
+.tc2{background:rgba(85,239,196,0.4);color:#fff;border:0.0625rem solid rgba(85,239,196,0.7);animation-delay:0.2s}
+.tc3{background:rgba(253,203,110,0.4);color:#fff;border:0.0625rem solid rgba(253,203,110,0.7);animation-delay:0.3s}
+.tc4{background:rgba(225,112,85,0.4);color:#fff;border:0.0625rem solid rgba(225,112,85,0.7);animation-delay:0.4s}
+.tc5{background:rgba(162,155,254,0.4);color:#fff;border:0.0625rem solid rgba(162,155,254,0.7);animation-delay:0.5s}
+.tc6{background:rgba(116,185,255,0.4);color:#fff;border:0.0625rem solid rgba(116,185,255,0.7);animation-delay:0.6s}
+.tc7{background:rgba(85,239,196,0.4);color:#fff;border:0.0625rem solid rgba(85,239,196,0.7);animation-delay:0.7s}
+.tc8{background:rgba(253,203,110,0.4);color:#fff;border:0.0625rem solid rgba(253,203,110,0.7);animation-delay:0.8s}
+.tc9{background:rgba(225,112,85,0.4);color:#fff;border:0.0625rem solid rgba(225,112,85,0.7);animation-delay:0.9s}
+.tc10{background:rgba(162,155,254,0.4);color:#fff;border:0.0625rem solid rgba(162,155,254,0.7);animation-delay:1s}
+@keyframes chipPop{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
+.tw-label{font-family:'Fira Code',monospace;font-size:0.65rem;color:rgba(255,255,255,0.65)}
 
-.fe18-num{color:#00b894;background:#e8f8f5}
+/* ── CSS problem cards ── */
+.problem-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:0.75rem;max-width:44rem;margin:1.5rem auto;padding:0 1.5rem}
+.problem-card{background:#fff;border:0.0625rem solid #f0f0f0;border-radius:0.75rem;padding:1rem 1.25rem;border-left:0.25rem solid #e17055}
+.problem-card strong{color:#2d3436;display:block;margin-bottom:0.25rem}
+.problem-card p{font-size:0.85rem;color:#636e72;margin:0}
 
-/* ── Rule cards ── */
-.rule-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1rem;margin-top:1.25rem}
-.rule-card{background:#fff;border:0.0625rem solid #e0e0e0;border-radius:0.875rem;padding:1.1rem 1.25rem}
-.rule-card-title{font-family:'Fira Code',monospace;font-size:0.8rem;font-weight:700;color:#00b894;margin-bottom:0.5rem}
-.rule-bad{color:#d63031;font-size:0.82rem;margin:0.25rem 0;font-family:'Fira Code',monospace}
-.rule-good{color:#00b894;font-size:0.82rem;margin:0.25rem 0;font-family:'Fira Code',monospace}
-.rule-label{font-size:0.72rem;color:#888;display:block;margin-bottom:0.15rem}
+/* ── Class reference ── */
+.class-ref{max-width:40rem;margin:1.5rem auto;padding:0 1.5rem}
+.cr-box{background:#1e272e;border-radius:1rem;padding:1.25rem 1.5rem;border:0.0625rem solid #485460}
+.cr-title{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#b2bec3;letter-spacing:0.125rem;margin-bottom:1rem}
+.cr-row{display:flex;align-items:baseline;gap:0.75rem;margin-bottom:0.5rem;flex-wrap:wrap}
+.cr-class{font-family:'Fira Code',monospace;font-size:0.75rem;font-weight:700;color:#55efc4;min-width:9rem}
+.cr-arrow{color:#636e72;font-size:0.8rem}
+.cr-css{font-family:'Fira Code',monospace;font-size:0.7rem;color:#fdcb6e}
 
-/* ── Config section highlight ── */
-.config-section{background:#f0faf7;border:0.0625rem solid #b2dfdb;border-radius:0.875rem;padding:1.25rem 1.5rem;margin:1rem 0}
-.config-key{color:#00b894;font-weight:700}
-.config-val{color:#0984e3}
-
-/* ── Plugin flow ── */
-.plugin-flow{display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;margin-top:1.25rem}
-.pf-box{padding:0.6rem 1.1rem;border-radius:0.625rem;font-size:0.82rem;font-weight:600;text-align:center}
-.pf-vite{background:#f0faf7;color:#00b894;border:0.0625rem solid #b2dfdb}
-.pf-arrow{color:#aaa;font-size:1.1rem}
-.pf-lint{background:#e3f2fd;color:#0984e3;border:0.0625rem solid #b3d9f7}
-.pf-out{background:#fff3e0;color:#e17055;border:0.0625rem solid #ffcc80}
-
-/* ── Quiz theming ep18 ── */
-.quiz-ep18f .quiz-q-num{color:#00b894;background:#e8f8f5}
-.quiz-ep18f .quiz-reveal-btn{color:#00b894}
-.quiz-ep18f .quiz-opt-letter{color:#00b894}
-.quiz-ep18f .quiz-option:hover{border-color:#00b894;background:#e8f8f5}
-.quiz-ep18f .quiz-answer-highlight{background:#e8f8f5;border-left:0.25rem solid #00b894}
+/* ── Quiz theming ep17 ── */
+.quiz-ep17 .quiz-q-num{color:#e17055;background:#fdf2ef}
+.quiz-ep17 .quiz-reveal-btn{color:#e17055}
+.quiz-ep17 .quiz-opt-letter{color:#e17055}
+.quiz-ep17 .quiz-option:hover{border-color:#e17055;background:#fdf2ef}
+.quiz-ep17 .quiz-answer-highlight{background:#fdf2ef;border-left:0.25rem solid #e17055}
 `;
 const bodyHtml = `
 
 <!-- HERO -->
-<section class="hero fe18-hero">
-  <div class="hero-badge">Episode 18 of 22</div>
-  <h1>ESLint &amp; Stylelint —<br>The Code Quality Guards</h1>
-  <p style="color:rgba(255,255,255,0.95)">Before your code ever runs, linters read it line by line and flag every mistake — unused variables, wrong equality operators, invalid CSS properties. Like a spell-checker, but for code.</p>
-  <div class="lint-art">
-    <div class="lint-row">
-      <span class="lint-code">if (x == null)</span>
-      <span class="lint-badge err">ESLint: use ===</span>
+<section class="hero fe17-hero">
+  <div class="hero-badge">Episode 18 of 23</div>
+  <h1>Tailwind CSS</h1>
+  <p style="color:rgba(255,255,255,0.95)">Stop writing CSS files. Apply pre-built utility classes directly in your HTML. Every class does exactly one thing.</p>
+  <div class="tw-art">
+    <div class="tw-chips">
+      <span class="tw-chip tc1">tw-flex</span>
+      <span class="tw-chip tc2">tw-gap-4</span>
+      <span class="tw-chip tc3">tw-px-8</span>
+      <span class="tw-chip tc4">tw-mt-8</span>
+      <span class="tw-chip tc5">tw-text-white</span>
+      <span class="tw-chip tc6">tw-flex-col</span>
+      <span class="tw-chip tc7">tw-rounded</span>
+      <span class="tw-chip tc8">tw-justify-between</span>
+      <span class="tw-chip tc9">tw-border-t-4</span>
+      <span class="tw-chip tc10">tw-items-center</span>
     </div>
-    <div class="lint-row">
-      <span class="lint-code">color: bleu</span>
-      <span class="lint-badge err">Stylelint: unknown value</span>
-    </div>
-    <div class="lint-row">
-      <span class="lint-code">const name = 'Gokul'</span>
-      <span class="lint-badge ok">✓ ok</span>
-    </div>
+    <span class="tw-label">pre-written. one job each. apply directly in HTML.</span>
   </div>
 </section>
 
 <!-- SECTION 1 -->
 <section class="section reveal">
-  <span class="section-num fe18-num">01</span>
-  <h2>What Is a Linter?</h2>
-  <p>A <span class="highlight">linter</span> is a tool that reads your source code — without running it — and reports problems. Think of it like a very thorough spell-checker that also catches logical mistakes, style inconsistencies, and patterns known to cause bugs.</p>
-  <p>There are two linters in the dealmaker-ui repo:</p>
-  <ul style="line-height:2;padding-left:1.5rem;margin-top:0.5rem">
-    <li><strong>ESLint</strong> — checks JavaScript (and Vue's <code style="font-size:0.875rem">&lt;script&gt;</code> blocks)</li>
-    <li><strong>Stylelint</strong> — checks CSS and SCSS (and Vue's <code style="font-size:0.875rem">&lt;style&gt;</code> blocks)</li>
-  </ul>
-  <p>Neither of them runs your code. They <span class="highlight">parse</span> it into a tree, apply rules against that tree, and output a list of violations. The process is: read file → parse → check rules → report.</p>
-
-  <div class="code-block">
-    <pre><span class="code-comment">// ESLint reads this file</span>
-<span class="code-keyword">const</span> greeting = <span class="code-string">'hello'</span>   <span class="code-comment">// ← declared but never used</span>
-<span class="code-keyword">if</span> (x == <span class="code-keyword">null</span>) { ... }        <span class="code-comment">// ← == instead of ===</span>
-
-<span class="code-comment">// ESLint output (without running the code):</span>
-<span class="code-comment">// 1:7  error  'greeting' is assigned a value but never used</span>
-<span class="code-comment">// 2:7  error  Expected '===' but found '=='</span></pre>
-  </div>
+  <span class="section-num fe17-num">01</span>
+  <h2>The Problems With Regular CSS</h2>
+  <p>Before understanding Tailwind, you need to understand what it is solving. Writing CSS manually has four specific problems that get worse as a project grows:</p>
 </section>
+
+<div class="problem-grid reveal">
+  <div class="problem-card">
+    <strong>Naming is exhausting</strong>
+    <p>.submit-button-wrapper-inner — what is that? You spend real time inventing class names for every element.</p>
+  </div>
+  <div class="problem-card">
+    <strong>CSS grows forever</strong>
+    <p>You add styles, you never delete them. Scared to remove anything in case it breaks something else. The file balloons.</p>
+  </div>
+  <div class="problem-card">
+    <strong>Inconsistency creeps in</strong>
+    <p>Dev 1 uses padding: 10px. Dev 2 uses padding: 12px. Dev 3 uses padding: 9px. Everything looks slightly off.</p>
+  </div>
+  <div class="problem-card">
+    <strong>Constant file switching</strong>
+    <p>Write HTML → switch to CSS file → add style → switch back → repeat 100 times a day. Breaks your flow.</p>
+  </div>
+</div>
 
 <!-- SECTION 2 -->
 <section class="section reveal">
-  <span class="section-num fe18-num">02</span>
-  <h2>What ESLint Catches</h2>
-  <p>ESLint enforces rules. Each rule targets one specific pattern. The dealmaker-ui repo uses the <span class="highlight">Airbnb style guide</span> — one of the strictest and most popular rule sets in the JavaScript ecosystem.</p>
+  <span class="section-num fe17-num">02</span>
+  <h2>What Tailwind Is</h2>
+  <p>Tailwind is a CSS framework that gives you thousands of <span class="highlight">pre-written utility classes</span>. Instead of writing CSS yourself and applying it via class names you invented, you apply Tailwind's pre-made classes directly in your HTML.</p>
 
-  <div class="rule-grid">
-    <div class="rule-card">
-      <div class="rule-card-title">== vs ===</div>
-      <span class="rule-label">Bad (loose equality):</span>
-      <div class="rule-bad">✗  if (x == null)</div>
-      <span class="rule-label">Good (strict equality):</span>
-      <div class="rule-good">✓  if (x === null)</div>
-    </div>
-    <div class="rule-card">
-      <div class="rule-card-title">Unused variables</div>
-      <span class="rule-label">Bad:</span>
-      <div class="rule-bad">✗  const x = 5   // never used</div>
-      <span class="rule-label">Good:</span>
-      <div class="rule-good">✓  use the variable or remove it</div>
-    </div>
-    <div class="rule-card">
-      <div class="rule-card-title">console.log left in</div>
-      <span class="rule-label">Bad:</span>
-      <div class="rule-bad">✗  console.log('debug')</div>
-      <span class="rule-label">Good:</span>
-      <div class="rule-good">✓  remove before committing</div>
-    </div>
-    <div class="rule-card">
-      <div class="rule-card-title">var instead of const/let</div>
-      <span class="rule-label">Bad:</span>
-      <div class="rule-bad">✗  var count = 0</div>
-      <span class="rule-label">Good:</span>
-      <div class="rule-good">✓  const count = 0</div>
-    </div>
+  <div class="code-block">
+    <pre><span class="code-comment">&lt;!-- Without Tailwind: invent a name, write CSS separately --&gt;</span>
+<span class="code-keyword">&lt;button</span> <span class="code-string">class="submit-button"</span><span class="code-keyword">&gt;</span>Click me<span class="code-keyword">&lt;/button&gt;</span>
+
+<span class="code-comment">/* In some CSS file, far away */</span>
+<span class="code-keyword">.submit-button</span> {
+  background-color: blue; color: white;
+  padding: 0.5rem 1rem; border-radius: 0.25rem;
+}
+
+<span class="code-comment">&lt;!-- With Tailwind: no CSS file needed --&gt;</span>
+<span class="code-keyword">&lt;button</span> <span class="code-string">class="tw-bg-blue-500 tw-text-white tw-px-4 tw-py-2 tw-rounded"</span><span class="code-keyword">&gt;</span>
+  Click me
+<span class="code-keyword">&lt;/button&gt;</span></pre>
   </div>
 
-  <p style="margin-top:1.25rem">Beyond Airbnb, the repo also extends <code style="font-size:0.875rem">vuejs-accessibility</code> — rules that catch accessibility mistakes in Vue templates, like missing <code style="font-size:0.875rem">alt</code> text on images or buttons with no readable label.</p>
+  <p>Each class does exactly <span class="highlight-orange">one thing</span>. You read the class names and immediately know what the element looks like.</p>
 </section>
 
 <!-- SECTION 3 -->
 <section class="section reveal">
-  <span class="section-num fe18-num">03</span>
-  <h2>The .eslintrc.js Config File</h2>
-  <p>Every ESLint rule set is configured in <code style="font-size:0.875rem">.eslintrc.js</code>. Here is the actual config from the dealmaker-ui repo, broken down piece by piece:</p>
-
-  <div class="code-block">
-    <pre><span class="code-comment">// .eslintrc.js</span>
-module.exports = {
-  <span class="code-string">root</span>: <span class="code-keyword">true</span>,           <span class="code-comment">// stop ESLint looking in parent folders</span>
-  <span class="code-string">env</span>: {
-    <span class="code-string">browser</span>: <span class="code-keyword">true</span>,    <span class="code-comment">// window, document etc. are valid globals</span>
-    <span class="code-string">es2021</span>: <span class="code-keyword">true</span>,     <span class="code-comment">// modern JS syntax is allowed</span>
-  },
-  <span class="code-string">extends</span>: [
-    <span class="code-string">'airbnb-base'</span>,                <span class="code-comment">// Airbnb JS rules (no React)</span>
-    <span class="code-string">'plugin:vuejs-accessibility/recommended'</span>,  <span class="code-comment">// a11y rules</span>
-    <span class="code-string">'plugin:vue/recommended'</span>,     <span class="code-comment">// Vue-specific rules</span>
-  ],
-  <span class="code-string">parserOptions</span>: {
-    <span class="code-string">ecmaVersion</span>: <span class="code-string">'latest'</span>,
-    <span class="code-string">sourceType</span>: <span class="code-string">'module'</span>,        <span class="code-comment">// ES import/export syntax</span>
-  },
-  <span class="code-string">rules</span>: {
-    <span class="code-string">'object-curly-newline'</span>: <span class="code-string">'off'</span>, <span class="code-comment">// this one Airbnb rule is disabled</span>
-  },
-  <span class="code-string">ignorePatterns</span>: [<span class="code-string">'dist/'</span>, <span class="code-string">'node_modules/'</span>],  <span class="code-comment">// never lint these</span>
-  <span class="code-string">settings</span>: {
-    <span class="code-string">'import/resolver'</span>: {
-      <span class="code-string">alias</span>: { map: [[<span class="code-string">'@'</span>, <span class="code-string">'./src'</span>]] } <span class="code-comment">// so @ imports resolve</span>
-    }
-  }
-};</pre>
-  </div>
-
-  <div class="config-section">
-    <p><span class="config-key">extends</span> works like inheritance — you start from a big set of rules and then <span class="config-val">rules:</span> lets you override individual ones. Here, <code style="font-size:0.875rem">object-curly-newline</code> is turned off because the team found it too strict.</p>
-  </div>
+  <span class="section-num fe17-num">03</span>
+  <h2>The Pattern: Property-Value</h2>
+  <p>Tailwind class names follow a readable pattern: <span class="highlight">property shorthand - value</span>. Once you learn the pattern, you can guess any class name.</p>
 </section>
+
+<div class="class-ref reveal">
+  <div class="cr-box">
+    <div class="cr-title">TAILWIND CLASS &#8594; CSS IT GENERATES</div>
+    <div class="cr-row"><span class="cr-class">tw-flex</span><span class="cr-arrow">&#8594;</span><span class="cr-css">display: flex</span></div>
+    <div class="cr-row"><span class="cr-class">tw-flex-col</span><span class="cr-arrow">&#8594;</span><span class="cr-css">flex-direction: column</span></div>
+    <div class="cr-row"><span class="cr-class">tw-flex-row</span><span class="cr-arrow">&#8594;</span><span class="cr-css">flex-direction: row</span></div>
+    <div class="cr-row"><span class="cr-class">tw-gap-4</span><span class="cr-arrow">&#8594;</span><span class="cr-css">gap: 1rem</span></div>
+    <div class="cr-row"><span class="cr-class">tw-gap-8</span><span class="cr-arrow">&#8594;</span><span class="cr-css">gap: 2rem</span></div>
+    <div class="cr-row"><span class="cr-class">tw-px-4</span><span class="cr-arrow">&#8594;</span><span class="cr-css">padding-left: 1rem; padding-right: 1rem</span></div>
+    <div class="cr-row"><span class="cr-class">tw-py-2</span><span class="cr-arrow">&#8594;</span><span class="cr-css">padding-top: 0.5rem; padding-bottom: 0.5rem</span></div>
+    <div class="cr-row"><span class="cr-class">tw-mt-8</span><span class="cr-arrow">&#8594;</span><span class="cr-css">margin-top: 2rem</span></div>
+    <div class="cr-row"><span class="cr-class">tw-my-2</span><span class="cr-arrow">&#8594;</span><span class="cr-css">margin-top: 0.5rem; margin-bottom: 0.5rem</span></div>
+    <div class="cr-row"><span class="cr-class">tw-justify-between</span><span class="cr-arrow">&#8594;</span><span class="cr-css">justify-content: space-between</span></div>
+    <div class="cr-row"><span class="cr-class">tw-items-center</span><span class="cr-arrow">&#8594;</span><span class="cr-css">align-items: center</span></div>
+    <div class="cr-row"><span class="cr-class">tw-border-t-4</span><span class="cr-arrow">&#8594;</span><span class="cr-css">border-top-width: 4px</span></div>
+    <div class="cr-row"><span class="cr-class">tw-text-xs</span><span class="cr-arrow">&#8594;</span><span class="cr-css">font-size: 0.75rem</span></div>
+  </div>
+</div>
 
 <!-- SECTION 4 -->
 <section class="section reveal">
-  <span class="section-num fe18-num">04</span>
-  <h2>Stylelint — The CSS Version</h2>
-  <p><span class="highlight">Stylelint</span> does the same job as ESLint but for CSS and SCSS. It catches typos in property names, invalid values, wrong units, and style conventions.</p>
+  <span class="section-num fe17-num">04</span>
+  <h2>The tw- Prefix — Why This Repo Is Different</h2>
+  <p>Standard Tailwind classes have no prefix: <code style="font-size:0.875rem">flex</code>, <code style="font-size:0.875rem">gap-4</code>, <code style="font-size:0.875rem">px-4</code>.</p>
+  <p>But in this repo every class has <code style="font-size:0.875rem">tw-</code> in front: <code style="font-size:0.875rem">tw-flex</code>, <code style="font-size:0.875rem">tw-gap-4</code>. Why?</p>
+  <p>This repo uses <span class="highlight">both Tailwind and Vuetify</span> — two CSS frameworks at the same time. Without a prefix, their class names would clash and break each other's styles.</p>
 
   <div class="code-block">
-    <pre><span class="code-comment">/* stylelint.config.js */</span>
-module.exports = {
-  <span class="code-string">extends</span>: [
-    <span class="code-string">'stylelint-config-recommended-scss'</span>,     <span class="code-comment">// SCSS rules</span>
-    <span class="code-string">'stylelint-config-recommended-vue/scss'</span>,  <span class="code-comment">// Vue &lt;style&gt; blocks</span>
-  ],
-};</pre>
+    <pre><span class="code-comment">// Without prefix — potential clash</span>
+<span class="code-string">flex</span>   <span class="code-comment">← is this Tailwind or Vuetify?</span>
+
+<span class="code-comment">// With tw- prefix — no ambiguity</span>
+<span class="code-string">tw-flex</span>   <span class="code-comment">← clearly Tailwind</span>
+<span class="code-string">v-flex</span>    <span class="code-comment">← clearly Vuetify</span></pre>
   </div>
 
-  <p>What Stylelint catches in the repo:</p>
-  <ul style="line-height:2;padding-left:1.5rem;margin-top:0.5rem">
-    <li><strong>Unknown properties</strong> — <code style="font-size:0.875rem">colour: red</code> (British spelling) is an error</li>
-    <li><strong>Invalid values</strong> — <code style="font-size:0.875rem">margin: 5</code> (missing unit) is an error</li>
-    <li><strong>SCSS syntax issues</strong> — unclosed mixins, wrong nesting</li>
-    <li><strong>Vue-specific</strong> — scoped style problems in <code style="font-size:0.875rem">&lt;style scoped&gt;</code> blocks</li>
-  </ul>
+  <p>This prefix is configured in <code style="font-size:0.875rem">tailwind.config.js</code>:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">export default</span> {
+  <span class="code-string">prefix: 'tw-'</span>,   <span class="code-comment">← this one line adds tw- to every class</span>
+  presets: [tailwindConfig],
+  content: [<span class="code-string">'./src/**/*.vue'</span>, <span class="code-string">'./src/**/*.js'</span>],
+}</pre>
+  </div>
 </section>
 
 <!-- SECTION 5 -->
 <section class="section reveal">
-  <span class="section-num fe18-num">05</span>
-  <h2>When Do Linters Run? Vite Plugins.</h2>
-  <p>Both linters are wired into Vite as <span class="highlight">plugins</span>. In <code style="font-size:0.875rem">vite.config.mjs</code>:</p>
+  <span class="section-num fe17-num">05</span>
+  <h2>All Classes Are Predefined</h2>
+  <p>You never write the CSS behind Tailwind classes. Tailwind already wrote them. They live in <code style="font-size:0.875rem">node_modules/tailwindcss/</code>.</p>
+  <p>You just pick from what already exists and apply the class name. No CSS file needed on your side.</p>
+  <p>ACV has also added <span class="highlight-orange">custom classes</span> in the shared Vuejs package — brand-specific colours like <code style="font-size:0.875rem">tw-text-grey-dark</code> and <code style="font-size:0.875rem">tw-border-t-primary-dark</code>. These are ACV's own Tailwind extensions on top of the standard set.</p>
+</section>
+
+<!-- SECTION 6 -->
+<section class="section reveal">
+  <span class="section-num fe17-num">06</span>
+  <h2>@apply — Using Tailwind Inside SCSS</h2>
+  <p>Sometimes you cannot add classes directly to an HTML element — for example when styling the internals of a third-party component. Tailwind's <code style="font-size:0.875rem">@apply</code> lets you use utility classes inside SCSS files:</p>
 
   <div class="code-block">
-    <pre><span class="code-keyword">import</span> eslint <span class="code-keyword">from</span> <span class="code-string">'vite-plugin-eslint'</span>
-<span class="code-keyword">import</span> StylelintPlugin <span class="code-keyword">from</span> <span class="code-string">'vite-plugin-stylelint'</span>
-
-<span class="code-keyword">export default</span> defineConfig({
-  plugins: [
-    vue(),
-    eslint(),           <span class="code-comment">// ← runs ESLint on every .js and .vue file</span>
-    StylelintPlugin(),  <span class="code-comment">// ← runs Stylelint on every .vue style block</span>
-  ]
-})</pre>
+    <pre><span class="code-comment">/* Inside a .vue file's &lt;style&gt; section */</span>
+<span class="code-keyword">.auction-log-notes</span> {
+  ::v-deep <span class="code-keyword">.acv-cta-table__records</span> {
+    <span class="code-keyword">@apply</span> <span class="code-string">tw-border-t-4 tw-border-t-primary-dark tw-mb-4</span>;
+  }
+}</pre>
   </div>
 
-  <div class="plugin-flow">
-    <div class="pf-box pf-vite">You save a file</div>
-    <div class="pf-arrow">&#10132;</div>
-    <div class="pf-box pf-lint">Vite triggers ESLint + Stylelint</div>
-    <div class="pf-arrow">&#10132;</div>
-    <div class="pf-box pf-out">Errors printed in terminal</div>
+  <p>This applies three Tailwind utilities to a deeply nested element without touching the HTML. This is real code from this repo.</p>
+</section>
+
+<!-- SECTION 7 -->
+<section class="section reveal">
+  <span class="section-num fe17-num">07</span>
+  <h2>Purging — How Production Stays Small</h2>
+  <p>Tailwind has thousands of possible utility classes. If all of them were included in the final CSS file, it would be enormous. Instead, Tailwind <span class="highlight">purges</span> unused classes during production build:</p>
+
+  <div class="flow reveal" style="max-width:44rem;margin:1.5rem auto">
+    <div class="flow-box fb-purple">All Tailwind classes<br><small>~3MB of CSS</small></div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-orange">Scan all .vue and .js files<br><small>find every tw- class used</small></div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-green">Only used classes<br><small>~10KB of CSS</small></div>
   </div>
 
-  <p style="margin-top:1.5rem">There are two different outcomes depending on when errors are found:</p>
-  <div style="display:grid;gap:1rem;margin-top:1rem;grid-template-columns:1fr 1fr">
-    <div style="background:#e3f2fd;padding:1.1rem 1.25rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
-      <strong style="color:#0984e3">During dev (<code>npm run dev</code>)</strong><br>
-      <span style="font-size:0.9rem">Lint errors appear in the terminal. The dev server keeps running. You see the error but the app still loads.</span>
-    </div>
-    <div style="background:#fdf2ef;padding:1.1rem 1.25rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
-      <strong style="color:#e17055">During build (<code>npm run build</code>)</strong><br>
-      <span style="font-size:0.9rem">Lint errors <strong>STOP the build</strong>. The dist folder is never created. Nothing gets deployed.</span>
-    </div>
-  </div>
+  <p>The <code style="font-size:0.875rem">content</code> field in tailwind.config.js tells Tailwind where to scan: <code style="font-size:0.875rem">./src/**/*.vue</code> and <code style="font-size:0.875rem">./src/**/*.js</code>. Every unused class is stripped. The final CSS file is tiny.</p>
 </section>
 
 <!-- RECAP -->
 <section class="section reveal">
-  <span class="section-num">RECAP</span>
+  <span class="section-num fe17-num">RECAP</span>
   <h2>What We Learned</h2>
   <div style="display:grid;gap:1rem;margin-top:1.25rem">
-    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
-      <strong style="color:#00b894">Linter</strong> — reads code without running it, flags violations of rules (bad patterns, style issues, bugs).
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Tailwind solves four CSS problems</strong> — naming, ever-growing files, inconsistency, and constant file switching.
     </div>
     <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
-      <strong style="color:#0984e3">ESLint</strong> — checks JavaScript. Extends Airbnb rules + Vue + accessibility. Config in <code style="font-size:0.875rem">.eslintrc.js</code>.
+      <strong style="color:#0984e3">All classes are predefined</strong> — Tailwind already wrote the CSS. You just pick class names and apply them in HTML. No CSS file needed.
     </div>
-    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
-      <strong style="color:#6c5ce7">Stylelint</strong> — checks CSS/SCSS. Extends SCSS and Vue/SCSS rule sets. Config in <code style="font-size:0.875rem">stylelint.config.js</code>.
+    <div style="background:#fef9e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #f9ca24">
+      <strong style="color:#e17055">This repo uses tw- prefix</strong> — because it uses both Tailwind and Vuetify. The prefix prevents class name conflicts. Configured in tailwind.config.js.
     </div>
-    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
-      <strong style="color:#e17055">When they run</strong> — both are Vite plugins. Dev mode: warnings in terminal. Build: errors block the entire build.
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">Purging keeps production small</strong> — Tailwind scans your files, keeps only classes you actually used, removes everything else.
     </div>
   </div>
 </section>
 
 <!-- CHECKPOINT QUIZ -->
-<section class="section reveal quiz-ep18f">
-  <span class="section-num">CHECKPOINT</span>
+<section class="section reveal quiz-ep17">
+  <span class="section-num fe17-num">CHECKPOINT</span>
   <h2>Probe Your Thinking</h2>
   <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
-
   <div class="quiz-grid">
 
-  <div class="quiz-card">
-    <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
-    <p class="quiz-question">What does a linter do — does it run your code?</p>
-    <ul class="quiz-options">
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Yes — it runs the code and checks for runtime errors</button></li>
-      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>No — it reads and parses the code without running it, then checks rules against the parsed structure</button></li>
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Yes — it compiles the code and checks if it builds correctly</button></li>
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>No — it checks the network requests made by the code</button></li>
-    </ul>
-    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
-    <div class="quiz-answer">
-      <div class="quiz-answer-inner">
-        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) No — it reads and parses the code without running it, then checks rules against the parsed structure</strong></div>
-        <p class="quiz-answer-text">A linter is a static analysis tool — it never executes your code. It parses the source into a tree structure and applies rule checks against that tree. This is why it can catch errors in code that would never be reached at runtime, like an unused variable inside a dead code branch.</p>
-      </div>
+    <div class="quiz-card">
+      <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
+      <p class="quiz-question">What does the Tailwind class tw-flex do?</p>
+      <ul class="quiz-options">
+        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Adds a flexible border around the element</button></li>
+        <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Sets display: flex on the element</button></li>
+        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Makes the element flexible in width</button></li>
+        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Wraps child elements automatically</button></li>
+      </ul>
+      <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+      <div class="quiz-answer"><div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) Sets display: flex</strong></div>
+        <p class="quiz-answer-text">tw-flex is a pre-written Tailwind class that applies display: flex to an element, making it a flex container. Each Tailwind class does exactly one CSS property.</p>
+      </div></div>
     </div>
-  </div>
 
-  <div class="quiz-card">
-    <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
-    <p class="quiz-question">What happens if ESLint finds an error during <code>npm run build</code>?</p>
-    <ul class="quiz-options">
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>The error is shown as a warning and the build continues</button></li>
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>The error is written to a log file but the build completes</button></li>
-      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>The build stops immediately — no dist folder is created, nothing gets deployed</button></li>
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>The file with the error is skipped and the rest of the app builds normally</button></li>
-    </ul>
-    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
-    <div class="quiz-answer">
-      <div class="quiz-answer-inner">
-        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) The build stops immediately — no dist folder is created, nothing gets deployed</strong></div>
-        <p class="quiz-answer-text">During development (npm run dev), lint errors are shown in the terminal but the dev server keeps running — you can still see the app. During a production build (npm run build), lint errors are treated as hard failures that abort the build. This means code with lint errors can never reach production.</p>
-      </div>
+    <div class="quiz-card">
+      <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
+      <p class="quiz-question">Why does this repo use tw- prefix on all Tailwind classes?</p>
+      <ul class="quiz-options">
+        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>It's a Tailwind requirement for Vue projects</button></li>
+        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>It makes the code more readable</button></li>
+        <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>To prevent class name conflicts between Tailwind and Vuetify</button></li>
+        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>To reduce the final CSS bundle size</button></li>
+      </ul>
+      <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+      <div class="quiz-answer"><div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) To prevent class name conflicts between Tailwind and Vuetify</strong></div>
+        <p class="quiz-answer-text">This repo uses both Tailwind and Vuetify. Without a prefix their class names could clash. The tw- prefix is configured in tailwind.config.js and keeps the two frameworks completely separate.</p>
+      </div></div>
     </div>
-  </div>
 
-  <div class="quiz-card">
-    <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
-    <p class="quiz-question">What is the difference between ESLint and Stylelint in the dealmaker-ui repo?</p>
-    <ul class="quiz-options">
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>ESLint is for backend code and Stylelint is for frontend code</button></li>
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>They do the same thing — one is a backup of the other</button></li>
-      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>ESLint checks JavaScript (and Vue script blocks); Stylelint checks CSS/SCSS (and Vue style blocks)</button></li>
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>ESLint runs at build time; Stylelint runs only at deployment</button></li>
-    </ul>
-    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
-    <div class="quiz-answer">
-      <div class="quiz-answer-inner">
-        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) ESLint checks JavaScript (and Vue script blocks); Stylelint checks CSS/SCSS (and Vue style blocks)</strong></div>
-        <p class="quiz-answer-text">They are separate tools for separate languages. A .vue file has three sections — template, script, and style. ESLint handles the script section (JavaScript), Stylelint handles the style section (SCSS). Both are wired into Vite as plugins, so they both run automatically on every file save during development.</p>
-      </div>
+    <div class="quiz-card">
+      <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
+      <p class="quiz-question">What does "purging" mean in the context of Tailwind?</p>
+      <ul class="quiz-options">
+        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Removing unused JavaScript from the bundle</button></li>
+        <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Scanning your code and removing Tailwind classes that were never used</button></li>
+        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Clearing the browser cache after deployment</button></li>
+        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Deleting node_modules before a fresh install</button></li>
+      </ul>
+      <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+      <div class="quiz-answer"><div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) Removing unused Tailwind classes from the final CSS</strong></div>
+        <p class="quiz-answer-text">Tailwind ships with thousands of utility classes. Purging scans your .vue and .js files during build, keeps only the classes you actually used, and removes everything else — shrinking the final CSS from ~3MB to ~10KB.</p>
+      </div></div>
     </div>
-  </div>
 
   </div>
 </section>
 
 <!-- NEXT -->
-<section class="next-part" style="background:linear-gradient(135deg,#00b894,#0984e3)">
+<section class="next-part" style="background:linear-gradient(135deg,#e17055,#0984e3)">
   <h2>Ready for Episode 19?</h2>
-  <p>Your app talks to different servers depending on the environment — UAT, staging, production. How does it know which URL to use? The answer is .env files and environment variables.</p>
-  <a href="part19.html" class="btn btn-white">Continue to Episode 19 &#10132;</a>
+  <p>Tailwind keeps CSS clean. ESLint and Stylelint keep JavaScript and CSS correct. Episode 18 covers what linters are, how they work, and how this repo configures them.</p>
+  <a href="part19.html" class="btn btn-white">Continue to Episode 18 &#10132;</a>
 </section>
 `;
 ---
-<ArticleLayout title="How the Frontend Works — Part 18: ESLint & Stylelint | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={18} hasQuiz={true}>
+<ArticleLayout title="How the Frontend Works — Ep 17: Tailwind CSS | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={18} hasQuiz={true}>
 <Fragment set:html={bodyHtml} />
 </ArticleLayout>

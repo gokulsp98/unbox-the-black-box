@@ -3,375 +3,291 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 import { frontendSeries } from '../../data/series';
 const inlineStyle = `
 /* ── Hero ── */
-.fe22-hero{background:linear-gradient(135deg,#2d3436 0%,#636e72 40%,#0984e3 70%,#00b894 100%)}
+.fe21-hero{background:linear-gradient(135deg,#0984e3 0%,#00cec9 50%,#55efc4 100%)}
 
-/* ── Timeline animation ── */
-.timeline-art{margin:2.5rem auto 0;display:flex;flex-direction:column;gap:0.4rem;align-items:flex-start;max-width:26rem}
-.tl-item{display:flex;align-items:center;gap:0.75rem;font-family:'Fira Code',monospace;font-size:0.72rem;color:rgba(255,255,255,0.9);animation:tlIn 0.3s ease both}
-.tl-item:nth-child(1){animation-delay:0.05s}
-.tl-item:nth-child(2){animation-delay:0.12s}
-.tl-item:nth-child(3){animation-delay:0.19s}
-.tl-item:nth-child(4){animation-delay:0.26s}
-.tl-item:nth-child(5){animation-delay:0.33s}
-.tl-item:nth-child(6){animation-delay:0.4s}
-.tl-item:nth-child(7){animation-delay:0.47s}
-.tl-year{font-weight:700;color:#fdcb6e;min-width:2.8rem}
-.tl-dot{width:0.5rem;height:0.5rem;border-radius:50%;background:rgba(255,255,255,0.5);flex-shrink:0}
-@keyframes tlIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+/* ── Deploy animation ── */
+.deploy-art{margin:2.5rem auto 0;display:flex;flex-direction:column;align-items:center;gap:0.5rem}
+.deploy-step{font-family:'Fira Code',monospace;font-size:0.75rem;padding:0.35rem 1.1rem;border-radius:0.5rem;background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.9);border:0.0625rem solid rgba(255,255,255,0.2);animation:deploySlide 0.35s ease both}
+.deploy-step:nth-child(1){animation-delay:0.1s}
+.deploy-step:nth-child(2){animation-delay:0.25s}
+.deploy-step:nth-child(3){animation-delay:0.4s}
+.deploy-step:nth-child(4){animation-delay:0.55s;background:rgba(255,255,255,0.22);font-weight:700}
+@keyframes deploySlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-.fe22-num{color:#2d3436;background:#f0f0f0}
+.fe21-num{color:#0984e3;background:#e3f2fd}
 
-/* ── Full stack diagram ── */
-.stack-diagram{display:flex;flex-direction:column;gap:0.5rem;margin-top:1.25rem}
-.sd-layer{display:flex;align-items:center;gap:1rem;padding:0.8rem 1.25rem;border-radius:0.75rem;font-size:0.88rem;font-weight:600}
-.sd-label{min-width:7rem;font-size:0.75rem;color:#888;font-weight:400;font-family:'Fira Code',monospace}
-.sd-dev{background:#e3f2fd;color:#0984e3;border:0.0625rem solid #b3d9f7}
-.sd-build{background:#fdf2ef;color:#e17055;border:0.0625rem solid #fcd6c0}
-.sd-runtime{background:#e8f8f5;color:#00b894;border:0.0625rem solid #b2dfdb}
-.sd-quality{background:#f0efff;color:#6c5ce7;border:0.0625rem solid #d4c9f7}
-.sd-config{background:#fff3e0;color:#fdcb6e;border:0.0625rem solid #ffe0b2;color:#d17a00}
-.sd-deploy{background:#fdecea;color:#d63031;border:0.0625rem solid #f5b7b1}
+/* ── Dist tree ── */
+.dist-tree{font-family:'Fira Code',monospace;font-size:0.82rem;background:#1a1a2e;color:#e0e0e0;padding:1.25rem 1.5rem;border-radius:0.875rem;line-height:2;margin-top:1.25rem}
+.dist-dir{color:#00cec9}
+.dist-file{color:#a29bfe}
+.dist-comment{color:#636e72}
 
-/* ── Concept index ── */
-.concept-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:0.75rem;margin-top:1.25rem}
-.concept-card{background:#fff;border:0.0625rem solid #e0e0e0;border-radius:0.75rem;padding:0.9rem 1.1rem}
-.concept-term{font-weight:700;font-size:0.88rem;color:#2d3436;margin-bottom:0.25rem}
-.concept-def{font-size:0.8rem;color:#636e72;line-height:1.5}
+/* ── vs backend ── */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.25rem}
+@media(max-width:600px){.compare-grid{grid-template-columns:1fr}}
 
-/* ── Journey milestones ── */
-.journey{display:flex;flex-direction:column;gap:0.75rem;margin-top:1.25rem;border-left:0.1875rem solid #e0e0e0;padding-left:1.5rem}
-.journey-item{position:relative}
-.journey-item::before{content:'';position:absolute;left:-1.875rem;top:0.4rem;width:0.625rem;height:0.625rem;border-radius:50%;background:#0984e3;border:0.125rem solid #fff;box-shadow:0 0 0 0.125rem #0984e3}
-.journey-ep{font-family:'Fira Code',monospace;font-size:0.7rem;color:#0984e3;font-weight:700}
-.journey-title{font-weight:700;font-size:0.9rem;color:#2d3436;margin:0.1rem 0 0.2rem}
-.journey-summary{font-size:0.82rem;color:#636e72;line-height:1.5}
+/* ── CDN diagram ── */
+.cdn-diagram{display:flex;flex-direction:column;align-items:center;gap:0.75rem;margin-top:1.25rem}
+.cdn-row{display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;justify-content:center}
+.cdn-box{padding:0.55rem 1.1rem;border-radius:0.625rem;font-size:0.82rem;font-weight:600;text-align:center}
+.cdn-user{background:#e3f2fd;color:#0984e3;border:0.0625rem solid #b3d9f7}
+.cdn-cdn{background:#e8f8f5;color:#00b894;border:0.0625rem solid #b2dfdb}
+.cdn-origin{background:#f0efff;color:#6c5ce7;border:0.0625rem solid #d4c9f7}
+.cdn-arrow{color:#aaa;font-size:1rem}
 
-/* ── Quiz theming ep22 ── */
-.quiz-ep22f .quiz-q-num{color:#2d3436;background:#f0f0f0}
-.quiz-ep22f .quiz-reveal-btn{color:#2d3436}
-.quiz-ep22f .quiz-opt-letter{color:#2d3436}
-.quiz-ep22f .quiz-option:hover{border-color:#2d3436;background:#f0f0f0}
-.quiz-ep22f .quiz-answer-highlight{background:#f0f0f0;border-left:0.25rem solid #2d3436}
+/* ── Dockerfile stages ── */
+.stage-cards{display:grid;gap:0.75rem;margin-top:1.25rem}
+.stage-card{background:#fff;border:0.0625rem solid #e0e0e0;border-radius:0.875rem;padding:1rem 1.25rem;display:flex;gap:1rem;align-items:flex-start}
+.stage-num{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;padding:0.25rem 0.6rem;border-radius:0.5rem;background:#e3f2fd;color:#0984e3;white-space:nowrap;margin-top:0.1rem}
+.stage-title{font-weight:700;font-size:0.9rem;margin-bottom:0.3rem}
+.stage-desc{font-size:0.85rem;color:#555;line-height:1.6}
+
+/* ── Quiz theming ep21 ── */
+.quiz-ep21f .quiz-q-num{color:#0984e3;background:#e3f2fd}
+.quiz-ep21f .quiz-reveal-btn{color:#0984e3}
+.quiz-ep21f .quiz-opt-letter{color:#0984e3}
+.quiz-ep21f .quiz-option:hover{border-color:#0984e3;background:#e3f2fd}
+.quiz-ep21f .quiz-answer-highlight{background:#e3f2fd;border-left:0.25rem solid #0984e3}
 `;
 const bodyHtml = `
 
 <!-- HERO -->
-<section class="hero fe22-hero">
-  <div class="hero-badge">Episode 22 of 22</div>
-  <h1>The Full Picture</h1>
-  <p style="color:rgba(255,255,255,0.95)">22 episodes. 35 years of web history. From Tim Berners-Lee's document system to a Vue app built by Vite, guarded by ESLint, deployed to a CDN. This is how it all fits together.</p>
-  <div class="timeline-art">
-    <div class="tl-item"><span class="tl-year">1991</span><span class="tl-dot"></span><span>Tim Berners-Lee invents the web</span></div>
-    <div class="tl-item"><span class="tl-year">1995</span><span class="tl-dot"></span><span>Brendan Eich creates JavaScript in 10 days</span></div>
-    <div class="tl-item"><span class="tl-year">2005</span><span class="tl-dot"></span><span>AJAX — Google Maps changes everything</span></div>
-    <div class="tl-item"><span class="tl-year">2009</span><span class="tl-dot"></span><span>Node.js — JavaScript leaves the browser</span></div>
-    <div class="tl-item"><span class="tl-year">2013</span><span class="tl-dot"></span><span>React — components + virtual DOM</span></div>
-    <div class="tl-item"><span class="tl-year">2014</span><span class="tl-dot"></span><span>Vue — single file components</span></div>
-    <div class="tl-item"><span class="tl-year">2021</span><span class="tl-dot"></span><span>Vite — instant dev server, native ESM</span></div>
+<section class="hero fe21-hero">
+  <div class="hero-badge">Episode 22 of 23</div>
+  <h1>Production, CDN<br>&amp; Deployment</h1>
+  <p style="color:rgba(255,255,255,0.95)">npm run build creates a /dist folder of static files. No server process, no Node.js running. Just HTML, JS, and CSS — served from a CDN to every user on the planet.</p>
+  <div class="deploy-art">
+    <div class="deploy-step">npm run build:prod</div>
+    <div class="deploy-step">&#8594; Vite bundles everything into /dist</div>
+    <div class="deploy-step">&#8594; CI/CD uploads /dist to CDN</div>
+    <div class="deploy-step">&#8594; Users download files directly from CDN</div>
   </div>
 </section>
 
-<!-- SECTION 1: The layers of a modern frontend -->
+<!-- SECTION 1 -->
 <section class="section reveal">
-  <span class="section-num fe22-num">01</span>
-  <h2>Every Layer, All at Once</h2>
-  <p>A modern frontend app like dealmaker-ui is not one technology — it is a stack of tools, each solving one specific problem. Here is the full picture:</p>
+  <span class="section-num fe21-num">01</span>
+  <h2>What npm run build Creates</h2>
+  <p>When you run <code style="font-size:0.875rem">npm run build</code>, Vite processes all your Vue components, TypeScript, SCSS, and environment variables — and outputs a <span class="highlight">/dist folder</span> of plain static files:</p>
 
-  <div class="stack-diagram">
-    <div class="sd-layer sd-dev">
-      <span class="sd-label">what you write</span>
-      Vue SFCs (.vue) + TypeScript + SCSS + Tailwind utility classes
-    </div>
-    <div class="sd-layer sd-quality">
-      <span class="sd-label">code quality</span>
-      ESLint checks JS logic — Stylelint checks CSS/SCSS — both run as Vite plugins
-    </div>
-    <div class="sd-layer sd-config">
-      <span class="sd-label">config</span>
-      .env files control API URLs per environment — VITE_ prefix exposes them to the browser
-    </div>
-    <div class="sd-layer sd-build">
-      <span class="sd-label">dev server</span>
-      Vite — transforms files on demand, HMR updates single modules without reload
-    </div>
-    <div class="sd-layer sd-build" style="background:#fdecea;color:#d63031;border-color:#f5b7b1">
-      <span class="sd-label">production build</span>
-      Vite + Rollup — bundles into hashed JS chunks + CSS, code-split by route
-    </div>
-    <div class="sd-layer sd-runtime">
-      <span class="sd-label">browser</span>
-      Vue Router handles navigation — route guards check localStorage token before render
-    </div>
-    <div class="sd-layer sd-deploy">
-      <span class="sd-label">deployment</span>
-      /dist files uploaded to CDN — static, no running process, cached by content hash
-    </div>
+  <div class="dist-tree">
+    <span class="dist-dir">dist/</span><br>
+    &nbsp;&nbsp;<span class="dist-file">index.html</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-comment"># entry point</span><br>
+    &nbsp;&nbsp;<span class="dist-dir">assets/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-file">main-a1b2c3.js</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-comment"># core app code</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-file">vendor-d4e5f6.js</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-comment"># vue, vuetify, axios</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-file">dashboard-g7h8i9.js</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-comment"># lazy-loaded chunk</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-file">main-j0k1l2.css</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-comment"># all styles</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-file">logo-m3n4.svg</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-comment"># static assets</span>
   </div>
+
+  <p style="margin-top:1.25rem">The hash in each filename (like <code style="font-size:0.875rem">a1b2c3</code>) changes whenever the file content changes. This is called <span class="highlight">content hashing</span> — it ensures browsers never serve a cached old version after a deploy.</p>
+  <p>The Vue source files, TypeScript, SCSS, and node_modules are completely gone from /dist. Users receive finished JavaScript and CSS — they never see your source code.</p>
 </section>
 
-<!-- SECTION 2: The journey -->
+<!-- SECTION 2 -->
 <section class="section reveal">
-  <span class="section-num fe22-num">02</span>
-  <h2>The Journey: 22 Episodes</h2>
+  <span class="section-num fe21-num">02</span>
+  <h2>Frontend vs Backend: No Running Process</h2>
+  <p>This is the single biggest difference between frontend and backend deployment.</p>
 
-  <div class="journey">
-    <div class="journey-item">
-      <div class="journey-ep">Ep 01-02</div>
-      <div class="journey-title">The Web Before JavaScript + JavaScript Is Born</div>
-      <div class="journey-summary">1991: HTML-only web, full server round trips. 1995: Brendan Eich writes JavaScript in 10 days at Netscape. Its first job: form validation without a page reload.</div>
+  <div class="compare-grid">
+    <div style="background:#e3f2fd;padding:1.1rem 1.25rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">Backend (your API server)</strong>
+      <ul style="padding-left:1.2rem;margin-top:0.5rem;font-size:0.9rem;line-height:2">
+        <li>Docker container running in Kubernetes</li>
+        <li>Node.js / Java / Go process stays alive</li>
+        <li>You can shell into the container</li>
+        <li>Source code is inside the container</li>
+        <li>Processes requests, queries databases</li>
+      </ul>
     </div>
-    <div class="journey-item">
-      <div class="journey-ep">Ep 03</div>
-      <div class="journey-title">The DOM</div>
-      <div class="journey-summary">When the browser loads HTML, it builds a live object tree — the Document Object Model. JavaScript can read and modify that tree. Change the tree, the page changes instantly.</div>
+    <div style="background:#e8f8f5;padding:1.1rem 1.25rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">Frontend (the Vue app)</strong>
+      <ul style="padding-left:1.2rem;margin-top:0.5rem;font-size:0.9rem;line-height:2">
+        <li>Static files on a CDN or file server</li>
+        <li>No running process — files just sit there</li>
+        <li>Nothing to shell into</li>
+        <li>Source code is compiled away</li>
+        <li>Browser does all the computation</li>
+      </ul>
     </div>
-    <div class="journey-item">
-      <div class="journey-ep">Ep 04</div>
-      <div class="journey-title">The Browser Wars</div>
-      <div class="journey-summary">Netscape vs Internet Explorer. Each implemented DOM and XMLHttpRequest differently. Developers had to write the same logic twice. jQuery solved this in 2006.</div>
+  </div>
+
+  <p style="margin-top:1.25rem">When you deploy a backend change, you build a new Docker image and restart a container. When you deploy a frontend change, you upload new static files and the old ones are replaced. No process restart needed — the next user request downloads the new files.</p>
+</section>
+
+<!-- SECTION 3 -->
+<section class="section reveal">
+  <span class="section-num fe21-num">03</span>
+  <h2>What Is a CDN?</h2>
+  <p>A <span class="highlight">CDN</span> (Content Delivery Network) is a global network of servers that cache and serve your static files. Instead of every user in the world fetching files from a single data centre, the CDN has copies in dozens of locations — Tokyo, London, Sao Paulo, New York.</p>
+
+  <div class="cdn-diagram">
+    <div class="cdn-row">
+      <div class="cdn-box cdn-user">User in Mumbai</div>
+      <div class="cdn-arrow">&#10132;</div>
+      <div class="cdn-box cdn-cdn">CDN edge — Singapore</div>
+      <div class="cdn-arrow">&#10132;</div>
+      <div class="cdn-box cdn-cdn" style="font-size:0.75rem">serves cached files instantly</div>
     </div>
-    <div class="journey-item">
-      <div class="journey-ep">Ep 05</div>
-      <div class="journey-title">AJAX</div>
-      <div class="journey-summary">Background HTTP requests — no page reload. Google Maps (2005) proved the web could feel like a desktop app. jQuery made it cross-browser. fetch() replaced it in 2015.</div>
+    <div class="cdn-row">
+      <div class="cdn-box cdn-user">User in Berlin</div>
+      <div class="cdn-arrow">&#10132;</div>
+      <div class="cdn-box cdn-cdn">CDN edge — Frankfurt</div>
+      <div class="cdn-arrow">&#10132;</div>
+      <div class="cdn-box cdn-cdn" style="font-size:0.75rem">serves cached files instantly</div>
     </div>
-    <div class="journey-item">
-      <div class="journey-ep">Ep 06</div>
-      <div class="journey-title">ECMAScript &amp; ES6</div>
-      <div class="journey-summary">ECMA standardizes JavaScript. ES6 (2015) was the turning point: let/const, arrow functions, classes, promises, modules (import/export). Babel compiled new syntax for old browsers.</div>
+    <div style="font-size:0.78rem;color:#888;text-align:center">Only on cache miss does CDN fetch from origin — then caches for everyone else</div>
+    <div class="cdn-row">
+      <div class="cdn-box cdn-cdn">Any CDN edge</div>
+      <div class="cdn-arrow">&#10132;</div>
+      <div class="cdn-box cdn-origin">Origin (S3 bucket / file server)</div>
     </div>
-    <div class="journey-item">
-      <div class="journey-ep">Ep 07</div>
-      <div class="journey-title">Node.js</div>
-      <div class="journey-summary">Ryan Dahl (2009) took Chrome's V8 JavaScript engine and ran it outside the browser. Now JavaScript could run on a server, read files, and power build tools. npm followed in 2010.</div>
+  </div>
+
+  <p style="margin-top:1.25rem">Why does this matter? The files don't change between requests. Once the CDN has <code style="font-size:0.875rem">vendor-d4e5f6.js</code>, it serves it to millions of users without ever touching the origin again — until you deploy a new version with a different hash.</p>
+</section>
+
+<!-- SECTION 4 -->
+<section class="section reveal">
+  <span class="section-num fe21-num">04</span>
+  <h2>The Dockerfile: Multi-Stage Build</h2>
+  <p>The dealmaker-ui repo has a <code style="font-size:0.875rem">Dockerfile</code> that runs the build in isolation. It uses a multi-stage approach so the final output contains only the compiled files — not Node.js, not source code, not node_modules.</p>
+
+  <div class="stage-cards">
+    <div class="stage-card">
+      <span class="stage-num">stage 1</span>
+      <div>
+        <div class="stage-title">base</div>
+        <div class="stage-desc">Start from node:20-alpine (a minimal Node.js image). Set working directory to /app.</div>
+      </div>
     </div>
-    <div class="journey-item">
-      <div class="journey-ep">Ep 08</div>
-      <div class="journey-title">npm &amp; package.json</div>
-      <div class="journey-summary">npm = registry + CLI. package.json declares what your project needs. npm install downloads it all into node_modules. Semantic versioning (^1.2.3) and package-lock.json ensure reproducible installs.</div>
+    <div class="stage-card">
+      <span class="stage-num">stage 2</span>
+      <div>
+        <div class="stage-title">install</div>
+        <div class="stage-desc">Copy package.json and package-lock.json. Run npm ci to install exact versions. This layer is cached — if package.json has not changed, Docker skips this step entirely on subsequent builds.</div>
+      </div>
     </div>
-    <div class="journey-item">
-      <div class="journey-ep">Ep 09-11</div>
-      <div class="journey-title">Frameworks: jQuery → Angular → React → Vue</div>
-      <div class="journey-summary">jQuery (DOM helper), Angular (two-way binding, full MVC), React (components + Virtual DOM + JSX, one-way data flow), Vue (single file components: template + script + style in one .vue file).</div>
+    <div class="stage-card">
+      <span class="stage-num">stage 3</span>
+      <div>
+        <div class="stage-title">build-latest / build-staging / build-production</div>
+        <div class="stage-desc">Copy source files. Run npm run build:latest (or staging/production). Vite reads the correct .env file, compiles everything, writes /dist.</div>
+      </div>
     </div>
-    <div class="journey-item">
-      <div class="journey-ep">Ep 12-13</div>
-      <div class="journey-title">Build Tools: webpack → Vite</div>
-      <div class="journey-summary">webpack bundles everything before dev server starts (30-60s). Vite (2021) skips bundling entirely in dev — transforms files on demand using native ES Modules. Production still uses Rollup.</div>
-    </div>
-    <div class="journey-item">
-      <div class="journey-ep">Ep 14</div>
-      <div class="journey-title">TypeScript</div>
-      <div class="journey-summary">Superset of JavaScript with static types. tsc compiles .ts to .js. Catches bugs at write-time instead of runtime. strict: true in tsconfig.json enforces the strongest checks.</div>
-    </div>
-    <div class="journey-item">
-      <div class="journey-ep">Ep 15</div>
-      <div class="journey-title">Vite in Depth</div>
-      <div class="journey-summary">Dev mode: no bundling, instant startup, HMR swaps single modules in the browser — page never reloads. Production: Rollup creates hashed chunks with code splitting.</div>
-    </div>
-    <div class="journey-item">
-      <div class="journey-ep">Ep 16</div>
-      <div class="journey-title">How Vue Files Become JavaScript</div>
-      <div class="journey-summary">Browsers cannot run .vue files. Vite transforms them: template → render function, script + template merge, style → extracted CSS. The browser receives plain JavaScript.</div>
-    </div>
-    <div class="journey-item">
-      <div class="journey-ep">Ep 17</div>
-      <div class="journey-title">Tailwind CSS</div>
-      <div class="journey-summary">Utility-first CSS. Predefined classes like tw-flex, tw-mt-4, tw-text-xl. The tw- prefix is configured in tailwind.config.js (prefix: 'tw-'). Unused classes are purged at build time.</div>
-    </div>
-    <div class="journey-item">
-      <div class="journey-ep">Ep 18</div>
-      <div class="journey-title">ESLint &amp; Stylelint</div>
-      <div class="journey-summary">Static analysis without running code. ESLint checks JavaScript (Airbnb rules + Vue + a11y). Stylelint checks SCSS. Both are Vite plugins — dev shows warnings, build fails on errors.</div>
-    </div>
-    <div class="journey-item">
-      <div class="journey-ep">Ep 19</div>
-      <div class="journey-title">Environment Variables</div>
-      <div class="journey-summary">.env files per environment. .env.local overrides .env (highest priority). VITE_ prefix exposes variables to the browser via import.meta.env. Non-VITE_ stays build-time only.</div>
-    </div>
-    <div class="journey-item">
-      <div class="journey-ep">Ep 20</div>
-      <div class="journey-title">Authentication &amp; Route Guards</div>
-      <div class="journey-summary">router.beforeEach() intercepts every navigation. Checks localStorage for a token. No token → redirect to login. Real security is backend: the API validates every request independently.</div>
-    </div>
-    <div class="journey-item">
-      <div class="journey-ep">Ep 21</div>
-      <div class="journey-title">Production, CDN &amp; Deployment</div>
-      <div class="journey-summary">npm run build creates /dist with content-hashed files. No running process — static files on a CDN. Dockerfile runs the build in isolation, outputs only /dist. Frontend code is always public.</div>
+    <div class="stage-card" style="background:#e8f8f5;border-color:#b2dfdb">
+      <span class="stage-num" style="background:#e8f8f5;color:#00b894">result</span>
+      <div>
+        <div class="stage-title" style="color:#00b894">Only /dist leaves</div>
+        <div class="stage-desc">CI/CD picks up the /dist folder and uploads it to the CDN or file server. Node.js, source code, and node_modules are discarded. What users receive is only the compiled output.</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- SECTION 3: What to remember -->
+<!-- SECTION 5 -->
 <section class="section reveal">
-  <span class="section-num fe22-num">03</span>
-  <h2>The Concepts in One Place</h2>
+  <span class="section-num fe21-num">05</span>
+  <h2>Frontend Code Is Always Public</h2>
+  <p>Because the /dist files are downloaded by every user's browser, there is no such thing as hiding frontend code. Anyone can:</p>
 
-  <div class="concept-grid">
-    <div class="concept-card">
-      <div class="concept-term">DOM</div>
-      <div class="concept-def">The browser's live object tree of an HTML page. JavaScript reads and modifies it.</div>
-    </div>
-    <div class="concept-card">
-      <div class="concept-term">AJAX</div>
-      <div class="concept-def">Background HTTP requests. Update part of a page without reloading.</div>
-    </div>
-    <div class="concept-card">
-      <div class="concept-term">Node.js</div>
-      <div class="concept-def">V8 JavaScript engine outside the browser. Runs build tools and servers.</div>
-    </div>
-    <div class="concept-card">
-      <div class="concept-term">npm</div>
-      <div class="concept-def">Package registry + CLI. Installs dependencies listed in package.json.</div>
-    </div>
-    <div class="concept-card">
-      <div class="concept-term">Vue SFC</div>
-      <div class="concept-def">Single file component: template + script + style in one .vue file.</div>
-    </div>
-    <div class="concept-card">
-      <div class="concept-term">Vite</div>
-      <div class="concept-def">Build tool. Dev: on-demand transforms. Production: Rollup bundler.</div>
-    </div>
-    <div class="concept-card">
-      <div class="concept-term">HMR</div>
-      <div class="concept-def">Hot Module Replacement. Swaps one changed module in the browser — no reload.</div>
-    </div>
-    <div class="concept-card">
-      <div class="concept-term">Code splitting</div>
-      <div class="concept-def">Multiple JS chunks instead of one bundle. Users download only what each page needs.</div>
-    </div>
-    <div class="concept-card">
-      <div class="concept-term">Tailwind</div>
-      <div class="concept-def">Utility-first CSS. Predefined classes applied directly in HTML/templates.</div>
-    </div>
-    <div class="concept-card">
-      <div class="concept-term">ESLint</div>
-      <div class="concept-def">Static JS analysis. Catches bad patterns without running the code.</div>
-    </div>
-    <div class="concept-card">
-      <div class="concept-term">VITE_ prefix</div>
-      <div class="concept-def">Marks env variables for inclusion in the browser bundle. Readable in DevTools.</div>
-    </div>
-    <div class="concept-card">
-      <div class="concept-term">Route guard</div>
-      <div class="concept-def">router.beforeEach() — intercepts every navigation, checks auth, redirects if needed.</div>
-    </div>
-    <div class="concept-card">
-      <div class="concept-term">CDN</div>
-      <div class="concept-def">Content Delivery Network. Serves static files from edge servers near each user.</div>
-    </div>
-    <div class="concept-card">
-      <div class="concept-term">Content hash</div>
-      <div class="concept-def">Hash in filename (main-a1b2c3.js). Changes when content changes — busts browser cache.</div>
-    </div>
+  <div class="code-block">
+    <pre><span class="code-comment">// In any browser, on any page:</span>
+<span class="code-comment">// DevTools -> Sources tab -> find main-a1b2c3.js</span>
+<span class="code-comment">// Click {} to pretty-print</span>
+<span class="code-comment">// Read every component, every logic flow, every API endpoint path</span></pre>
   </div>
-</section>
 
-<!-- SECTION 4: What matters most -->
-<section class="section reveal">
-  <span class="section-num fe22-num">04</span>
-  <h2>The Mental Models That Matter Most</h2>
+  <p>This is expected — it is how the web works. But it means:</p>
+  <ul style="line-height:2;padding-left:1.5rem;margin-top:0.5rem">
+    <li>Never put secrets (API keys, tokens) in frontend code</li>
+    <li>Never rely on hidden client-side logic for security</li>
+    <li>The backend must enforce all authorization — it cannot trust the frontend</li>
+  </ul>
 
-  <div style="display:grid;gap:1rem;margin-top:1.25rem">
-    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
-      <strong style="color:#0984e3">Everything is JavaScript, eventually</strong><br>
-      <span style="font-size:0.9rem">.vue files, .ts files, .jsx files — the browser only runs JavaScript. Everything else is transformed at build time into JavaScript the browser can execute.</span>
-    </div>
-    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
-      <strong style="color:#00b894">Build time vs runtime</strong><br>
-      <span style="font-size:0.9rem">Build time: Vite, TypeScript, Sass, ESLint — they run when you build. Runtime: Vue, the router, your components — they run in the browser after the user downloads the files.</span>
-    </div>
-    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
-      <strong style="color:#6c5ce7">The frontend has no secrets</strong><br>
-      <span style="font-size:0.9rem">All code is downloadable. All VITE_ variables are readable. Security means protecting the API (backend), not hiding JavaScript (impossible).</span>
-    </div>
-    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
-      <strong style="color:#e17055">npm run dev vs npm run build are completely different</strong><br>
-      <span style="font-size:0.9rem">Dev: no bundling, on-demand transforms, hot reload, source maps. Build: Rollup bundles, hashes filenames, removes source, creates what users actually download.</span>
-    </div>
-    <div style="background:#fdecea;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #d63031">
-      <strong style="color:#d63031">Node.js is the build engine, not the production server</strong><br>
-      <span style="font-size:0.9rem">Node.js runs Vite, webpack, npm scripts — all build-time tools. In production, the frontend has no Node.js. The browser downloads static files from a CDN and runs them itself.</span>
-    </div>
-  </div>
+  <p>This is why there is a separate backend with its own authentication, even though the frontend has route guards. The two layers serve different purposes: UX protection (frontend) and data protection (backend).</p>
 </section>
 
 <!-- RECAP -->
 <section class="section reveal">
-  <span class="section-num">FINAL RECAP</span>
-  <h2>Series Complete</h2>
-  <p>You started with a 1991 web page that required a server round trip for every action. You finished with a modern Vue application that:</p>
-  <ul style="line-height:2.2;padding-left:1.5rem;margin-top:0.75rem">
-    <li>Writes logic in TypeScript (caught by tsc at build time)</li>
-    <li>Writes templates in Vue SFCs (.vue) (transformed by Vite)</li>
-    <li>Writes styles in SCSS with Tailwind utilities (compiled, purged, bundled)</li>
-    <li>Enforces quality with ESLint and Stylelint (lint errors block the build)</li>
-    <li>Reads environment from .env files (VITE_ prefix for browser access)</li>
-    <li>Guards routes with router.beforeEach() (checks localStorage token)</li>
-    <li>Deploys as static files to a CDN (no running process, content-hashed for cache busting)</li>
-  </ul>
-  <p style="margin-top:1.25rem">None of these technologies are arbitrary. Each one exists because something before it failed at scale or failed developers in some specific way. Understanding the <em>why</em> behind each tool is what separates someone who follows instructions from someone who can make decisions.</p>
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">Build output</strong> — npm run build creates /dist: hashed JS chunks, CSS, and assets. Source code is compiled away.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">No running process</strong> — unlike backend containers, the frontend is just static files. No server to restart after a deploy.
+    </div>
+    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
+      <strong style="color:#6c5ce7">CDN</strong> — global file distribution network. Users download files from the nearest edge server. Cached by hash until the next deploy changes the filename.
+    </div>
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Frontend code is public</strong> — every user can read it in DevTools. Secrets and real security belong on the backend only.
+    </div>
+  </div>
 </section>
 
 <!-- CHECKPOINT QUIZ -->
-<section class="section reveal quiz-ep22f">
-  <span class="section-num">FINAL CHECKPOINT</span>
+<section class="section reveal quiz-ep21f">
+  <span class="section-num">CHECKPOINT</span>
   <h2>Probe Your Thinking</h2>
-  <p class="quiz-subtitle">The big picture questions.</p>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
 
   <div class="quiz-grid">
 
   <div class="quiz-card">
     <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
-    <p class="quiz-question">You write a Vue component in TypeScript with SCSS styles and Tailwind classes. Trace what happens between saving the file and the browser showing the change.</p>
+    <p class="quiz-question">What does the /dist folder contain, and what does it NOT contain?</p>
     <ul class="quiz-options">
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>The browser reads the .vue file directly — nothing happens in between</button></li>
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Node.js serves the .vue file; the browser has a built-in Vue compiler</button></li>
-      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Vite detects the save, transforms the .vue file (TS→JS, SCSS→CSS, template→render fn), sends the update via WebSocket (HMR), browser swaps the module</button></li>
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>webpack rebuilds the full bundle, browser reloads the page</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>It contains .vue source files and node_modules — the browser runs them directly</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>It contains compiled JS, CSS, and assets with content hashes — no source files, no node_modules</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>It contains the Vite config and a running Node.js server</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>It contains a Docker image with the full application</button></li>
     </ul>
     <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
     <div class="quiz-answer">
       <div class="quiz-answer-inner">
-        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(C) Vite detects the save, transforms the .vue file, sends via WebSocket, browser swaps the module</strong></div>
-        <p class="quiz-answer-text">In Vite's dev mode: you save → ESLint and Stylelint check the file → Vite transforms only that file (TypeScript compiler, Vue SFC compiler, SCSS preprocessor all run) → the output is plain JavaScript → Vite sends a WebSocket message to the browser → HMR swaps just that one module in place, preserving all other application state. The page does not reload.</p>
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(B) It contains compiled JS, CSS, and assets with content hashes — no source files, no node_modules</strong></div>
+        <p class="quiz-answer-text">The build process transforms every .vue, .ts, and .scss file into plain JavaScript and CSS, then writes them to /dist with content hashes in their filenames. The source files, TypeScript compiler, SCSS preprocessor, Vite, and all of node_modules are not included — they were needed to build, not to run. The browser only needs the compiled output.</p>
       </div>
     </div>
   </div>
 
   <div class="quiz-card">
     <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
-    <p class="quiz-question">Why does the app point to UAT (latest.acvauctions.com) when run with npm run dev but to localhost when a .env.local file exists?</p>
+    <p class="quiz-question">Why do the filenames in /dist have hashes like main-a1b2c3.js?</p>
     <ul class="quiz-options">
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Because npm run dev always adds the .local suffix to the mode automatically</button></li>
-      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Because .env.local overrides .env — it has the highest priority when no mode flag is used, so its VITE_BASE_URI wins</button></li>
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Because .env is git-ignored and never present in a fresh clone</button></li>
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Because Vite only reads .env files in production mode</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>To make the filenames unique so they do not overwrite each other</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>To bust the browser cache — the hash changes when the content changes, forcing the browser to download the new version</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>To encrypt the file content so it cannot be read in DevTools</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>To tell the CDN which version of Node.js was used to build the file</button></li>
     </ul>
     <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
     <div class="quiz-answer">
       <div class="quiz-answer-inner">
-        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(B) .env.local overrides .env — highest priority, VITE_BASE_URI from .env.local wins</strong></div>
-        <p class="quiz-answer-text">.env defines VITE_BASE_URI=latest.acvauctions.com (UAT). .env.local defines VITE_BASE_URI=localhost:8080. Vite loads both files and merges them — but .env.local has higher priority than .env, so its value wins. If .env.local does not exist on a machine (e.g. a fresh clone), only .env loads and the app points to UAT. This is intentional: .env.local is per-developer and git-ignored.</p>
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(B) To bust the browser cache — the hash changes when the content changes, forcing the browser to download the new version</strong></div>
+        <p class="quiz-answer-text">Browsers aggressively cache static files. If a file is called main.js, the browser may serve the cached version even after a deploy. With content hashing, main-a1b2c3.js becomes main-z9y8x7.js when the content changes — it is a different URL, so the browser must fetch it fresh. Files that did not change keep the same hash and stay cached, making repeat visits fast.</p>
       </div>
     </div>
   </div>
 
   <div class="quiz-card">
     <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
-    <p class="quiz-question">A colleague says: "I can hide sensitive business logic in the frontend by obfuscating the JavaScript." Is this correct?</p>
+    <p class="quiz-question">How is deploying a frontend app different from deploying a backend service?</p>
     <ul class="quiz-options">
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Yes — obfuscation makes it impossible to reverse-engineer the logic</button></li>
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Yes — production builds are minified, which is effectively the same as encryption</button></li>
-      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>No — obfuscation slows down reading but cannot prevent it. The browser must be able to run the code, which means it can always be deobfuscated or debugged</button></li>
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Only if combined with a route guard</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Frontend deployment requires more steps — it needs Docker, Kubernetes, and a load balancer</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>There is no difference — both run a Node.js process that serves requests</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Frontend deployment is uploading static files with no running process — backend deployment starts a long-lived process in a container</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Frontend deployment creates a Docker container that browsers can connect to directly</button></li>
     </ul>
     <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
     <div class="quiz-answer">
       <div class="quiz-answer-inner">
-        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(C) No — the browser must run the code, which means it can always be deobfuscated</strong></div>
-        <p class="quiz-answer-text">For the browser to execute JavaScript, it must be able to parse and run it. That means a determined person can always read it — through DevTools, by pretty-printing minified code, or by deobfuscating it. Obfuscation raises the effort bar slightly but provides no real security. Truly sensitive logic (authorization rules, pricing calculations, private algorithms) belongs on the backend, behind an API that requires authentication.</p>
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(C) Frontend deployment is uploading static files with no running process — backend deployment starts a long-lived process in a container</strong></div>
+        <p class="quiz-answer-text">A backend service runs continuously — it listens for HTTP requests, queries databases, processes logic. It lives in a container you can ssh into, with source code, a runtime, and a running process. A frontend deployment is just copying files to a file server or CDN. No process runs. No container to inspect. The computation happens entirely in the user's browser when they download the files.</p>
       </div>
     </div>
   </div>
@@ -379,14 +295,14 @@ const bodyHtml = `
   </div>
 </section>
 
-<!-- END CARD -->
-<section class="next-part" style="background:linear-gradient(135deg,#2d3436,#0984e3,#00b894)">
-  <h2>Series Complete</h2>
-  <p>You have covered 35 years of web history and every layer of a modern Vue frontend. From document-only HTML to Vite, Vue, Tailwind, ESLint, .env files, route guards, and CDN deployment. You now know why each tool exists.</p>
-  <a href="/index.html" class="btn btn-white">Back to Series Index &#10132;</a>
+<!-- NEXT -->
+<section class="next-part" style="background:linear-gradient(135deg,#0984e3,#00b894)">
+  <h2>Ready for Episode 23?</h2>
+  <p>You have covered everything — from 1991 HTML to Vite, Vue, Tailwind, ESLint, .env files, route guards, and CDN deployment. The final episode puts it all together in one complete picture.</p>
+  <a href="part23.html" class="btn btn-white">Continue to Episode 22 &#10132;</a>
 </section>
 `;
 ---
-<ArticleLayout title="How the Frontend Works — Part 22: The Full Picture | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={22} hasQuiz={true}>
+<ArticleLayout title="How the Frontend Works — Part 21: Production, CDN & Deployment | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={22} hasQuiz={true}>
 <Fragment set:html={bodyHtml} />
 </ArticleLayout>

@@ -3,185 +3,236 @@ import ArticleLayout from '../../layouts/ArticleLayout.astro';
 import { frontendSeries } from '../../data/series';
 const inlineStyle = `
 /* ── Hero ── */
-.fe19-hero{background:linear-gradient(135deg,#6c5ce7 0%,#a29bfe 50%,#fd79a8 100%)}
+.fe18-hero{background:linear-gradient(135deg,#00b894 0%,#00cec9 50%,#0984e3 100%)}
 
-/* ── Env file stack animation ── */
-.env-art{margin:2.5rem auto 0;display:flex;flex-direction:column;align-items:center;gap:0.5rem}
-.env-file{font-family:'Fira Code',monospace;font-size:0.75rem;padding:0.4rem 1.2rem;border-radius:0.5rem;border:0.0625rem solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.9);animation:envStack 0.4s ease both}
-.env-file:nth-child(1){animation-delay:0.1s}
-.env-file:nth-child(2){animation-delay:0.25s;background:rgba(255,255,255,0.18)}
-.env-file:nth-child(3){animation-delay:0.4s}
-.env-file:nth-child(4){animation-delay:0.55s}
-.env-winner{font-size:0.7rem;font-weight:700;padding:0.25rem 0.75rem;border-radius:1rem;background:#55efc4;color:#1a1a2e;animation:envStack 0.4s ease 0.7s both}
-@keyframes envStack{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
+/* ── Lint check animation ── */
+.lint-art{margin:2.5rem auto 0;display:flex;flex-direction:column;align-items:center;gap:0.75rem}
+.lint-row{display:flex;align-items:center;gap:0.75rem;font-family:'Fira Code',monospace;font-size:0.78rem}
+.lint-code{padding:0.35rem 0.9rem;border-radius:0.5rem;background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.9);border:0.0625rem solid rgba(255,255,255,0.2)}
+.lint-badge{padding:0.25rem 0.75rem;border-radius:1rem;font-size:0.7rem;font-weight:700;animation:lintFade 0.5s ease both}
+.lint-badge.err{background:#ff7675;color:#fff;animation-delay:0.3s}
+.lint-badge.ok{background:#55efc4;color:#1a1a2e;animation-delay:0.6s}
+@keyframes lintFade{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
 
-.fe19-num{color:#6c5ce7;background:#f0efff}
+.fe18-num{color:#00b894;background:#e8f8f5}
 
-/* ── Priority table ── */
-.env-table{width:100%;border-collapse:collapse;margin-top:1.25rem;font-size:0.88rem}
-.env-table th{background:#f0efff;color:#6c5ce7;padding:0.6rem 0.9rem;text-align:left;border-bottom:0.125rem solid #ddd}
-.env-table td{padding:0.55rem 0.9rem;border-bottom:0.0625rem solid #eee;font-family:'Fira Code',monospace;font-size:0.82rem}
-.env-table tr:nth-child(even) td{background:#fafafa}
-.env-table .wins{color:#00b894;font-weight:700}
-.env-table .purpose{font-family:inherit;font-size:0.82rem}
+/* ── Rule cards ── */
+.rule-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1rem;margin-top:1.25rem}
+.rule-card{background:#fff;border:0.0625rem solid #e0e0e0;border-radius:0.875rem;padding:1.1rem 1.25rem}
+.rule-card-title{font-family:'Fira Code',monospace;font-size:0.8rem;font-weight:700;color:#00b894;margin-bottom:0.5rem}
+.rule-bad{color:#d63031;font-size:0.82rem;margin:0.25rem 0;font-family:'Fira Code',monospace}
+.rule-good{color:#00b894;font-size:0.82rem;margin:0.25rem 0;font-family:'Fira Code',monospace}
+.rule-label{font-size:0.72rem;color:#888;display:block;margin-bottom:0.15rem}
 
-/* ── VITE_ prefix box ── */
-.prefix-box{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:1.25rem}
-.prefix-tag{padding:0.5rem 1.1rem;border-radius:0.625rem;font-family:'Fira Code',monospace;font-size:0.82rem;font-weight:600}
-.prefix-yes{background:#e8f8f5;color:#00b894;border:0.0625rem solid #b2dfdb}
-.prefix-no{background:#fdf2ef;color:#e17055;border:0.0625rem solid #ffcc80}
-.prefix-arrow{color:#aaa;font-size:1rem}
+/* ── Config section highlight ── */
+.config-section{background:#f0faf7;border:0.0625rem solid #b2dfdb;border-radius:0.875rem;padding:1.25rem 1.5rem;margin:1rem 0}
+.config-key{color:#00b894;font-weight:700}
+.config-val{color:#0984e3}
 
-/* ── Quiz theming ep19 ── */
-.quiz-ep19f .quiz-q-num{color:#6c5ce7;background:#f0efff}
-.quiz-ep19f .quiz-reveal-btn{color:#6c5ce7}
-.quiz-ep19f .quiz-opt-letter{color:#6c5ce7}
-.quiz-ep19f .quiz-option:hover{border-color:#6c5ce7;background:#f0efff}
-.quiz-ep19f .quiz-answer-highlight{background:#f0efff;border-left:0.25rem solid #6c5ce7}
+/* ── Plugin flow ── */
+.plugin-flow{display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;margin-top:1.25rem}
+.pf-box{padding:0.6rem 1.1rem;border-radius:0.625rem;font-size:0.82rem;font-weight:600;text-align:center}
+.pf-vite{background:#f0faf7;color:#00b894;border:0.0625rem solid #b2dfdb}
+.pf-arrow{color:#aaa;font-size:1.1rem}
+.pf-lint{background:#e3f2fd;color:#0984e3;border:0.0625rem solid #b3d9f7}
+.pf-out{background:#fff3e0;color:#e17055;border:0.0625rem solid #ffcc80}
+
+/* ── Quiz theming ep18 ── */
+.quiz-ep18f .quiz-q-num{color:#00b894;background:#e8f8f5}
+.quiz-ep18f .quiz-reveal-btn{color:#00b894}
+.quiz-ep18f .quiz-opt-letter{color:#00b894}
+.quiz-ep18f .quiz-option:hover{border-color:#00b894;background:#e8f8f5}
+.quiz-ep18f .quiz-answer-highlight{background:#e8f8f5;border-left:0.25rem solid #00b894}
 `;
 const bodyHtml = `
 
 <!-- HERO -->
-<section class="hero fe19-hero">
-  <div class="hero-badge">Episode 19 of 22</div>
-  <h1>Environment Variables<br>&amp; .env Files</h1>
-  <p style="color:rgba(255,255,255,0.95)">The same app code, three different environments: UAT, staging, production. Different API URLs, different feature flags, different secrets. .env files are how the app knows where it is.</p>
-  <div class="env-art">
-    <div class="env-file">.env</div>
-    <div class="env-file">.env.local &nbsp;&nbsp;← highest priority</div>
-    <div class="env-file">.env.latest</div>
-    <div class="env-file">.env.production</div>
-    <div class="env-winner">npm run dev → loads .env.local first</div>
+<section class="hero fe18-hero">
+  <div class="hero-badge">Episode 19 of 23</div>
+  <h1>ESLint &amp; Stylelint —<br>The Code Quality Guards</h1>
+  <p style="color:rgba(255,255,255,0.95)">Before your code ever runs, linters read it line by line and flag every mistake — unused variables, wrong equality operators, invalid CSS properties. Like a spell-checker, but for code.</p>
+  <div class="lint-art">
+    <div class="lint-row">
+      <span class="lint-code">if (x == null)</span>
+      <span class="lint-badge err">ESLint: use ===</span>
+    </div>
+    <div class="lint-row">
+      <span class="lint-code">color: bleu</span>
+      <span class="lint-badge err">Stylelint: unknown value</span>
+    </div>
+    <div class="lint-row">
+      <span class="lint-code">const name = 'Gokul'</span>
+      <span class="lint-badge ok">✓ ok</span>
+    </div>
   </div>
 </section>
 
 <!-- SECTION 1 -->
 <section class="section reveal">
-  <span class="section-num fe19-num">01</span>
-  <h2>What Is an Environment Variable?</h2>
-  <p>An <span class="highlight">environment variable</span> is a named value that lives outside your code. Instead of hardcoding an API URL directly in a component, you put it in a .env file and reference it by name.</p>
+  <span class="section-num fe18-num">01</span>
+  <h2>What Is a Linter?</h2>
+  <p>A <span class="highlight">linter</span> is a tool that reads your source code — without running it — and reports problems. Think of it like a very thorough spell-checker that also catches logical mistakes, style inconsistencies, and patterns known to cause bugs.</p>
+  <p>There are two linters in the dealmaker-ui repo:</p>
+  <ul style="line-height:2;padding-left:1.5rem;margin-top:0.5rem">
+    <li><strong>ESLint</strong> — checks JavaScript (and Vue's <code style="font-size:0.875rem">&lt;script&gt;</code> blocks)</li>
+    <li><strong>Stylelint</strong> — checks CSS and SCSS (and Vue's <code style="font-size:0.875rem">&lt;style&gt;</code> blocks)</li>
+  </ul>
+  <p>Neither of them runs your code. They <span class="highlight">parse</span> it into a tree, apply rules against that tree, and output a list of violations. The process is: read file → parse → check rules → report.</p>
 
   <div class="code-block">
-    <pre><span class="code-comment">// ✗ Hardcoded — wrong approach</span>
-<span class="code-keyword">const</span> url = <span class="code-string">'https://api.acvauctions.com/deals'</span>
+    <pre><span class="code-comment">// ESLint reads this file</span>
+<span class="code-keyword">const</span> greeting = <span class="code-string">'hello'</span>   <span class="code-comment">// ← declared but never used</span>
+<span class="code-keyword">if</span> (x == <span class="code-keyword">null</span>) { ... }        <span class="code-comment">// ← == instead of ===</span>
 
-<span class="code-comment">// ✓ Environment variable — correct approach</span>
-<span class="code-keyword">const</span> url = import.meta.env.VITE_DEAL_API_URI + <span class="code-string">'/deals'</span></pre>
+<span class="code-comment">// ESLint output (without running the code):</span>
+<span class="code-comment">// 1:7  error  'greeting' is assigned a value but never used</span>
+<span class="code-comment">// 2:7  error  Expected '===' but found '=='</span></pre>
   </div>
-
-  <p>Why is this better? The same code file now works in any environment. The variable's <em>value</em> is different per environment; the <em>code</em> is identical. When the app builds for UAT, <code style="font-size:0.875rem">VITE_DEAL_API_URI</code> points to the UAT server. When it builds for production, it points to the production server.</p>
 </section>
 
 <!-- SECTION 2 -->
 <section class="section reveal">
-  <span class="section-num fe19-num">02</span>
-  <h2>The .env Files in dealmaker-ui</h2>
-  <p>The repo has multiple .env files, each targeting a different environment:</p>
+  <span class="section-num fe18-num">02</span>
+  <h2>What ESLint Catches</h2>
+  <p>ESLint enforces rules. Each rule targets one specific pattern. The dealmaker-ui repo uses the <span class="highlight">Airbnb style guide</span> — one of the strictest and most popular rule sets in the JavaScript ecosystem.</p>
 
-  <div class="code-block">
-    <pre><span class="code-comment"># .env — default values for every environment</span>
-VITE_BASE_URI=latest.acvauctions.com
-VITE_PORT=4173
-APP_KEY=LOCALDLMKR
-
-<span class="code-comment"># .env.local — your local overrides (highest priority, git-ignored)</span>
-VITE_BASE_URI=localhost:8080
-VITE_PORT=8080
-APP_KEY=LOCALDLMKR
-VITE_DEAL_FINDER_API_URI=...  <span class="code-comment">← extra variable only in local</span>
-
-<span class="code-comment"># .env.latest — UAT environment</span>
-VITE_BASE_URI=latest.acvauctions.com
-APP_KEY=UATDLMKR
-
-<span class="code-comment"># .env.staging — staging environment</span>
-VITE_BASE_URI=staging.acvauctions.com
-
-<span class="code-comment"># .env.production — production environment</span>
-VITE_BASE_URI=acvauctions.com</pre>
+  <div class="rule-grid">
+    <div class="rule-card">
+      <div class="rule-card-title">== vs ===</div>
+      <span class="rule-label">Bad (loose equality):</span>
+      <div class="rule-bad">✗  if (x == null)</div>
+      <span class="rule-label">Good (strict equality):</span>
+      <div class="rule-good">✓  if (x === null)</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-card-title">Unused variables</div>
+      <span class="rule-label">Bad:</span>
+      <div class="rule-bad">✗  const x = 5   // never used</div>
+      <span class="rule-label">Good:</span>
+      <div class="rule-good">✓  use the variable or remove it</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-card-title">console.log left in</div>
+      <span class="rule-label">Bad:</span>
+      <div class="rule-bad">✗  console.log('debug')</div>
+      <span class="rule-label">Good:</span>
+      <div class="rule-good">✓  remove before committing</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-card-title">var instead of const/let</div>
+      <span class="rule-label">Bad:</span>
+      <div class="rule-bad">✗  var count = 0</div>
+      <span class="rule-label">Good:</span>
+      <div class="rule-good">✓  const count = 0</div>
+    </div>
   </div>
 
-  <p>Each script in <code style="font-size:0.875rem">package.json</code> tells Vite which mode to use, which determines which .env file loads:</p>
-  <div class="code-block">
-    <pre><span class="code-string">"scripts"</span>: {
-  <span class="code-string">"dev"</span>:         <span class="code-string">"vite"</span>,                          <span class="code-comment">// loads .env + .env.local</span>
-  <span class="code-string">"build:latest"</span>: <span class="code-string">"vite build --mode latest"</span>,  <span class="code-comment">// loads .env + .env.latest</span>
-  <span class="code-string">"build:staging"</span>:<span class="code-string">"vite build --mode staging"</span>, <span class="code-comment">// loads .env + .env.staging</span>
-  <span class="code-string">"build:prod"</span>:  <span class="code-string">"vite build --mode production"</span> <span class="code-comment">// loads .env + .env.production</span>
-}</pre>
-  </div>
+  <p style="margin-top:1.25rem">Beyond Airbnb, the repo also extends <code style="font-size:0.875rem">vuejs-accessibility</code> — rules that catch accessibility mistakes in Vue templates, like missing <code style="font-size:0.875rem">alt</code> text on images or buttons with no readable label.</p>
 </section>
 
 <!-- SECTION 3 -->
 <section class="section reveal">
-  <span class="section-num fe19-num">03</span>
-  <h2>Priority Order — Which File Wins?</h2>
-  <p>When multiple .env files exist, Vite merges them. If the same variable appears in more than one file, the <span class="highlight">higher priority file wins</span>.</p>
+  <span class="section-num fe18-num">03</span>
+  <h2>The .eslintrc.js Config File</h2>
+  <p>Every ESLint rule set is configured in <code style="font-size:0.875rem">.eslintrc.js</code>. Here is the actual config from the dealmaker-ui repo, broken down piece by piece:</p>
 
-  <table class="env-table">
-    <thead>
-      <tr><th>File</th><th>Priority</th><th class="purpose">Purpose</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>.env.local</td><td class="wins">highest</td><td class="purpose">Your personal overrides — never committed to git</td></tr>
-      <tr><td>.env.[mode]</td><td>high</td><td class="purpose">Mode-specific values (.env.latest, .env.staging, etc.)</td></tr>
-      <tr><td>.env.[mode].local</td><td>high</td><td class="purpose">Mode-specific personal overrides (rare)</td></tr>
-      <tr><td>.env</td><td>lowest</td><td class="purpose">Default fallback values for all environments</td></tr>
-    </tbody>
-  </table>
+  <div class="code-block">
+    <pre><span class="code-comment">// .eslintrc.js</span>
+module.exports = {
+  <span class="code-string">root</span>: <span class="code-keyword">true</span>,           <span class="code-comment">// stop ESLint looking in parent folders</span>
+  <span class="code-string">env</span>: {
+    <span class="code-string">browser</span>: <span class="code-keyword">true</span>,    <span class="code-comment">// window, document etc. are valid globals</span>
+    <span class="code-string">es2021</span>: <span class="code-keyword">true</span>,     <span class="code-comment">// modern JS syntax is allowed</span>
+  },
+  <span class="code-string">extends</span>: [
+    <span class="code-string">'airbnb-base'</span>,                <span class="code-comment">// Airbnb JS rules (no React)</span>
+    <span class="code-string">'plugin:vuejs-accessibility/recommended'</span>,  <span class="code-comment">// a11y rules</span>
+    <span class="code-string">'plugin:vue/recommended'</span>,     <span class="code-comment">// Vue-specific rules</span>
+  ],
+  <span class="code-string">parserOptions</span>: {
+    <span class="code-string">ecmaVersion</span>: <span class="code-string">'latest'</span>,
+    <span class="code-string">sourceType</span>: <span class="code-string">'module'</span>,        <span class="code-comment">// ES import/export syntax</span>
+  },
+  <span class="code-string">rules</span>: {
+    <span class="code-string">'object-curly-newline'</span>: <span class="code-string">'off'</span>, <span class="code-comment">// this one Airbnb rule is disabled</span>
+  },
+  <span class="code-string">ignorePatterns</span>: [<span class="code-string">'dist/'</span>, <span class="code-string">'node_modules/'</span>],  <span class="code-comment">// never lint these</span>
+  <span class="code-string">settings</span>: {
+    <span class="code-string">'import/resolver'</span>: {
+      <span class="code-string">alias</span>: { map: [[<span class="code-string">'@'</span>, <span class="code-string">'./src'</span>]] } <span class="code-comment">// so @ imports resolve</span>
+    }
+  }
+};</pre>
+  </div>
 
-  <p style="margin-top:1.25rem">When you run <code style="font-size:0.875rem">npm run dev</code>, Vite loads <code style="font-size:0.875rem">.env</code> first, then <code style="font-size:0.875rem">.env.local</code> on top. Any variable in <code style="font-size:0.875rem">.env.local</code> overrides the same variable in <code style="font-size:0.875rem">.env</code>.</p>
-  <p>This is why running the repo locally points to <code style="font-size:0.875rem">localhost:8080</code> — <code style="font-size:0.875rem">.env.local</code> overrides the default <code style="font-size:0.875rem">latest.acvauctions.com</code> from <code style="font-size:0.875rem">.env</code>.</p>
+  <div class="config-section">
+    <p><span class="config-key">extends</span> works like inheritance — you start from a big set of rules and then <span class="config-val">rules:</span> lets you override individual ones. Here, <code style="font-size:0.875rem">object-curly-newline</code> is turned off because the team found it too strict.</p>
+  </div>
 </section>
 
 <!-- SECTION 4 -->
 <section class="section reveal">
-  <span class="section-num fe19-num">04</span>
-  <h2>The VITE_ Prefix — What Gets Exposed to the Browser?</h2>
-  <p>There is an important security rule: <span class="highlight">only variables prefixed with <code style="font-size:0.875rem">VITE_</code> are included in the browser bundle</span>. Variables without the prefix are only available at build time (in Node.js) — they never reach the browser.</p>
+  <span class="section-num fe18-num">04</span>
+  <h2>Stylelint — The CSS Version</h2>
+  <p><span class="highlight">Stylelint</span> does the same job as ESLint but for CSS and SCSS. It catches typos in property names, invalid values, wrong units, and style conventions.</p>
 
-  <div class="prefix-box">
-    <div class="prefix-tag prefix-yes">VITE_BASE_URI=localhost:8080</div>
-    <div class="prefix-arrow">&#10132;</div>
-    <div class="prefix-tag prefix-yes">available in browser via import.meta.env</div>
-  </div>
-  <div class="prefix-box" style="margin-top:0.75rem">
-    <div class="prefix-tag prefix-no">APP_KEY=LOCALDLMKR</div>
-    <div class="prefix-arrow">&#10132;</div>
-    <div class="prefix-tag prefix-no">NOT in browser — build-time only</div>
-  </div>
-
-  <p style="margin-top:1.25rem">In a Vue component, you read VITE_ variables using <code style="font-size:0.875rem">import.meta.env</code>:</p>
   <div class="code-block">
-    <pre><span class="code-comment">// In any Vue component or JS file</span>
-<span class="code-keyword">const</span> apiBase = import.meta.env.VITE_BASE_URI
-<span class="code-keyword">const</span> apiUrl  = <span class="code-string">\`https://\${apiBase}/api/deals\`</span>
-
-<span class="code-comment">// import.meta.env also gives you built-in values:</span>
-import.meta.env.MODE      <span class="code-comment">// 'development', 'latest', 'production', etc.</span>
-import.meta.env.PROD      <span class="code-comment">// true if mode is 'production'</span>
-import.meta.env.DEV       <span class="code-comment">// true if mode is 'development'</span></pre>
+    <pre><span class="code-comment">/* stylelint.config.js */</span>
+module.exports = {
+  <span class="code-string">extends</span>: [
+    <span class="code-string">'stylelint-config-recommended-scss'</span>,     <span class="code-comment">// SCSS rules</span>
+    <span class="code-string">'stylelint-config-recommended-vue/scss'</span>,  <span class="code-comment">// Vue &lt;style&gt; blocks</span>
+  ],
+};</pre>
   </div>
+
+  <p>What Stylelint catches in the repo:</p>
+  <ul style="line-height:2;padding-left:1.5rem;margin-top:0.5rem">
+    <li><strong>Unknown properties</strong> — <code style="font-size:0.875rem">colour: red</code> (British spelling) is an error</li>
+    <li><strong>Invalid values</strong> — <code style="font-size:0.875rem">margin: 5</code> (missing unit) is an error</li>
+    <li><strong>SCSS syntax issues</strong> — unclosed mixins, wrong nesting</li>
+    <li><strong>Vue-specific</strong> — scoped style problems in <code style="font-size:0.875rem">&lt;style scoped&gt;</code> blocks</li>
+  </ul>
 </section>
 
 <!-- SECTION 5 -->
 <section class="section reveal">
-  <span class="section-num fe19-num">05</span>
-  <h2>Why .env Files Are Git-Ignored</h2>
-  <p><code style="font-size:0.875rem">.env.local</code> is always in <code style="font-size:0.875rem">.gitignore</code>. This is intentional and important.</p>
+  <span class="section-num fe18-num">05</span>
+  <h2>When Do Linters Run? Vite Plugins.</h2>
+  <p>Both linters are wired into Vite as <span class="highlight">plugins</span>. In <code style="font-size:0.875rem">vite.config.mjs</code>:</p>
 
-  <div style="display:grid;gap:1rem;margin-top:1rem;grid-template-columns:1fr 1fr">
-    <div style="background:#e8f8f5;padding:1.1rem 1.25rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
-      <strong style="color:#00b894">What gets committed</strong><br>
-      <span style="font-size:0.9rem">.env, .env.latest, .env.staging, .env.production — these contain non-secret config like API hostnames. Safe to share with the team.</span>
-    </div>
-    <div style="background:#fdf2ef;padding:1.1rem 1.25rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
-      <strong style="color:#e17055">What stays local</strong><br>
-      <span style="font-size:0.9rem">.env.local — your personal overrides. If it ever contains a real secret (API key, token), it must never enter git history.</span>
-    </div>
+  <div class="code-block">
+    <pre><span class="code-keyword">import</span> eslint <span class="code-keyword">from</span> <span class="code-string">'vite-plugin-eslint'</span>
+<span class="code-keyword">import</span> StylelintPlugin <span class="code-keyword">from</span> <span class="code-string">'vite-plugin-stylelint'</span>
+
+<span class="code-keyword">export default</span> defineConfig({
+  plugins: [
+    vue(),
+    eslint(),           <span class="code-comment">// ← runs ESLint on every .js and .vue file</span>
+    StylelintPlugin(),  <span class="code-comment">// ← runs Stylelint on every .vue style block</span>
+  ]
+})</pre>
   </div>
 
-  <p style="margin-top:1.25rem">A critical point: even though <code style="font-size:0.875rem">VITE_</code> variables end up in the browser bundle, they are not truly secret. Anyone can open DevTools and read them. <span class="highlight">Never put real secrets (passwords, private API keys) in VITE_ variables.</span> Those belong server-side only.</p>
+  <div class="plugin-flow">
+    <div class="pf-box pf-vite">You save a file</div>
+    <div class="pf-arrow">&#10132;</div>
+    <div class="pf-box pf-lint">Vite triggers ESLint + Stylelint</div>
+    <div class="pf-arrow">&#10132;</div>
+    <div class="pf-box pf-out">Errors printed in terminal</div>
+  </div>
+
+  <p style="margin-top:1.5rem">There are two different outcomes depending on when errors are found:</p>
+  <div style="display:grid;gap:1rem;margin-top:1rem;grid-template-columns:1fr 1fr">
+    <div style="background:#e3f2fd;padding:1.1rem 1.25rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">During dev (<code>npm run dev</code>)</strong><br>
+      <span style="font-size:0.9rem">Lint errors appear in the terminal. The dev server keeps running. You see the error but the app still loads.</span>
+    </div>
+    <div style="background:#fdf2ef;padding:1.1rem 1.25rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">During build (<code>npm run build</code>)</strong><br>
+      <span style="font-size:0.9rem">Lint errors <strong>STOP the build</strong>. The dist folder is never created. Nothing gets deployed.</span>
+    </div>
+  </div>
 </section>
 
 <!-- RECAP -->
@@ -189,23 +240,23 @@ import.meta.env.DEV       <span class="code-comment">// true if mode is 'develop
   <span class="section-num">RECAP</span>
   <h2>What We Learned</h2>
   <div style="display:grid;gap:1rem;margin-top:1.25rem">
-    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
-      <strong style="color:#6c5ce7">Environment variables</strong> — named values outside the code. Same code, different values per environment.
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">Linter</strong> — reads code without running it, flags violations of rules (bad patterns, style issues, bugs).
     </div>
     <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
-      <strong style="color:#0984e3">Priority order</strong> — .env.local wins over .env.[mode] wins over .env. Running dev locally loads .env.local, which overrides defaults.
+      <strong style="color:#0984e3">ESLint</strong> — checks JavaScript. Extends Airbnb rules + Vue + accessibility. Config in <code style="font-size:0.875rem">.eslintrc.js</code>.
     </div>
-    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
-      <strong style="color:#00b894">VITE_ prefix</strong> — only variables prefixed VITE_ reach the browser. Others stay build-time only. Read in code via import.meta.env.
+    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
+      <strong style="color:#6c5ce7">Stylelint</strong> — checks CSS/SCSS. Extends SCSS and Vue/SCSS rule sets. Config in <code style="font-size:0.875rem">stylelint.config.js</code>.
     </div>
     <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
-      <strong style="color:#e17055">.env.local is git-ignored</strong> — personal overrides stay off git. VITE_ variables in the browser are public — never put real secrets there.
+      <strong style="color:#e17055">When they run</strong> — both are Vite plugins. Dev mode: warnings in terminal. Build: errors block the entire build.
     </div>
   </div>
 </section>
 
 <!-- CHECKPOINT QUIZ -->
-<section class="section reveal quiz-ep19f">
+<section class="section reveal quiz-ep18f">
   <span class="section-num">CHECKPOINT</span>
   <h2>Probe Your Thinking</h2>
   <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
@@ -214,54 +265,54 @@ import.meta.env.DEV       <span class="code-comment">// true if mode is 'develop
 
   <div class="quiz-card">
     <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
-    <p class="quiz-question">When you run <code>npm run dev</code>, the app points to localhost instead of UAT. Why?</p>
+    <p class="quiz-question">What does a linter do — does it run your code?</p>
     <ul class="quiz-options">
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Because dev mode always uses localhost by default</button></li>
-      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Because .env.local overrides .env — it sets VITE_BASE_URI to localhost:8080, which takes priority</button></li>
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Because Vite ignores .env files during development</button></li>
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Because npm run dev runs a different version of the code than npm run build</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Yes — it runs the code and checks for runtime errors</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>No — it reads and parses the code without running it, then checks rules against the parsed structure</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Yes — it compiles the code and checks if it builds correctly</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>No — it checks the network requests made by the code</button></li>
     </ul>
     <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
     <div class="quiz-answer">
       <div class="quiz-answer-inner">
-        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) Because .env.local overrides .env — it sets VITE_BASE_URI to localhost:8080, which takes priority</strong></div>
-        <p class="quiz-answer-text">.env defines VITE_BASE_URI=latest.acvauctions.com (UAT). .env.local defines VITE_BASE_URI=localhost:8080. When you run npm run dev, both files load but .env.local has higher priority, so the local value wins. This is the intended behavior — each developer's machine points to their own local backend during development.</p>
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) No — it reads and parses the code without running it, then checks rules against the parsed structure</strong></div>
+        <p class="quiz-answer-text">A linter is a static analysis tool — it never executes your code. It parses the source into a tree structure and applies rule checks against that tree. This is why it can catch errors in code that would never be reached at runtime, like an unused variable inside a dead code branch.</p>
       </div>
     </div>
   </div>
 
   <div class="quiz-card">
     <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
-    <p class="quiz-question">What is the VITE_ prefix for, and can users see VITE_ variables?</p>
+    <p class="quiz-question">What happens if ESLint finds an error during <code>npm run build</code>?</p>
     <ul class="quiz-options">
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>VITE_ marks variables as secret — they are hidden from users</button></li>
-      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>VITE_ marks variables to include in the browser bundle — yes, users can see them in DevTools</button></li>
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>VITE_ marks variables that are only used by Vite itself during the build</button></li>
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>VITE_ marks variables that are sent to the server on every API call</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>The error is shown as a warning and the build continues</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>The error is written to a log file but the build completes</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>The build stops immediately — no dist folder is created, nothing gets deployed</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>The file with the error is skipped and the rest of the app builds normally</button></li>
     </ul>
     <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
     <div class="quiz-answer">
       <div class="quiz-answer-inner">
-        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) VITE_ marks variables to include in the browser bundle — yes, users can see them in DevTools</strong></div>
-        <p class="quiz-answer-text">Variables without VITE_ stay build-time only — they never reach the browser. Variables with VITE_ get inlined into the JavaScript bundle. Since the bundle is downloaded by the browser, anyone can open DevTools, search the source, and read these values. They are not secrets. Never put API keys, passwords, or private tokens in VITE_ variables.</p>
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) The build stops immediately — no dist folder is created, nothing gets deployed</strong></div>
+        <p class="quiz-answer-text">During development (npm run dev), lint errors are shown in the terminal but the dev server keeps running — you can still see the app. During a production build (npm run build), lint errors are treated as hard failures that abort the build. This means code with lint errors can never reach production.</p>
       </div>
     </div>
   </div>
 
   <div class="quiz-card">
     <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
-    <p class="quiz-question">Why is .env.local in .gitignore?</p>
+    <p class="quiz-question">What is the difference between ESLint and Stylelint in the dealmaker-ui repo?</p>
     <ul class="quiz-options">
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Because .env.local is generated automatically and doesn't need to be tracked</button></li>
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Because it contains production secrets that must never be committed</button></li>
-      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Because it contains personal overrides specific to one developer's machine — other developers should not receive them</button></li>
-      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Because Vite ignores it if it's tracked in git</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>ESLint is for backend code and Stylelint is for frontend code</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>They do the same thing — one is a backup of the other</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>ESLint checks JavaScript (and Vue script blocks); Stylelint checks CSS/SCSS (and Vue style blocks)</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>ESLint runs at build time; Stylelint runs only at deployment</button></li>
     </ul>
     <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
     <div class="quiz-answer">
       <div class="quiz-answer-inner">
-        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) Because it contains personal overrides specific to one developer's machine — other developers should not receive them</strong></div>
-        <p class="quiz-answer-text">.env.local is for your machine only. If you point VITE_BASE_URI at a local backend running on port 8080, that path only works on your computer. Committing it would break other developers' setups when they pull. And if the file ever contains real credentials, keeping it off git prevents accidental exposure in version history.</p>
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) ESLint checks JavaScript (and Vue script blocks); Stylelint checks CSS/SCSS (and Vue style blocks)</strong></div>
+        <p class="quiz-answer-text">They are separate tools for separate languages. A .vue file has three sections — template, script, and style. ESLint handles the script section (JavaScript), Stylelint handles the style section (SCSS). Both are wired into Vite as plugins, so they both run automatically on every file save during development.</p>
       </div>
     </div>
   </div>
@@ -270,13 +321,13 @@ import.meta.env.DEV       <span class="code-comment">// true if mode is 'develop
 </section>
 
 <!-- NEXT -->
-<section class="next-part" style="background:linear-gradient(135deg,#6c5ce7,#fd79a8)">
+<section class="next-part" style="background:linear-gradient(135deg,#00b894,#0984e3)">
   <h2>Ready for Episode 20?</h2>
-  <p>The app has a login page. But what stops someone from typing /dashboard directly in the URL bar? Route guards — the frontend's first line of defense.</p>
-  <a href="part20.html" class="btn btn-white">Continue to Episode 20 &#10132;</a>
+  <p>Your app talks to different servers depending on the environment — UAT, staging, production. How does it know which URL to use? The answer is .env files and environment variables.</p>
+  <a href="part20.html" class="btn btn-white">Continue to Episode 19 &#10132;</a>
 </section>
 `;
 ---
-<ArticleLayout title="How the Frontend Works — Part 19: Environment Variables | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={19} hasQuiz={true}>
+<ArticleLayout title="How the Frontend Works — Part 18: ESLint & Stylelint | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={19} hasQuiz={true}>
 <Fragment set:html={bodyHtml} />
 </ArticleLayout>
