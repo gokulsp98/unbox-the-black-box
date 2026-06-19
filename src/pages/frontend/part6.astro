@@ -1,0 +1,263 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { frontendSeries } from '../../data/series';
+const inlineStyle = `
+/* ── Hero ── */
+.fe6-hero{background:linear-gradient(135deg,#e17055 0%,#d63031 40%,#6c5ce7 100%)}
+
+/* ── AJAX request flow animation ── */
+.ajax-art{margin:2.5rem auto 0;display:flex;flex-direction:column;align-items:center;gap:0.5rem;max-width:16rem}
+.ajax-bar{height:1.5rem;border-radius:0.75rem;display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.9);opacity:0;animation:ajaxSlide 4s ease-in-out infinite}
+.ajax-bar.bar-browser{background:rgba(9,132,227,0.5);width:8rem;animation-delay:0s}
+.ajax-bar.bar-arrow1{background:transparent;color:rgba(255,255,255,0.6);animation-delay:0.5s;font-size:0.8rem}
+.ajax-bar.bar-server{background:rgba(0,184,148,0.5);width:8rem;animation-delay:1s}
+.ajax-bar.bar-arrow2{background:transparent;color:rgba(255,255,255,0.6);animation-delay:1.5s;font-size:0.8rem}
+.ajax-bar.bar-update{background:rgba(162,155,254,0.5);width:12rem;animation-delay:2s}
+.ajax-badge{background:rgba(255,255,255,0.15);border:0.0625rem solid rgba(255,255,255,0.3);border-radius:1rem;padding:0.2rem 0.75rem;font-family:'Fira Code',monospace;font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.8);opacity:0;animation:ajaxSlide 4s ease-in-out infinite;animation-delay:2.8s}
+@keyframes ajaxSlide{0%,10%{opacity:0;transform:translateX(-8px)}20%,80%{opacity:1;transform:none}90%,100%{opacity:0}}
+
+.fe6-num{color:#e17055;background:#fdf2ef}
+
+/* ── Quiz theming ep6 ── */
+.quiz-ep6f .quiz-q-num{color:#e17055;background:#fdf2ef}
+.quiz-ep6f .quiz-reveal-btn{color:#e17055}
+.quiz-ep6f .quiz-opt-letter{color:#e17055}
+.quiz-ep6f .quiz-option:hover{border-color:#e17055;background:#fdf2ef}
+.quiz-ep6f .quiz-answer-highlight{background:#fdf2ef;border-left:0.25rem solid #e17055}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero fe6-hero">
+  <div class="hero-badge">Episode 6 of 22</div>
+  <h1>AJAX &amp; jQuery —<br>The Web Comes Alive</h1>
+  <p style="color:rgba(255,255,255,0.95)">2005: Google Maps loads without a page refresh. The world is shocked. AJAX changes everything.</p>
+  <div class="ajax-art">
+    <div class="ajax-bar bar-browser">Browser</div>
+    <div class="ajax-bar bar-arrow1">↓ background HTTP request</div>
+    <div class="ajax-bar bar-server">Server</div>
+    <div class="ajax-bar bar-arrow2">↑ JSON data (no page reload)</div>
+    <div class="ajax-bar bar-update">DOM updated — page stays alive</div>
+    <div class="ajax-badge">no reload</div>
+  </div>
+</section>
+
+<!-- SECTION 1 -->
+<section class="section reveal">
+  <span class="section-num fe6-num">01</span>
+  <h2>The Missing Piece: Fetching Data Without Reloading</h2>
+  <p>By 2004, JavaScript could manipulate the DOM beautifully. You could add elements, change colors, validate forms, run timers. But there was still a fundamental gap: <span class="highlight">you could only work with data already on the page</span>.</p>
+  <p>If you needed new data — new messages, new prices, a map tile from the server — you had to reload the entire page. The browser had no way to make an HTTP request in the background and update just part of the page.</p>
+  <p>Until AJAX.</p>
+</section>
+
+<!-- SECTION 2: what is AJAX -->
+<section class="section reveal">
+  <span class="section-num fe6-num">02</span>
+  <h2>What AJAX Actually Is</h2>
+  <p>AJAX stands for <span class="highlight">Asynchronous JavaScript And XML</span>. But the name is misleading on both counts:</p>
+
+  <div style="display:grid;gap:0.75rem;margin-top:1rem">
+    <div style="background:#fdf2ef;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Asynchronous</strong> — the HTTP request runs in the background. JavaScript doesn't pause and wait. Other code keeps running.
+    </div>
+    <div style="background:#fdf2ef;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">JavaScript</strong> — yes, JavaScript makes the request.
+    </div>
+    <div style="background:#fdf2ef;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">And XML</strong> — originally data was returned as XML, but today it is almost always JSON. The XML part is historical.
+    </div>
+  </div>
+
+  <p style="margin-top:1.5rem">AJAX is not a language or a library. It is a <span class="highlight-orange">technique</span>: making HTTP requests from JavaScript, in the background, without reloading the page.</p>
+</section>
+
+<!-- SECTION 3: history of XHR -->
+<section class="section reveal">
+  <span class="section-num fe6-num">03</span>
+  <h2>The Surprising Origin: Microsoft and XMLHttpRequest</h2>
+  <p>The core browser API that makes AJAX possible is called <span class="highlight">XMLHttpRequest</span>. And it was created by Microsoft for Internet Explorer 5 in 1999 — originally as a proprietary ActiveX object, IE-only.</p>
+  <p>Other browsers eventually copied the idea but with different implementations. So for years, AJAX code had to check which browser it was running in:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// Cross-browser AJAX in 2004 — painful</span>
+<span class="code-keyword">var</span> xhr;
+<span class="code-keyword">if</span> (window.XMLHttpRequest) {
+  xhr = <span class="code-keyword">new</span> XMLHttpRequest();  <span class="code-comment">// Firefox, Chrome</span>
+} <span class="code-keyword">else if</span> (window.ActiveXObject) {
+  xhr = <span class="code-keyword">new</span> ActiveXObject(<span class="code-string">"Microsoft.XMLHTTP"</span>); <span class="code-comment">// IE</span>
+}
+xhr.open(<span class="code-string">'GET'</span>, <span class="code-string">'/api/data'</span>);
+xhr.onreadystatechange = <span class="code-keyword">function</span>() {
+  <span class="code-keyword">if</span> (xhr.readyState === 4 &amp;&amp; xhr.status === 200) {
+    <span class="code-comment">// do something with xhr.responseText</span>
+  }
+};
+xhr.send();</pre>
+  </div>
+
+  <p>This worked, but it was verbose and fragile. Every developer copy-pasted this boilerplate from project to project.</p>
+</section>
+
+<!-- SECTION 4: Google Maps -->
+<section class="section reveal">
+  <span class="section-num fe6-num">04</span>
+  <h2>The Moment Everything Changed: Google Maps (2005)</h2>
+  <p>In February 2005, Google launched <span class="highlight">Google Maps</span>. People expected a web map that worked like every other web app of the era: click an arrow, page reloads, new map image appears, page reloads, new image, repeat.</p>
+  <p>Instead, Google Maps loaded a map and let you <span class="highlight-orange">drag it, pan it, and zoom it smoothly</span> — without a single full page reload. As you panned, new map tiles appeared. The page was alive.</p>
+  <p>Google Maps was using AJAX. It was requesting new map tiles from the server in the background as you scrolled, then dropping them into the DOM seamlessly. Web developers who saw it were genuinely shocked.</p>
+  <p>The phrase "web application" started to feel real for the first time. The web could behave like a desktop application.</p>
+</section>
+
+<!-- SECTION 5: jQuery -->
+<section class="section reveal">
+  <span class="section-num fe6-num">05</span>
+  <h2>jQuery (2006): One Library to Fix Everything</h2>
+  <p>Google Maps proved that AJAX worked. But the pain of cross-browser differences remained. Every developer was writing the same browser-detection boilerplate. Every team was solving the same IE vs Firefox inconsistencies.</p>
+  <p>In 2006, John Resig released <span class="highlight">jQuery</span> — a library with one guiding principle: write one piece of code that works in all browsers.</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// Before jQuery: 15 lines of browser-detection code</span>
+<span class="code-comment">// After jQuery:</span>
+$.ajax({
+  url: <span class="code-string">'/api/data'</span>,
+  success: <span class="code-keyword">function</span>(data) {
+    $(<span class="code-string">'#results'</span>).html(data);
+  }
+});</pre>
+  </div>
+
+  <p>jQuery did not invent AJAX. It wrapped all the browser-specific nastiness behind a clean, consistent API. The same was true for DOM manipulation:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// DOM manipulation the old way:</span>
+document.getElementById(<span class="code-string">'box'</span>).style.display = <span class="code-string">'none'</span>;
+
+<span class="code-comment">// jQuery's way:</span>
+$(<span class="code-string">'#box'</span>).hide();
+
+<span class="code-comment">// Selecting by class (old way was painful cross-browser):</span>
+$(<span class="code-string">'.card'</span>).addClass(<span class="code-string">'active'</span>);</pre>
+  </div>
+
+  <p>By 2010, jQuery was on roughly 80% of all websites. It became the default assumption for any web project.</p>
+</section>
+
+<!-- SECTION 6: fetch -->
+<section class="section reveal">
+  <span class="section-num fe6-num">06</span>
+  <h2>The Modern Standard: fetch (2015)</h2>
+  <p>In 2015, browsers standardized a clean, modern API for making HTTP requests called <span class="highlight">fetch</span>. It is built into every modern browser. No library needed.</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// Modern: fetch API (ES6 Promises)</span>
+fetch(<span class="code-string">'/api/users'</span>)
+  .then(response <span class="code-arrow">=&gt;</span> response.json())
+  .then(data <span class="code-arrow">=&gt;</span> {
+    console.log(data);
+  });
+
+<span class="code-comment">// Or with async/await (even cleaner)</span>
+<span class="code-keyword">const</span> response = <span class="code-keyword">await</span> fetch(<span class="code-string">'/api/users'</span>);
+<span class="code-keyword">const</span> data = <span class="code-keyword">await</span> response.json();</pre>
+  </div>
+
+  <p>XMLHttpRequest is still in browsers for backward compatibility, but modern code uses <code style="font-size:0.875rem">fetch</code>. jQuery's AJAX helpers are still used in older codebases, but new projects use <code style="font-size:0.875rem">fetch</code> or libraries like <code style="font-size:0.875rem">axios</code> built on top of it.</p>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">AJAX</strong> is a technique for making background HTTP requests without reloading the page. XMLHttpRequest was the original API, invented by Microsoft for IE5 in 1999.
+    </div>
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">Google Maps (2005)</strong> shocked the world by using AJAX to load map tiles without page reloads — proving the web could behave like a desktop app.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">jQuery (2006)</strong> wrapped browser inconsistencies behind a clean API — making AJAX and DOM manipulation consistent across all browsers.
+    </div>
+    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
+      <strong style="color:#6c5ce7">fetch (2015)</strong> is the modern standard — a clean, Promise-based API built into all modern browsers.
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep6f">
+  <span class="section-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
+    <p class="quiz-question">What does AJAX allow you to do that was not possible before?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Write server-side code in JavaScript</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Make HTTP requests in the background without reloading the page</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Store data locally in the browser</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Run JavaScript on the server</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) Make HTTP requests in the background without reloading the page</strong></div>
+        <p class="quiz-answer-text">AJAX lets JavaScript fetch new data from the server asynchronously — in the background — and update just part of the DOM. The page stays alive, the user keeps their position, and only the changed content updates.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
+    <p class="quiz-question">Which company created XMLHttpRequest — the API that makes AJAX possible?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Google</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Netscape</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Microsoft (for Internet Explorer 5)</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>W3C</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) Microsoft (for Internet Explorer 5)</strong></div>
+        <p class="quiz-answer-text">Somewhat ironically, Microsoft created XMLHttpRequest for IE5 in 1999 as a proprietary ActiveX object. Other browsers eventually copied it. The technique became AJAX in 2005 and was standardized by W3C in 2006.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
+    <p class="quiz-question">What was jQuery's main value proposition when it launched in 2006?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>It was a complete framework for building single-page applications</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>It made JavaScript run faster</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>It wrapped browser differences behind one consistent API — write once, work everywhere</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>It replaced JavaScript with a cleaner language</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) It wrapped browser differences behind one consistent API — write once, work everywhere</strong></div>
+        <p class="quiz-answer-text">jQuery's genius was abstracting away all the browser-specific nastiness. The same $.ajax() call worked in IE6, Firefox 2, and Chrome — jQuery handled the internal differences. By 2010, ~80% of websites used it.</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<!-- NEXT -->
+<section class="next-part" style="background:linear-gradient(135deg,#e17055,#0984e3)">
+  <h2>Ready for Episode 7?</h2>
+  <p>While all this was happening, who was in charge of JavaScript itself? Two companies were shipping incompatible versions. A standards body stepped in — and created ECMAScript. Here's how that works.</p>
+  <a href="part7.html" class="btn btn-white">Continue to Episode 7 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How the Frontend Works — Part 6: AJAX & jQuery | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={6} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

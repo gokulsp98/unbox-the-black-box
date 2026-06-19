@@ -1,0 +1,231 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { frontendSeries } from '../../data/series';
+const inlineStyle = `
+/* ── Hero ── */
+.fe14-hero{background:linear-gradient(135deg,#fdcb6e 0%,#e17055 40%,#d63031 100%)}
+
+/* ── .vue → webpack → bundle animation ── */
+.webpack-art{margin:2.5rem auto 0;max-width:18rem;display:flex;flex-direction:column;gap:0.4rem;align-items:center}
+.wp-files{display:flex;gap:0.5rem;justify-content:center;opacity:0;animation:wpSlide 0.5s ease 0.1s forwards}
+.wp-file{font-family:'Fira Code',monospace;font-size:0.55rem;font-weight:700;padding:0.2rem 0.5rem;border-radius:0.3rem;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);border:0.0625rem solid rgba(255,255,255,0.3)}
+.wp-arrow{color:rgba(255,255,255,0.5);font-size:1rem;opacity:0;animation:wpSlide 0.4s ease 0.5s forwards}
+.wp-box{background:rgba(0,0,0,0.25);border:0.0625rem solid rgba(255,255,255,0.3);border-radius:0.4rem;padding:0.3rem 1rem;font-family:'Fira Code',monospace;font-size:0.6rem;font-weight:700;color:#fff;opacity:0;animation:wpSlide 0.4s ease 0.8s forwards}
+.wp-arrow2{color:rgba(255,255,255,0.5);font-size:1rem;opacity:0;animation:wpSlide 0.4s ease 1.1s forwards}
+.wp-bundle{background:rgba(9,132,227,0.4);border:0.0625rem solid rgba(9,132,227,0.6);border-radius:0.4rem;padding:0.3rem 1.5rem;font-family:'Fira Code',monospace;font-size:0.6rem;font-weight:700;color:#fff;opacity:0;animation:wpSlide 0.4s ease 1.4s forwards}
+@keyframes wpSlide{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.fe14-num{color:#fdcb6e;background:#fef9ec}
+
+/* ── Quiz theming ep14 ── */
+.quiz-ep14f .quiz-q-num{color:#e17055;background:#fef9ec}
+.quiz-ep14f .quiz-reveal-btn{color:#e17055}
+.quiz-ep14f .quiz-opt-letter{color:#e17055}
+.quiz-ep14f .quiz-option:hover{border-color:#e17055;background:#fef9ec}
+.quiz-ep14f .quiz-answer-highlight{background:#fef9ec;border-left:0.25rem solid #fdcb6e}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero fe14-hero">
+  <div class="hero-badge">Episode 14 of 22</div>
+  <h1>Why Build<br>Tools Exist</h1>
+  <p style="color:rgba(255,255,255,0.95)">Modern devs write TypeScript, .vue files, and Sass. Browsers only understand plain HTML, CSS, and JS. Someone has to translate.</p>
+  <div class="webpack-art">
+    <div class="wp-files">
+      <span class="wp-file">Button.vue</span>
+      <span class="wp-file">App.ts</span>
+      <span class="wp-file">styles.scss</span>
+    </div>
+    <div class="wp-arrow">↓</div>
+    <div class="wp-box">webpack + loaders</div>
+    <div class="wp-arrow2">↓</div>
+    <div class="wp-bundle">bundle.js + styles.css</div>
+  </div>
+</section>
+
+<!-- SECTION 1 -->
+<section class="section reveal">
+  <span class="section-num fe14-num">01</span>
+  <h2>The Gap Between What You Write and What Browsers Run</h2>
+  <p>Here is the fundamental challenge of modern frontend development. Developers write:</p>
+  <ul style="line-height:2;padding-left:1.5rem;margin-top:0.5rem">
+    <li><span class="highlight">TypeScript</span> (.ts files) — not plain JavaScript</li>
+    <li><span class="highlight">.vue files</span> — three sections, none of which the browser understands</li>
+    <li><span class="highlight">JSX</span> (.jsx, .tsx) — not valid JavaScript syntax</li>
+    <li><span class="highlight">Sass/SCSS</span> (.scss) — not valid CSS</li>
+    <li><span class="highlight">Hundreds of files</span> — each a separate HTTP request</li>
+  </ul>
+  <p style="margin-top:1rem">Browsers can only run: <span class="highlight-orange">HTML, plain CSS, and plain JavaScript</span>. Nothing else. Build tools exist to bridge this gap.</p>
+</section>
+
+<!-- SECTION 2: what a build tool does -->
+<section class="section reveal">
+  <span class="section-num fe14-num">02</span>
+  <h2>What a Build Tool Does</h2>
+  <p>A build tool performs five main transformations on your code:</p>
+
+  <div style="display:grid;gap:1rem;margin-top:1.5rem">
+    <div style="background:#fef9ec;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #fdcb6e">
+      <strong style="color:#e6a817">1. Transpile</strong><br>
+      Convert TypeScript → JS, JSX → JS, .vue files → JS, SCSS → CSS. Everything becomes something a browser understands.
+    </div>
+    <div style="background:#fef9ec;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #fdcb6e">
+      <strong style="color:#e6a817">2. Bundle</strong><br>
+      Combine 200 separate .js files into a few larger files. Fewer network requests = faster load times. A single bundle.js is one HTTP request instead of 200.
+    </div>
+    <div style="background:#fef9ec;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #fdcb6e">
+      <strong style="color:#e6a817">3. Minify</strong><br>
+      Remove whitespace, shorten variable names (myLongVariableName → a), remove comments. A 1MB file becomes 200KB. Faster to download.
+    </div>
+    <div style="background:#fef9ec;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #fdcb6e">
+      <strong style="color:#e6a817">4. Tree-shake</strong><br>
+      Remove code that was imported but never used. You import a utilities library with 200 functions but only use 3 — tree-shaking removes the other 197 from the bundle.
+    </div>
+    <div style="background:#fef9ec;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #fdcb6e">
+      <strong style="color:#e6a817">5. Handle assets</strong><br>
+      Process images (optimize, add content hashes to filenames), fonts, and other static assets.
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: before vite – webpack -->
+<section class="section reveal">
+  <span class="section-num fe14-num">03</span>
+  <h2>Before Vite: webpack and Separate Tools</h2>
+  <p>Before Vite became popular, the dominant approach used <span class="highlight">webpack</span> as an orchestrator, with separate tools plugged in as "loaders":</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// webpack config — plugging in tools as loaders</span>
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: <span class="code-string">/\.vue$/</span>,
+        use: <span class="code-string">'vue-loader'</span>          <span class="code-comment">// .vue → JS</span>
+      },
+      {
+        test: <span class="code-string">/\.tsx?$/</span>,
+        use: <span class="code-string">'ts-loader'</span>           <span class="code-comment">// TypeScript → JS</span>
+      },
+      {
+        test: <span class="code-string">/\.scss$/</span>,
+        use: [<span class="code-string">'css-loader'</span>, <span class="code-string">'sass-loader'</span>]  <span class="code-comment">// SCSS → CSS</span>
+      },
+      {
+        test: <span class="code-string">/\.jsx?$/</span>,
+        use: <span class="code-string">'babel-loader'</span>        <span class="code-comment">// ES6/JSX → ES5</span>
+      }
+    ]
+  }
+};</pre>
+  </div>
+
+  <p>webpack was the <span class="highlight">orchestrator</span> — it called each tool (loader) at the right time. Babel handled JSX and modern JS syntax. vue-loader compiled .vue files. sass compiled SCSS. TypeScript's compiler handled .ts files.</p>
+  <p>This worked well — but it had a major performance problem. And that problem is what Vite was designed to solve.</p>
+</section>
+
+<!-- SECTION 4: the webpack problem -->
+<section class="section reveal">
+  <span class="section-num fe14-num">04</span>
+  <h2>The webpack Problem</h2>
+  <p>webpack's approach: <span class="highlight-orange">bundle everything upfront</span> before the dev server could start. Every file in your project — all 800 .vue files, all TypeScript, all SCSS — was compiled and bundled before you could see a single page.</p>
+  <p>For a small project: 3-5 seconds to start. Manageable.</p>
+  <p>For a large project with hundreds of components: <span class="highlight">30-60 seconds to start the dev server</span>. Every time you restarted. Every morning.</p>
+  <p>Change one file and save? webpack had to <span class="highlight-orange">rebuild the bundle</span> — even though you changed one small file. 5-10 seconds to see your change.</p>
+  <p>This was the normal developer experience for years. And then Vite appeared.</p>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#fef9ec;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #fdcb6e">
+      <strong style="color:#e6a817">Build tools exist</strong> because browsers only understand HTML, CSS, and plain JavaScript — but developers write TypeScript, .vue files, JSX, and SCSS.
+    </div>
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">Five jobs</strong> — transpile, bundle, minify, tree-shake, and handle assets.
+    </div>
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">webpack's approach</strong> — bundle everything upfront. Worked but was slow (30-60s startup, 5-10s rebuild).
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep14f">
+  <span class="section-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
+    <p class="quiz-question">What does "tree-shaking" do in a build process?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Removes unused CSS classes from the stylesheet</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Removes code that was imported but never actually used in your app</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Compresses images to make them smaller</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Splits the bundle into smaller chunk files</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) Removes code that was imported but never actually used in your app</strong></div>
+        <p class="quiz-answer-text">Tree-shaking analyzes which exported functions/variables from your imports are actually referenced in your code. If you import a library with 200 utilities but only use 3, tree-shaking removes the other 197 from the final bundle. Smaller bundle = faster download.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
+    <p class="quiz-question">What was the main performance problem with webpack?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>It didn't support TypeScript</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>It didn't support .vue files</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>It bundled everything upfront — large projects took 30-60 seconds to start</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>It produced bundles that were too large for the browser</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) It bundled everything upfront — large projects took 30-60 seconds to start</strong></div>
+        <p class="quiz-answer-text">webpack processed and bundled every file in the project before the dev server could start. For large apps with hundreds of components, this meant waiting 30-60 seconds every time you started development. File saves also triggered slow rebuilds (5-10 seconds). This is the exact problem Vite was designed to solve.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
+    <p class="quiz-question">What is "minification" in the context of a build process?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Splitting one large file into multiple smaller files</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Removing dependencies that aren't needed</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Removing whitespace, shortening variable names, removing comments — making files smaller</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Compressing images to WebP format</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) Removing whitespace, shortening variable names, removing comments — making files smaller</strong></div>
+        <p class="quiz-answer-text">Minification removes all unnecessary characters from code. Whitespace, newlines, comments, and long variable names are removed or shortened. The code is identical in function but much smaller in size — often 60-80% reduction. Smaller files download faster.</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<!-- NEXT -->
+<section class="next-part" style="background:linear-gradient(135deg,#e17055,#0984e3)">
+  <h2>Ready for Episode 15?</h2>
+  <p>Evan You (the creator of Vue) looked at webpack's slow bundling approach and asked: what if the dev server didn't bundle at all? Modern browsers support ES Modules natively. Vite was born.</p>
+  <a href="part15.html" class="btn btn-white">Continue to Episode 15 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How the Frontend Works — Part 14: Why Build Tools Exist | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={14} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

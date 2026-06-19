@@ -1,0 +1,281 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { frontendSeries } from '../../data/series';
+const inlineStyle = `
+/* ── Hero ── */
+.fe9-hero{background:linear-gradient(135deg,#e84393 0%,#fd79a8 40%,#e17055 100%)}
+
+/* ── npm install animation: packages appearing ── */
+.npm-install-art{margin:2.5rem auto 0;max-width:16rem;font-family:'Fira Code',monospace;font-size:0.6rem;color:rgba(255,255,255,0.85)}
+.npm-line{display:flex;align-items:center;gap:0.5rem;padding:0.2rem 0;opacity:0;animation:lineAppear 0.4s ease forwards}
+.npm-line:nth-child(1){animation-delay:0s}
+.npm-line:nth-child(2){animation-delay:0.3s}
+.npm-line:nth-child(3){animation-delay:0.6s}
+.npm-line:nth-child(4){animation-delay:0.9s}
+.npm-line:nth-child(5){animation-delay:1.2s}
+.npm-line:nth-child(6){animation-delay:1.5s}
+.npm-check{color:#55efc4;font-size:0.7rem}
+.npm-cmd{color:#f9ca24}
+@keyframes lineAppear{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+
+.fe9-num{color:#fd79a8;background:#fef0f5}
+
+/* ── Quiz theming ep9 ── */
+.quiz-ep9f .quiz-q-num{color:#e84393;background:#fef0f5}
+.quiz-ep9f .quiz-reveal-btn{color:#e84393}
+.quiz-ep9f .quiz-opt-letter{color:#e84393}
+.quiz-ep9f .quiz-option:hover{border-color:#e84393;background:#fef0f5}
+.quiz-ep9f .quiz-answer-highlight{background:#fef0f5;border-left:0.25rem solid #e84393}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero fe9-hero">
+  <div class="hero-badge">Episode 9 of 22</div>
+  <h1>npm — The<br>Package Manager</h1>
+  <p style="color:rgba(255,255,255,0.95)">Before npm: download .js files manually. After npm: one command installs anything, from anyone, instantly.</p>
+  <div class="npm-install-art">
+    <div class="npm-line"><span class="npm-cmd">$ npm install axios</span></div>
+    <div class="npm-line"><span class="npm-check">+</span> axios@1.7.9</div>
+    <div class="npm-line"><span class="npm-check">+</span> follow-redirects@1.15.9</div>
+    <div class="npm-line"><span class="npm-check">+</span> form-data@4.0.1</div>
+    <div class="npm-line"><span class="npm-check">+</span> proxy-from-env@1.1.0</div>
+    <div class="npm-line"><span class="npm-check">✓</span> 4 packages added in 1.2s</div>
+  </div>
+</section>
+
+<!-- SECTION 1 -->
+<section class="section reveal">
+  <span class="section-num fe9-num">01</span>
+  <h2>Life Before npm</h2>
+  <p>Before npm existed (before 2010), sharing JavaScript code between projects was painful. If you wanted to use a library like jQuery, you:</p>
+
+  <div class="flow reveal">
+    <div class="flow-box fb-orange">Go to jQuery website</div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-blue">Download jquery.min.js file</div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-green">Copy it into your project folder</div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-dark">Add a script tag in your HTML manually</div>
+  </div>
+
+  <p style="margin-top:1.5rem">When jQuery released a new version, you repeated the process — downloading the new file, replacing the old one, hoping nothing broke. For each new library you needed, repeat everything from the start.</p>
+  <p>There was no central place to discover libraries. No way to track which versions you were using. No way to automatically get updates. No way to manage dependencies of dependencies.</p>
+</section>
+
+<!-- SECTION 2: npm is two things -->
+<section class="section reveal">
+  <span class="section-num fe9-num">02</span>
+  <h2>npm Is Two Things</h2>
+  <p>npm was created in 2010 — one year after Node.js. It solves the code-sharing problem by being <span class="highlight">two things at once</span>:</p>
+
+  <div class="compare reveal">
+    <div class="compare-card cc-blue">
+      <span class="emoji">🌐</span>
+      <h3>The Registry</h3>
+      <p>npmjs.com — a public website hosting over 2 million packages. Anyone can publish. Anyone can download.</p>
+      <p>Think of it as GitHub for npm packages — a massive public library.</p>
+    </div>
+    <div class="compare-card cc-green">
+      <span class="emoji">&#128187;</span>
+      <h3>The CLI Tool</h3>
+      <p>The command-line program <code style="font-size:0.875rem">npm</code> — comes bundled with Node.js.</p>
+      <p>Run <code style="font-size:0.875rem">npm install axios</code> → CLI contacts the registry, downloads axios, puts it in your project.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: package.json -->
+<section class="section reveal">
+  <span class="section-num fe9-num">03</span>
+  <h2>package.json: The Project's Identity Card</h2>
+  <p>Every Node.js project has a <span class="highlight">package.json</span> file at its root. It is the project's identity card and shopping list combined:</p>
+
+  <div class="code-block">
+    <pre>{
+  <span class="code-string">"name"</span>: <span class="code-string">"my-app"</span>,
+  <span class="code-string">"version"</span>: <span class="code-string">"1.0.0"</span>,
+  <span class="code-string">"scripts"</span>: {
+    <span class="code-string">"dev"</span>: <span class="code-string">"vite --mode development"</span>,
+    <span class="code-string">"build"</span>: <span class="code-string">"vite build"</span>,
+    <span class="code-string">"test"</span>: <span class="code-string">"vitest"</span>
+  },
+  <span class="code-string">"dependencies"</span>: {
+    <span class="code-string">"vue"</span>: <span class="code-string">"^2.7.16"</span>,
+    <span class="code-string">"axios"</span>: <span class="code-string">"^1.7.9"</span>,
+    <span class="code-string">"vuetify"</span>: <span class="code-string">"^2.7.2"</span>
+  },
+  <span class="code-string">"devDependencies"</span>: {
+    <span class="code-string">"vite"</span>: <span class="code-string">"^5.4.14"</span>,
+    <span class="code-string">"eslint"</span>: <span class="code-string">"^8.57.1"</span>,
+    <span class="code-string">"vitest"</span>: <span class="code-string">"^3.1.4"</span>
+  }
+}</pre>
+  </div>
+</section>
+
+<!-- SECTION 4: scripts -->
+<section class="section reveal">
+  <span class="section-num fe9-num">04</span>
+  <h2>Scripts: Shortcuts for Long Commands</h2>
+  <p>The <code style="font-size:0.875rem">scripts</code> section defines shortcuts. Instead of typing <code style="font-size:0.875rem">vite --mode development --host 0.0.0.0</code> every time, you define it once as "dev" and just type <code style="font-size:0.875rem">npm run dev</code>.</p>
+  <p>npm reads the scripts section and runs the full command for you, using Node.js and the executables inside <code style="font-size:0.875rem">node_modules/.bin/</code>.</p>
+</section>
+
+<!-- SECTION 5: dependencies vs devDependencies -->
+<section class="section reveal">
+  <span class="section-num fe9-num">05</span>
+  <h2>dependencies vs devDependencies</h2>
+  <p>This distinction is important and often confused:</p>
+
+  <div class="compare reveal">
+    <div class="compare-card cc-blue">
+      <span class="emoji">&#128666;</span>
+      <h3>dependencies</h3>
+      <p>Packages your <strong>users' browsers need</strong> — they get bundled into the production build and shipped to the end user.</p>
+      <p>Examples: vue, axios, vuetify — the app cannot function without these at runtime.</p>
+    </div>
+    <div class="compare-card cc-orange">
+      <span class="emoji">&#128295;</span>
+      <h3>devDependencies</h3>
+      <p>Packages <strong>only used during development/building</strong> — never shipped to users. They are only on your developer machine.</p>
+      <p>Examples: vite, eslint, vitest — these help you build and test, but users never see them.</p>
+    </div>
+  </div>
+
+  <p style="margin-top:1.5rem">When you do <code style="font-size:0.875rem">npm install</code> (no flags), you get both. In a production Docker build you might use <code style="font-size:0.875rem">npm install --omit=dev</code> to skip devDependencies and save space.</p>
+</section>
+
+<!-- SECTION 6: version numbers -->
+<section class="section reveal">
+  <span class="section-num fe9-num">06</span>
+  <h2>Version Numbers: What ^ Means</h2>
+  <p>npm uses <span class="highlight">semantic versioning</span>: MAJOR.MINOR.PATCH</p>
+
+  <div class="code-block">
+    <pre><span class="code-string">"axios"</span>: <span class="code-string">"^1.7.9"</span>
+
+<span class="code-keyword">1</span>  = major version  (breaking changes)
+<span class="code-keyword">7</span>  = minor version  (new features, backward-compatible)
+<span class="code-keyword">9</span>  = patch version  (bug fixes)
+
+<span class="code-keyword">^</span>  = "install same major, any newer minor/patch"
+     So ^1.7.9 could install 1.8.0 or 1.9.2 but NOT 2.0.0</pre>
+  </div>
+
+  <p>The <code style="font-size:0.875rem">^</code> prefix means: "I want bug fixes and new features, but do not break my API." It is the most common version prefix.</p>
+</section>
+
+<!-- SECTION 7: common commands -->
+<section class="section reveal">
+  <span class="section-num fe9-num">07</span>
+  <h2>Common npm Commands</h2>
+  <div class="code-block">
+    <pre><span class="code-keyword">npm install</span>              <span class="code-comment">— install all packages from package.json</span>
+<span class="code-keyword">npm install axios</span>        <span class="code-comment">— add a new package (adds to dependencies)</span>
+<span class="code-keyword">npm install -D vitest</span>    <span class="code-comment">— add to devDependencies</span>
+<span class="code-keyword">npm run dev</span>              <span class="code-comment">— run the "dev" script</span>
+<span class="code-keyword">npm run build</span>            <span class="code-comment">— run the "build" script</span>
+<span class="code-keyword">npm list</span>                 <span class="code-comment">— list installed packages</span>
+<span class="code-keyword">npm outdated</span>             <span class="code-comment">— show packages with newer versions available</span>
+<span class="code-keyword">npm ci</span>                   <span class="code-comment">— clean install using exact lock file (for CI/CD)</span></pre>
+  </div>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#fef0f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e84393">
+      <strong style="color:#e84393">npm is two things</strong> — a public registry (npmjs.com) and a CLI tool that comes with Node.js.
+    </div>
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">package.json</strong> — the project's identity card: name, version, scripts, dependencies, devDependencies.
+    </div>
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">dependencies vs devDependencies</strong> — dependencies ship to users; devDependencies are for building and testing only.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">^ prefix</strong> — allows newer minor and patch versions of the same major version.
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep9f">
+  <span class="section-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
+    <p class="quiz-question">What are the two distinct things that "npm" refers to?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>A programming language and a database</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>A public package registry and a command-line tool</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>A bundler and a test runner</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>A framework and a build tool</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) A public package registry and a command-line tool</strong></div>
+        <p class="quiz-answer-text">npm refers to both the public registry at npmjs.com (where 2 million+ packages live) and the CLI tool that comes with Node.js (the \`npm\` command you type in your terminal).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
+    <p class="quiz-question">What is the difference between "dependencies" and "devDependencies" in package.json?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>dependencies are for TypeScript; devDependencies are for JavaScript</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>dependencies are external; devDependencies are internal</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>dependencies ship to users; devDependencies are for development/building only</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>dependencies are required; devDependencies are optional</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) dependencies ship to users; devDependencies are for development/building only</strong></div>
+        <p class="quiz-answer-text">dependencies (vue, axios, vuetify) get bundled into your production build and end up in users' browsers. devDependencies (vite, eslint, vitest) are only needed on developer machines to build and test the app — they never ship to users.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
+    <p class="quiz-question">In package.json, what does the ^ in "axios": "^1.7.9" mean?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Install exactly version 1.7.9, no other</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Install the very latest version, ignoring 1.7.9</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Install same major (1.x), any newer minor or patch version</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Install anything above 1.7.9, including major versions</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) Install same major (1.x), any newer minor or patch version</strong></div>
+        <p class="quiz-answer-text">The ^ prefix means "compatible with" — same major version, but allow any newer minor or patch. So ^1.7.9 would install 1.8.0 or 1.9.2 but NOT 2.0.0. Major version changes can contain breaking changes, so ^ keeps you safe.</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<!-- NEXT -->
+<section class="next-part" style="background:linear-gradient(135deg,#e17055,#0984e3)">
+  <h2>Ready for Episode 10?</h2>
+  <p>After npm install runs, a mysterious folder called node_modules appears. It can be 300MB+. Let's look at what's actually inside it — and why there are so many packages when you only listed 35.</p>
+  <a href="part10.html" class="btn btn-white">Continue to Episode 10 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How the Frontend Works — Part 9: npm | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={9} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

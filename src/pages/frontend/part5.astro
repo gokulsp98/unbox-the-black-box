@@ -1,0 +1,255 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { frontendSeries } from '../../data/series';
+const inlineStyle = `
+/* ── Hero ── */
+.fe5-hero{background:linear-gradient(135deg,#6c5ce7 0%,#0984e3 50%,#00b894 100%)}
+
+/* ── IE vs Firefox battle ── */
+.browser-battle-art{margin:2.5rem auto 0;display:flex;gap:2rem;justify-content:center;align-items:center;position:relative}
+.battle-browser{display:flex;flex-direction:column;align-items:center;gap:0.5rem;animation:browserBob 2s ease-in-out infinite}
+.battle-browser:nth-child(3){animation-delay:1s}
+.battle-icon{width:4rem;height:4rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:900}
+.ie-icon{background:rgba(0,120,215,0.3);border:0.125rem solid rgba(0,120,215,0.6)}
+.ff-icon{background:rgba(255,100,0,0.3);border:0.125rem solid rgba(255,100,0,0.6)}
+.battle-label{font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.8)}
+.battle-vs{font-family:'Fira Code',monospace;font-size:1.4rem;font-weight:900;color:rgba(255,255,255,0.6);animation:vsPulse 2s ease-in-out infinite alternate}
+@keyframes browserBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes vsPulse{from{opacity:0.4}to{opacity:1}}
+
+.fe5-num{color:#6c5ce7;background:#f0efff}
+
+/* ── Quiz theming ep5 ── */
+.quiz-ep5f .quiz-q-num{color:#6c5ce7;background:#f0efff}
+.quiz-ep5f .quiz-reveal-btn{color:#6c5ce7}
+.quiz-ep5f .quiz-opt-letter{color:#6c5ce7}
+.quiz-ep5f .quiz-option:hover{border-color:#6c5ce7;background:#f0efff}
+.quiz-ep5f .quiz-answer-highlight{background:#f0efff;border-left:0.25rem solid #6c5ce7}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero fe5-hero">
+  <div class="hero-badge">Episode 5 of 22</div>
+  <h1>The DOM Standard<br>&amp; Browser Wars</h1>
+  <p style="color:rgba(255,255,255,0.95)">Netscape and Microsoft disagreed on everything. The web nearly fractured. Then standards won.</p>
+  <div class="browser-battle-art">
+    <div class="battle-browser">
+      <div class="battle-icon ie-icon">🌐</div>
+      <span class="battle-label">Internet Explorer</span>
+    </div>
+    <span class="battle-vs">VS</span>
+    <div class="battle-browser">
+      <div class="battle-icon ff-icon">🦊</div>
+      <span class="battle-label">Netscape / Firefox</span>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 1 -->
+<section class="section reveal">
+  <span class="section-num fe5-num">01</span>
+  <h2>Before a Standard: Two Incompatible Worlds</h2>
+  <p>When both Netscape and Microsoft shipped their browsers with DOM support, they had a problem: <span class="highlight">they did it completely differently</span>.</p>
+  <p>Netscape's early DOM was barely a DOM at all. You could access form elements and images — that was essentially it:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// Netscape's way (early)</span>
+document.forms[0]          <span class="code-comment">// access the first form</span>
+document.images[0].src     <span class="code-comment">// access the first image</span>
+
+<span class="code-comment">// Microsoft's way (IE)</span>
+document.all(<span class="code-string">'myElement'</span>)  <span class="code-comment">// IE's completely different API</span></pre>
+  </div>
+
+  <p>A developer who wanted their page to work in both browsers had to write <span class="highlight-orange">two entirely different code paths</span> and check which browser they were in:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// Early cross-browser code (painful)</span>
+<span class="code-keyword">if</span> (document.getElementById) {
+  <span class="code-comment">// Standards-compliant browsers</span>
+  elem = document.getElementById(<span class="code-string">'box'</span>);
+} <span class="code-keyword">else if</span> (document.all) {
+  <span class="code-comment">// IE's proprietary method</span>
+  elem = document.all[<span class="code-string">'box'</span>];
+} <span class="code-keyword">else if</span> (document.layers) {
+  <span class="code-comment">// Netscape 4's proprietary method</span>
+  elem = document.layers[<span class="code-string">'box'</span>];
+}</pre>
+  </div>
+
+  <p>Every serious JavaScript developer in the late 1990s had this exact pattern memorized. It was tedious, fragile, and necessary.</p>
+</section>
+
+<!-- SECTION 2: W3C steps in -->
+<section class="section reveal">
+  <span class="section-num fe5-num">02</span>
+  <h2>W3C Steps In: The DOM Standard</h2>
+  <p>The <span class="highlight">W3C</span> (World Wide Web Consortium), the organization Tim Berners-Lee founded to steward web standards, stepped in to create an official DOM specification that all browsers should follow.</p>
+</section>
+
+<div class="timeline reveal" style="max-width:43.75rem;margin:2.5rem auto;padding:0 1.5rem 0 4rem">
+  <div class="timeline-item">
+    <div class="timeline-year">1998</div>
+    <div class="timeline-text"><strong>DOM Level 1</strong> published — getElementById, createElement, appendChild. The basic building blocks.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">2000</div>
+    <div class="timeline-text"><strong>DOM Level 2</strong> — added events (onclick, onmouseover) and CSS manipulation via JavaScript</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">2004</div>
+    <div class="timeline-text"><strong>DOM Level 3</strong> — keyboard events, more traversal methods</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">2009+</div>
+    <div class="timeline-text"><strong>DOM Living Standard</strong> — no more version numbers. Continuously updated by WHATWG. querySelector, classList, fetch, and more added over time. <span class="timeline-chip">current model</span></div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>The standard was clear. Both browsers were <em>supposed</em> to implement it. In practice, it took years before either browser fully complied. Microsoft in particular had little incentive — they had already won the browser wars.</p>
+</section>
+
+<!-- SECTION 3: browser wars -->
+<section class="section reveal">
+  <span class="section-num fe5-num">03</span>
+  <h2>The Browser Wars</h2>
+  <p>Between 1996 and 2003, Netscape and Microsoft fought for browser market share in a way that was genuinely damaging to the web. Both kept adding <span class="highlight-orange">proprietary features</span> — things that only worked in their browser — trying to lock developers and users in.</p>
+  <p>Microsoft's strategy was particularly aggressive: bundle Internet Explorer free with Windows. By 2003, <span class="highlight">IE had over 95% market share</span>. Netscape effectively collapsed. Microsoft had won.</p>
+  <p>The consequence: with no competition, Microsoft largely stopped developing IE for several years. Web standards stagnated. Developers were stuck writing code for one browser that didn't follow the standards it claimed to support.</p>
+</section>
+
+<div class="compare reveal">
+  <div class="compare-card cc-blue">
+    <span class="emoji">🌐</span>
+    <h3>Internet Explorer</h3>
+    <p><strong>Peak share:</strong> 95% in 2003</p>
+    <p><strong>Strategy:</strong> Bundle free with Windows, add IE-only features</p>
+    <p><strong>Standards:</strong> Poor and inconsistent support</p>
+    <p><strong>End:</strong> Microsoft killed IE officially in 2022</p>
+  </div>
+  <div class="compare-card cc-green">
+    <span class="emoji">🦊</span>
+    <h3>Firefox &amp; Chrome</h3>
+    <p><strong>Firefox launched:</strong> 2004 (from Netscape's open source code)</p>
+    <p><strong>Chrome launched:</strong> 2008 (by Google, with V8 engine)</p>
+    <p><strong>Strategy:</strong> Follow the standards properly</p>
+    <p><strong>Result:</strong> IE market share fell steadily from 2008 onward</p>
+  </div>
+</div>
+
+<!-- SECTION 4: resolution -->
+<section class="section reveal">
+  <span class="section-num fe5-num">04</span>
+  <h2>How It Resolved</h2>
+  <p>The standards won, but slowly. Firefox's launch in 2004 started chipping away at IE's dominance. Chrome's launch in 2008 accelerated the decline significantly — Chrome was dramatically faster thanks to its V8 JavaScript engine, and it followed standards closely.</p>
+  <p>IE's market share fell from 95% in 2003 to under 50% by 2010 to under 5% by 2018. Microsoft finally killed IE officially in <span class="highlight">June 2022</span>.</p>
+  <p>The death of IE removed the single biggest obstacle in web development. Developers no longer needed to write browser-detection code or maintain IE-specific workarounds. The web finally converged on a single standard.</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// Modern code — works in all browsers</span>
+<span class="code-keyword">const</span> elem = document.getElementById(<span class="code-string">'box'</span>);
+elem.classList.add(<span class="code-string">'active'</span>);
+elem.style.display = <span class="code-string">'block'</span>;</pre>
+  </div>
+
+  <p>No browser sniffing. No <code style="font-size:0.875rem">document.all</code>. No <code style="font-size:0.875rem">document.layers</code>. One API. Works everywhere.</p>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
+      <strong style="color:#6c5ce7">Before standards</strong> — Netscape and IE had incompatible DOM APIs. Every developer wrote two code paths.
+    </div>
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">W3C standardized the DOM</strong> — Level 1 in 1998, Level 2 in 2000, now a living standard.
+    </div>
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Browser wars</strong> — IE reached 95% market share but then stagnated. Firefox (2004) and Chrome (2008) broke the monopoly.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">IE died in 2022</strong> — the main source of browser inconsistency is gone. The web converged on one standard.
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep5f">
+  <span class="section-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
+    <p class="quiz-question">What was Internet Explorer's market share at its peak around 2003?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>About 50%</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>About 70%</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Over 95%</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>About 80%</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) Over 95%</strong></div>
+        <p class="quiz-answer-text">By 2003, Internet Explorer had over 95% browser market share, largely because Microsoft bundled it free with Windows. Netscape had effectively collapsed. This near-monopoly meant Microsoft had little incentive to follow web standards carefully.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
+    <p class="quiz-question">When was DOM Level 1 (the first official DOM standard) published?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>1995</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>1996</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>1998</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>2004</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) 1998</strong></div>
+        <p class="quiz-answer-text">The W3C published DOM Level 1 in 1998, three years after JavaScript was created. It defined getElementById, createElement, and appendChild — the basic APIs that are still in use today.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
+    <p class="quiz-question">When did Microsoft officially kill Internet Explorer?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>2016</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>2019</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>2022</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>2024</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) 2022</strong></div>
+        <p class="quiz-answer-text">Microsoft officially retired Internet Explorer in June 2022, effectively ending the main source of browser incompatibility that developers had struggled with for over two decades.</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<!-- NEXT -->
+<section class="next-part" style="background:linear-gradient(135deg,#e17055,#0984e3)">
+  <h2>Ready for Episode 6?</h2>
+  <p>Standards helped — but developers still needed cross-browser code. In 2005, Google Maps shocked the world by loading a map without refreshing the page. Let's look at AJAX and jQuery — the tools that finally made the interactive web work everywhere.</p>
+  <a href="part6.html" class="btn btn-white">Continue to Episode 6 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How the Frontend Works — Part 5: DOM Standard & Browser Wars | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={5} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

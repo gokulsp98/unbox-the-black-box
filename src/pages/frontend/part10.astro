@@ -1,0 +1,249 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { frontendSeries } from '../../data/series';
+const inlineStyle = `
+/* ── Hero ── */
+.fe10-hero{background:linear-gradient(135deg,#6c5ce7 0%,#0984e3 50%,#00b894 100%)}
+
+/* ── node_modules filling up animation ── */
+.nm-art{margin:2.5rem auto 0;max-width:16rem;display:flex;flex-direction:column;gap:0.3rem}
+.nm-folder{display:flex;align-items:center;gap:0.5rem;font-family:'Fira Code',monospace;font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.75);opacity:0;animation:nmAppear 0.5s ease forwards}
+.nm-folder:nth-child(1){animation-delay:0.1s}
+.nm-folder:nth-child(2){animation-delay:0.25s}
+.nm-folder:nth-child(3){animation-delay:0.4s}
+.nm-folder:nth-child(4){animation-delay:0.55s}
+.nm-folder:nth-child(5){animation-delay:0.7s}
+.nm-folder:nth-child(6){animation-delay:0.85s}
+.nm-dot{width:0.5rem;height:0.5rem;border-radius:50%;background:rgba(255,255,255,0.4);flex-shrink:0}
+.nm-size{margin-left:auto;color:rgba(255,255,255,0.4);font-size:0.5rem}
+@keyframes nmAppear{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+
+.fe10-num{color:#6c5ce7;background:#f0efff}
+
+/* ── Quiz theming ep10 ── */
+.quiz-ep10f .quiz-q-num{color:#6c5ce7;background:#f0efff}
+.quiz-ep10f .quiz-reveal-btn{color:#6c5ce7}
+.quiz-ep10f .quiz-opt-letter{color:#6c5ce7}
+.quiz-ep10f .quiz-option:hover{border-color:#6c5ce7;background:#f0efff}
+.quiz-ep10f .quiz-answer-highlight{background:#f0efff;border-left:0.25rem solid #6c5ce7}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero fe10-hero">
+  <div class="hero-badge">Episode 10 of 22</div>
+  <h1>node_modules —<br>The Downloaded Code</h1>
+  <p style="color:rgba(255,255,255,0.95)">You listed 35 packages. npm installed 847. Your folder is now 300MB. What happened?</p>
+  <div class="nm-art">
+    <div class="nm-folder"><div class="nm-dot"></div>node_modules/<span class="nm-size">300 MB</span></div>
+    <div class="nm-folder"><div class="nm-dot" style="background:rgba(108,92,231,0.7)"></div>  vue/ <span class="nm-size">2.1 MB</span></div>
+    <div class="nm-folder"><div class="nm-dot" style="background:rgba(9,132,227,0.6)"></div>  @vue/compiler-core/ <span class="nm-size">1.4 MB</span></div>
+    <div class="nm-folder"><div class="nm-dot" style="background:rgba(0,184,148,0.6)"></div>  @babel/parser/ <span class="nm-size">0.9 MB</span></div>
+    <div class="nm-folder"><div class="nm-dot"></div>  estree-walker/ <span class="nm-size">0.1 MB</span></div>
+    <div class="nm-folder"><div class="nm-dot"></div>  ... 842 more packages</div>
+  </div>
+</section>
+
+<!-- SECTION 1 -->
+<section class="section reveal">
+  <span class="section-num fe10-num">01</span>
+  <h2>What Is node_modules?</h2>
+  <p>When you run <code style="font-size:0.875rem">npm install</code>, npm creates a folder called <span class="highlight">node_modules</span> in your project. This folder contains the <span class="highlight-orange">actual JavaScript source code</span> of every installed package — not just a reference, the real files.</p>
+  <p>Open any subfolder inside node_modules and you will find a package.json and .js files — exactly the code the package author wrote and published to npm.</p>
+  <p>Your application code imports from these files. When Vite transforms a file that says <code style="font-size:0.875rem">import axios from 'axios'</code>, it resolves that to <code style="font-size:0.875rem">node_modules/axios/index.js</code>.</p>
+</section>
+
+<!-- SECTION 2: the explosion -->
+<section class="section reveal">
+  <span class="section-num fe10-num">02</span>
+  <h2>Why 35 Packages Becomes 847</h2>
+  <p>Here is the most common shock for new developers: your package.json has 35 packages. You run <code style="font-size:0.875rem">npm install</code>. Node_modules has 847 packages and takes up 300MB. What happened?</p>
+  <p>Every package you install has <span class="highlight">its own dependencies</span>. And those dependencies have their own dependencies. And so on. npm resolves the entire dependency tree automatically.</p>
+
+  <div class="flow reveal">
+    <div class="flow-box fb-purple">You install: vue</div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-blue">vue needs: @vue/compiler-core</div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-orange">that needs: @babel/parser</div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-green">that needs: estree-walker</div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-dark">... and so on</div>
+  </div>
+
+  <p style="margin-top:1.5rem">You asked for one package. npm installed the entire tree of everything that package needs to work. This is by design — you do not need to worry about what vue's internal dependencies are. npm handles it.</p>
+</section>
+
+<div class="analogy reveal">
+  <p>Ordering a <strong>burger from a restaurant</strong>. You order one burger. The restaurant needs: the bun (from a bakery), the patty (from a meat supplier), lettuce (from a farm), cheese (from a dairy). Each of those suppliers has their own supply chain. You just ordered a burger, but dozens of things had to happen. npm works the same way.</p>
+</div>
+
+<!-- SECTION 3: .bin -->
+<section class="section reveal">
+  <span class="section-num fe10-num">03</span>
+  <h2>The .bin Folder: Where Commands Come From</h2>
+  <p>Inside node_modules there is a hidden folder: <span class="highlight">node_modules/.bin/</span>. This folder contains executable commands that npm scripts can run.</p>
+
+  <div class="code-block">
+    <pre>node_modules/
+  .bin/
+    vite        <span class="code-comment">← runs when you type "npm run dev" (scripts.dev calls vite)</span>
+    vitest      <span class="code-comment">← runs when you type "npm run test"</span>
+    eslint      <span class="code-comment">← runs when npm's eslint script fires</span>
+    tsc         <span class="code-comment">← TypeScript compiler</span></pre>
+  </div>
+
+  <p>When you define a script like <code style="font-size:0.875rem">"dev": "vite"</code> in package.json, npm looks for <code style="font-size:0.875rem">vite</code> in node_modules/.bin/. This is why you do not need to install Vite globally on your machine — it is self-contained in the project.</p>
+</section>
+
+<!-- SECTION 4: package-lock.json -->
+<section class="section reveal">
+  <span class="section-num fe10-num">04</span>
+  <h2>package-lock.json: The Exact Version Record</h2>
+  <p>Remember that package.json uses flexible version ranges like <code style="font-size:0.875rem">^1.7.9</code>. The <code style="font-size:0.875rem">^</code> means "any 1.x version." The problem: if you run <code style="font-size:0.875rem">npm install</code> today, you might get 1.8.0. Your colleague runs it tomorrow and gets 1.8.1. Both are valid, but you have different code.</p>
+  <p>This is the source of "works on my machine" bugs.</p>
+  <p><span class="highlight">package-lock.json</span> solves this by recording the <span class="highlight-orange">exact version</span> of every installed package:</p>
+
+  <div class="compare reveal">
+    <div class="compare-card cc-orange">
+      <span class="emoji">&#128203;</span>
+      <h3>package.json</h3>
+      <p>Says: <code style="font-size:0.875rem">"axios": "^1.7.9"</code></p>
+      <p>Means: "I'm OK with 1.7.9 or any newer 1.x"</p>
+      <p>Flexible — written by the developer</p>
+    </div>
+    <div class="compare-card cc-blue">
+      <span class="emoji">&#128274;</span>
+      <h3>package-lock.json</h3>
+      <p>Says: <code style="font-size:0.875rem">"axios": "1.7.9"</code> (exact)</p>
+      <p>Means: "This specific version was installed"</p>
+      <p>Auto-generated — never edit manually</p>
+    </div>
+  </div>
+
+  <p style="margin-top:1.5rem">When you run <code style="font-size:0.875rem">npm ci</code> (used in CI/CD pipelines), npm reads the lock file and installs <span class="highlight">exactly those versions</span> — no flexibility. Every developer, every deploy, same code.</p>
+  <p>The lock file is committed to git. package.json is committed to git. node_modules is <span class="highlight-orange">never</span> committed to git.</p>
+</section>
+
+<!-- SECTION 5: golden rules -->
+<section class="section reveal">
+  <span class="section-num fe10-num">05</span>
+  <h2>The Golden Rules of node_modules</h2>
+
+  <div style="display:grid;gap:1rem;margin-top:1.5rem">
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">NEVER edit files inside node_modules</strong><br>
+      It is auto-generated code. Your changes will be overwritten the next time anyone runs npm install. If a package has a bug, file an issue with the package author.
+    </div>
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">NEVER commit node_modules to git</strong><br>
+      It is in .gitignore. Everyone can regenerate it by running npm install. Committing it would make your repo enormous.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">DO commit package-lock.json</strong><br>
+      This ensures everyone gets the exact same package versions.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">To "reset" node_modules</strong><br>
+      Delete the folder and run npm install. It regenerates perfectly from package.json and package-lock.json.
+    </div>
+  </div>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
+      <strong style="color:#6c5ce7">node_modules</strong> contains the actual JavaScript source code of every installed package, including all transitive dependencies.
+    </div>
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">35 → 847 packages</strong> — because every package has its own dependencies, resolved automatically by npm.
+    </div>
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">package-lock.json</strong> locks exact versions — prevents "works on my machine" bugs. Never edit it manually.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">node_modules is never committed</strong> — anyone can regenerate it with npm install.
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep10f">
+  <span class="section-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
+    <p class="quiz-question">Why does installing 35 packages result in 800+ packages in node_modules?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>npm downloads multiple versions of each package</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Each package has its own dependencies, creating a full dependency tree</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>npm downloads the dev dependencies of every package too</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>npm duplicates packages for safety</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) Each package has its own dependencies, creating a full dependency tree</strong></div>
+        <p class="quiz-answer-text">vue depends on @vue/compiler-core, which depends on @babel/parser, which depends on other things. npm resolves the entire tree transitively. You ask for 35 packages and get all of their dependencies too.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
+    <p class="quiz-question">What is the purpose of package-lock.json?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>It prevents you from adding new packages</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>It is a backup of package.json</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>It records exact installed versions so everyone gets the same packages</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>It lists which packages are safe to delete</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) It records exact installed versions so everyone gets the same packages</strong></div>
+        <p class="quiz-answer-text">package.json uses flexible version ranges (^1.7.9). package-lock.json records the exact version that was actually installed (1.7.9). This ensures every developer and every CI build uses identical code, preventing "works on my machine" bugs.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
+    <p class="quiz-question">What is the correct thing to do if you accidentally edit a file inside node_modules?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Commit the changes to git immediately</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Contact the package author to merge your changes</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Delete node_modules and run npm install to regenerate it cleanly</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Keep the changes — node_modules is just like any other folder</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) Delete node_modules and run npm install to regenerate it cleanly</strong></div>
+        <p class="quiz-answer-text">node_modules is auto-generated. Your edits will be overwritten the next time anyone runs npm install. The golden rule: never edit node_modules. If you think a package has a bug, file an issue with the maintainer. Regenerate your local copy by deleting the folder and running npm install.</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<!-- NEXT -->
+<section class="next-part" style="background:linear-gradient(135deg,#e17055,#0984e3)">
+  <h2>Ready for Episode 11?</h2>
+  <p>jQuery and AJAX gave us interactivity. But as web apps grew bigger, jQuery code became a tangled mess. There was a deeper problem — and frameworks were invented to solve it.</p>
+  <a href="part11.html" class="btn btn-white">Continue to Episode 11 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How the Frontend Works — Part 10: node_modules | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={10} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

@@ -1,0 +1,308 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { frontendSeries } from '../../data/series';
+const inlineStyle = `
+/* ── Hero ── */
+.fe21-hero{background:linear-gradient(135deg,#0984e3 0%,#00cec9 50%,#55efc4 100%)}
+
+/* ── Deploy animation ── */
+.deploy-art{margin:2.5rem auto 0;display:flex;flex-direction:column;align-items:center;gap:0.5rem}
+.deploy-step{font-family:'Fira Code',monospace;font-size:0.75rem;padding:0.35rem 1.1rem;border-radius:0.5rem;background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.9);border:0.0625rem solid rgba(255,255,255,0.2);animation:deploySlide 0.35s ease both}
+.deploy-step:nth-child(1){animation-delay:0.1s}
+.deploy-step:nth-child(2){animation-delay:0.25s}
+.deploy-step:nth-child(3){animation-delay:0.4s}
+.deploy-step:nth-child(4){animation-delay:0.55s;background:rgba(255,255,255,0.22);font-weight:700}
+@keyframes deploySlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.fe21-num{color:#0984e3;background:#e3f2fd}
+
+/* ── Dist tree ── */
+.dist-tree{font-family:'Fira Code',monospace;font-size:0.82rem;background:#1a1a2e;color:#e0e0e0;padding:1.25rem 1.5rem;border-radius:0.875rem;line-height:2;margin-top:1.25rem}
+.dist-dir{color:#00cec9}
+.dist-file{color:#a29bfe}
+.dist-comment{color:#636e72}
+
+/* ── vs backend ── */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.25rem}
+@media(max-width:600px){.compare-grid{grid-template-columns:1fr}}
+
+/* ── CDN diagram ── */
+.cdn-diagram{display:flex;flex-direction:column;align-items:center;gap:0.75rem;margin-top:1.25rem}
+.cdn-row{display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;justify-content:center}
+.cdn-box{padding:0.55rem 1.1rem;border-radius:0.625rem;font-size:0.82rem;font-weight:600;text-align:center}
+.cdn-user{background:#e3f2fd;color:#0984e3;border:0.0625rem solid #b3d9f7}
+.cdn-cdn{background:#e8f8f5;color:#00b894;border:0.0625rem solid #b2dfdb}
+.cdn-origin{background:#f0efff;color:#6c5ce7;border:0.0625rem solid #d4c9f7}
+.cdn-arrow{color:#aaa;font-size:1rem}
+
+/* ── Dockerfile stages ── */
+.stage-cards{display:grid;gap:0.75rem;margin-top:1.25rem}
+.stage-card{background:#fff;border:0.0625rem solid #e0e0e0;border-radius:0.875rem;padding:1rem 1.25rem;display:flex;gap:1rem;align-items:flex-start}
+.stage-num{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;padding:0.25rem 0.6rem;border-radius:0.5rem;background:#e3f2fd;color:#0984e3;white-space:nowrap;margin-top:0.1rem}
+.stage-title{font-weight:700;font-size:0.9rem;margin-bottom:0.3rem}
+.stage-desc{font-size:0.85rem;color:#555;line-height:1.6}
+
+/* ── Quiz theming ep21 ── */
+.quiz-ep21f .quiz-q-num{color:#0984e3;background:#e3f2fd}
+.quiz-ep21f .quiz-reveal-btn{color:#0984e3}
+.quiz-ep21f .quiz-opt-letter{color:#0984e3}
+.quiz-ep21f .quiz-option:hover{border-color:#0984e3;background:#e3f2fd}
+.quiz-ep21f .quiz-answer-highlight{background:#e3f2fd;border-left:0.25rem solid #0984e3}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero fe21-hero">
+  <div class="hero-badge">Episode 21 of 22</div>
+  <h1>Production, CDN<br>&amp; Deployment</h1>
+  <p style="color:rgba(255,255,255,0.95)">npm run build creates a /dist folder of static files. No server process, no Node.js running. Just HTML, JS, and CSS — served from a CDN to every user on the planet.</p>
+  <div class="deploy-art">
+    <div class="deploy-step">npm run build:prod</div>
+    <div class="deploy-step">&#8594; Vite bundles everything into /dist</div>
+    <div class="deploy-step">&#8594; CI/CD uploads /dist to CDN</div>
+    <div class="deploy-step">&#8594; Users download files directly from CDN</div>
+  </div>
+</section>
+
+<!-- SECTION 1 -->
+<section class="section reveal">
+  <span class="section-num fe21-num">01</span>
+  <h2>What npm run build Creates</h2>
+  <p>When you run <code style="font-size:0.875rem">npm run build</code>, Vite processes all your Vue components, TypeScript, SCSS, and environment variables — and outputs a <span class="highlight">/dist folder</span> of plain static files:</p>
+
+  <div class="dist-tree">
+    <span class="dist-dir">dist/</span><br>
+    &nbsp;&nbsp;<span class="dist-file">index.html</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-comment"># entry point</span><br>
+    &nbsp;&nbsp;<span class="dist-dir">assets/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-file">main-a1b2c3.js</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-comment"># core app code</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-file">vendor-d4e5f6.js</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-comment"># vue, vuetify, axios</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-file">dashboard-g7h8i9.js</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-comment"># lazy-loaded chunk</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-file">main-j0k1l2.css</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-comment"># all styles</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-file">logo-m3n4.svg</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="dist-comment"># static assets</span>
+  </div>
+
+  <p style="margin-top:1.25rem">The hash in each filename (like <code style="font-size:0.875rem">a1b2c3</code>) changes whenever the file content changes. This is called <span class="highlight">content hashing</span> — it ensures browsers never serve a cached old version after a deploy.</p>
+  <p>The Vue source files, TypeScript, SCSS, and node_modules are completely gone from /dist. Users receive finished JavaScript and CSS — they never see your source code.</p>
+</section>
+
+<!-- SECTION 2 -->
+<section class="section reveal">
+  <span class="section-num fe21-num">02</span>
+  <h2>Frontend vs Backend: No Running Process</h2>
+  <p>This is the single biggest difference between frontend and backend deployment.</p>
+
+  <div class="compare-grid">
+    <div style="background:#e3f2fd;padding:1.1rem 1.25rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">Backend (your API server)</strong>
+      <ul style="padding-left:1.2rem;margin-top:0.5rem;font-size:0.9rem;line-height:2">
+        <li>Docker container running in Kubernetes</li>
+        <li>Node.js / Java / Go process stays alive</li>
+        <li>You can shell into the container</li>
+        <li>Source code is inside the container</li>
+        <li>Processes requests, queries databases</li>
+      </ul>
+    </div>
+    <div style="background:#e8f8f5;padding:1.1rem 1.25rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">Frontend (the Vue app)</strong>
+      <ul style="padding-left:1.2rem;margin-top:0.5rem;font-size:0.9rem;line-height:2">
+        <li>Static files on a CDN or file server</li>
+        <li>No running process — files just sit there</li>
+        <li>Nothing to shell into</li>
+        <li>Source code is compiled away</li>
+        <li>Browser does all the computation</li>
+      </ul>
+    </div>
+  </div>
+
+  <p style="margin-top:1.25rem">When you deploy a backend change, you build a new Docker image and restart a container. When you deploy a frontend change, you upload new static files and the old ones are replaced. No process restart needed — the next user request downloads the new files.</p>
+</section>
+
+<!-- SECTION 3 -->
+<section class="section reveal">
+  <span class="section-num fe21-num">03</span>
+  <h2>What Is a CDN?</h2>
+  <p>A <span class="highlight">CDN</span> (Content Delivery Network) is a global network of servers that cache and serve your static files. Instead of every user in the world fetching files from a single data centre, the CDN has copies in dozens of locations — Tokyo, London, Sao Paulo, New York.</p>
+
+  <div class="cdn-diagram">
+    <div class="cdn-row">
+      <div class="cdn-box cdn-user">User in Mumbai</div>
+      <div class="cdn-arrow">&#10132;</div>
+      <div class="cdn-box cdn-cdn">CDN edge — Singapore</div>
+      <div class="cdn-arrow">&#10132;</div>
+      <div class="cdn-box cdn-cdn" style="font-size:0.75rem">serves cached files instantly</div>
+    </div>
+    <div class="cdn-row">
+      <div class="cdn-box cdn-user">User in Berlin</div>
+      <div class="cdn-arrow">&#10132;</div>
+      <div class="cdn-box cdn-cdn">CDN edge — Frankfurt</div>
+      <div class="cdn-arrow">&#10132;</div>
+      <div class="cdn-box cdn-cdn" style="font-size:0.75rem">serves cached files instantly</div>
+    </div>
+    <div style="font-size:0.78rem;color:#888;text-align:center">Only on cache miss does CDN fetch from origin — then caches for everyone else</div>
+    <div class="cdn-row">
+      <div class="cdn-box cdn-cdn">Any CDN edge</div>
+      <div class="cdn-arrow">&#10132;</div>
+      <div class="cdn-box cdn-origin">Origin (S3 bucket / file server)</div>
+    </div>
+  </div>
+
+  <p style="margin-top:1.25rem">Why does this matter? The files don't change between requests. Once the CDN has <code style="font-size:0.875rem">vendor-d4e5f6.js</code>, it serves it to millions of users without ever touching the origin again — until you deploy a new version with a different hash.</p>
+</section>
+
+<!-- SECTION 4 -->
+<section class="section reveal">
+  <span class="section-num fe21-num">04</span>
+  <h2>The Dockerfile: Multi-Stage Build</h2>
+  <p>The dealmaker-ui repo has a <code style="font-size:0.875rem">Dockerfile</code> that runs the build in isolation. It uses a multi-stage approach so the final output contains only the compiled files — not Node.js, not source code, not node_modules.</p>
+
+  <div class="stage-cards">
+    <div class="stage-card">
+      <span class="stage-num">stage 1</span>
+      <div>
+        <div class="stage-title">base</div>
+        <div class="stage-desc">Start from node:20-alpine (a minimal Node.js image). Set working directory to /app.</div>
+      </div>
+    </div>
+    <div class="stage-card">
+      <span class="stage-num">stage 2</span>
+      <div>
+        <div class="stage-title">install</div>
+        <div class="stage-desc">Copy package.json and package-lock.json. Run npm ci to install exact versions. This layer is cached — if package.json has not changed, Docker skips this step entirely on subsequent builds.</div>
+      </div>
+    </div>
+    <div class="stage-card">
+      <span class="stage-num">stage 3</span>
+      <div>
+        <div class="stage-title">build-latest / build-staging / build-production</div>
+        <div class="stage-desc">Copy source files. Run npm run build:latest (or staging/production). Vite reads the correct .env file, compiles everything, writes /dist.</div>
+      </div>
+    </div>
+    <div class="stage-card" style="background:#e8f8f5;border-color:#b2dfdb">
+      <span class="stage-num" style="background:#e8f8f5;color:#00b894">result</span>
+      <div>
+        <div class="stage-title" style="color:#00b894">Only /dist leaves</div>
+        <div class="stage-desc">CI/CD picks up the /dist folder and uploads it to the CDN or file server. Node.js, source code, and node_modules are discarded. What users receive is only the compiled output.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5 -->
+<section class="section reveal">
+  <span class="section-num fe21-num">05</span>
+  <h2>Frontend Code Is Always Public</h2>
+  <p>Because the /dist files are downloaded by every user's browser, there is no such thing as hiding frontend code. Anyone can:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// In any browser, on any page:</span>
+<span class="code-comment">// DevTools -> Sources tab -> find main-a1b2c3.js</span>
+<span class="code-comment">// Click {} to pretty-print</span>
+<span class="code-comment">// Read every component, every logic flow, every API endpoint path</span></pre>
+  </div>
+
+  <p>This is expected — it is how the web works. But it means:</p>
+  <ul style="line-height:2;padding-left:1.5rem;margin-top:0.5rem">
+    <li>Never put secrets (API keys, tokens) in frontend code</li>
+    <li>Never rely on hidden client-side logic for security</li>
+    <li>The backend must enforce all authorization — it cannot trust the frontend</li>
+  </ul>
+
+  <p>This is why there is a separate backend with its own authentication, even though the frontend has route guards. The two layers serve different purposes: UX protection (frontend) and data protection (backend).</p>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">Build output</strong> — npm run build creates /dist: hashed JS chunks, CSS, and assets. Source code is compiled away.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">No running process</strong> — unlike backend containers, the frontend is just static files. No server to restart after a deploy.
+    </div>
+    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
+      <strong style="color:#6c5ce7">CDN</strong> — global file distribution network. Users download files from the nearest edge server. Cached by hash until the next deploy changes the filename.
+    </div>
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Frontend code is public</strong> — every user can read it in DevTools. Secrets and real security belong on the backend only.
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep21f">
+  <span class="section-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
+    <p class="quiz-question">What does the /dist folder contain, and what does it NOT contain?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>It contains .vue source files and node_modules — the browser runs them directly</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>It contains compiled JS, CSS, and assets with content hashes — no source files, no node_modules</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>It contains the Vite config and a running Node.js server</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>It contains a Docker image with the full application</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(B) It contains compiled JS, CSS, and assets with content hashes — no source files, no node_modules</strong></div>
+        <p class="quiz-answer-text">The build process transforms every .vue, .ts, and .scss file into plain JavaScript and CSS, then writes them to /dist with content hashes in their filenames. The source files, TypeScript compiler, SCSS preprocessor, Vite, and all of node_modules are not included — they were needed to build, not to run. The browser only needs the compiled output.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
+    <p class="quiz-question">Why do the filenames in /dist have hashes like main-a1b2c3.js?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>To make the filenames unique so they do not overwrite each other</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>To bust the browser cache — the hash changes when the content changes, forcing the browser to download the new version</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>To encrypt the file content so it cannot be read in DevTools</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>To tell the CDN which version of Node.js was used to build the file</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(B) To bust the browser cache — the hash changes when the content changes, forcing the browser to download the new version</strong></div>
+        <p class="quiz-answer-text">Browsers aggressively cache static files. If a file is called main.js, the browser may serve the cached version even after a deploy. With content hashing, main-a1b2c3.js becomes main-z9y8x7.js when the content changes — it is a different URL, so the browser must fetch it fresh. Files that did not change keep the same hash and stay cached, making repeat visits fast.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
+    <p class="quiz-question">How is deploying a frontend app different from deploying a backend service?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Frontend deployment requires more steps — it needs Docker, Kubernetes, and a load balancer</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>There is no difference — both run a Node.js process that serves requests</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Frontend deployment is uploading static files with no running process — backend deployment starts a long-lived process in a container</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Frontend deployment creates a Docker container that browsers can connect to directly</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">&#10003; Correct: <strong>(C) Frontend deployment is uploading static files with no running process — backend deployment starts a long-lived process in a container</strong></div>
+        <p class="quiz-answer-text">A backend service runs continuously — it listens for HTTP requests, queries databases, processes logic. It lives in a container you can ssh into, with source code, a runtime, and a running process. A frontend deployment is just copying files to a file server or CDN. No process runs. No container to inspect. The computation happens entirely in the user's browser when they download the files.</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<!-- NEXT -->
+<section class="next-part" style="background:linear-gradient(135deg,#0984e3,#00b894)">
+  <h2>Ready for Episode 22?</h2>
+  <p>You have covered everything — from 1991 HTML to Vite, Vue, Tailwind, ESLint, .env files, route guards, and CDN deployment. The final episode puts it all together in one complete picture.</p>
+  <a href="part22.html" class="btn btn-white">Continue to Episode 22 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How the Frontend Works — Part 21: Production, CDN & Deployment | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={21} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

@@ -1,0 +1,285 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { frontendSeries } from '../../data/series';
+const inlineStyle = `
+/* ── Hero ── */
+.fe20-hero{background:linear-gradient(135deg,#d63031 0%,#e17055 50%,#fdcb6e 100%)}
+
+/* ── Lock animation ── */
+.auth-art{margin:2.5rem auto 0;display:flex;flex-direction:column;align-items:center;gap:0.75rem}
+.auth-url{font-family:'Fira Code',monospace;font-size:0.8rem;padding:0.4rem 1.2rem;border-radius:0.5rem;background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.9);border:0.0625rem solid rgba(255,255,255,0.2)}
+.auth-arrow{color:rgba(255,255,255,0.6);font-size:0.85rem}
+.auth-outcome{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.auth-pill{padding:0.3rem 1rem;border-radius:1rem;font-size:0.72rem;font-weight:700;animation:pillIn 0.4s ease both}
+.auth-pill.blocked{background:#ff7675;color:#fff;animation-delay:0.4s}
+.auth-pill.allowed{background:#55efc4;color:#1a1a2e;animation-delay:0.6s}
+@keyframes pillIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.fe20-num{color:#d63031;background:#fdecea}
+
+/* ── Guard flow ── */
+.guard-flow{display:grid;gap:0.75rem;margin-top:1.25rem}
+.gf-row{display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap}
+.gf-box{padding:0.6rem 1.1rem;border-radius:0.625rem;font-size:0.82rem;font-weight:600}
+.gf-trigger{background:#fdecea;color:#d63031;border:0.0625rem solid #f5b7b1}
+.gf-check{background:#fdf2ef;color:#e17055;border:0.0625rem solid #fcd6c0}
+.gf-pass{background:#e8f8f5;color:#00b894;border:0.0625rem solid #b2dfdb}
+.gf-fail{background:#fdecea;color:#d63031;border:0.0625rem solid #f5b7b1}
+.gf-arrow{color:#aaa;font-size:1rem}
+
+/* ── Security split ── */
+.sec-split{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.25rem}
+@media(max-width:600px){.sec-split{grid-template-columns:1fr}}
+
+/* ── Quiz theming ep20 ── */
+.quiz-ep20f .quiz-q-num{color:#d63031;background:#fdecea}
+.quiz-ep20f .quiz-reveal-btn{color:#d63031}
+.quiz-ep20f .quiz-opt-letter{color:#d63031}
+.quiz-ep20f .quiz-option:hover{border-color:#d63031;background:#fdecea}
+.quiz-ep20f .quiz-answer-highlight{background:#fdecea;border-left:0.25rem solid #d63031}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero fe20-hero">
+  <div class="hero-badge">Episode 20 of 22</div>
+  <h1>Authentication &amp;<br>Route Guards</h1>
+  <p style="color:rgba(255,255,255,0.95)">The login page is there — but what stops someone from typing /dashboard directly in the URL bar? Route guards intercept every navigation and decide: go through, or redirect to login?</p>
+  <div class="auth-art">
+    <div class="auth-url">browser types: /dashboard</div>
+    <div class="auth-arrow">&#10142; router.beforeEach() runs</div>
+    <div class="auth-outcome">
+      <span class="auth-pill blocked">no token → redirect /login</span>
+      <span class="auth-pill allowed">token found → proceed ✓</span>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 1 -->
+<section class="section reveal">
+  <span class="section-num fe20-num">01</span>
+  <h2>The Problem: URL Bar Is Always Accessible</h2>
+  <p>In a Vue single-page app, <span class="highlight">Vue Router</span> controls which component is shown for each URL. But the router lives in the browser — which means a user can type any URL directly and the router will try to render that page.</p>
+
+  <p>Without a guard:</p>
+  <div class="code-block">
+    <pre><span class="code-comment">// User not logged in, but types this in the browser:</span>
+<span class="code-comment">// https://app.acvauctions.com/deals/dashboard</span>
+
+<span class="code-comment">// Without a guard, the router just renders DashboardView.vue</span>
+<span class="code-comment">// The user sees the page — but the API calls will fail (unauthorized)</span>
+<span class="code-comment">// UI is visible, data is empty/broken</span></pre>
+  </div>
+
+  <p>A route guard intercepts the navigation before the component renders and checks: does this user have permission to be here?</p>
+</section>
+
+<!-- SECTION 2 -->
+<section class="section reveal">
+  <span class="section-num fe20-num">02</span>
+  <h2>router.beforeEach() — The Gate</h2>
+  <p>In <code style="font-size:0.875rem">src/router/index.js</code>, the dealmaker-ui repo uses <code style="font-size:0.875rem">router.beforeEach()</code> — a hook that runs before every route change:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// src/router/index.js</span>
+router.beforeEach((to, from, next) => {
+  <span class="code-keyword">const</span> authorization = getAuthorization()  <span class="code-comment">// check localStorage</span>
+
+  <span class="code-keyword">if</span> (to.meta.requiresAuth && !authorization) {
+    <span class="code-comment">// Route requires auth, but user has no token</span>
+    next({ name: <span class="code-string">'Login'</span> })    <span class="code-comment">// redirect to login page</span>
+  } <span class="code-keyword">else</span> {
+    next()                      <span class="code-comment">// proceed normally</span>
+  }
+})</pre>
+  </div>
+
+  <div class="guard-flow">
+    <div class="gf-row">
+      <div class="gf-box gf-trigger">User navigates to /dashboard</div>
+      <div class="gf-arrow">&#10132;</div>
+      <div class="gf-box gf-check">beforeEach() fires</div>
+      <div class="gf-arrow">&#10132;</div>
+      <div class="gf-box gf-check">getAuthorization() checks localStorage</div>
+    </div>
+    <div class="gf-row" style="padding-left:2rem">
+      <div class="gf-box gf-pass">token found → next() → render page</div>
+      <span style="color:#aaa;margin:0 0.5rem">or</span>
+      <div class="gf-box gf-fail">no token → next('/login') → redirect</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3 -->
+<section class="section reveal">
+  <span class="section-num fe20-num">03</span>
+  <h2>Where the Token Lives: localStorage</h2>
+  <p>After the user logs in, the server returns a token. The frontend stores it in <span class="highlight">localStorage</span> — a key-value store that persists in the browser even after the tab is closed.</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// src/utilities/authorization.js</span>
+<span class="code-keyword">const</span> KEY = <span class="code-string">'authorization'</span>
+
+<span class="code-keyword">export function</span> addAuthorization(token) {
+  localStorage.setItem(KEY, token)    <span class="code-comment">// save after login</span>
+}
+
+<span class="code-keyword">export function</span> removeAuthorization() {
+  localStorage.removeItem(KEY)        <span class="code-comment">// clear on logout</span>
+}
+
+<span class="code-keyword">export function</span> getAuthorization() {
+  <span class="code-keyword">return</span> localStorage.getItem(KEY)     <span class="code-comment">// read in route guard</span>
+}</pre>
+  </div>
+
+  <p>The route guard calls <code style="font-size:0.875rem">getAuthorization()</code>. If it returns <code style="font-size:0.875rem">null</code> (no token), the guard redirects to login. If it returns a token string, the guard calls <code style="font-size:0.875rem">next()</code> and the page renders.</p>
+</section>
+
+<!-- SECTION 4 -->
+<section class="section reveal">
+  <span class="section-num fe20-num">04</span>
+  <h2>What the Guard Can and Cannot Do</h2>
+  <p>The route guard controls what the <span class="highlight">UI shows</span>. It cannot control what data a user accesses. These are two separate concerns.</p>
+
+  <div class="sec-split">
+    <div style="background:#e8f8f5;padding:1.1rem 1.25rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">What the frontend guard does</strong>
+      <ul style="padding-left:1.2rem;margin-top:0.5rem;font-size:0.9rem;line-height:1.9">
+        <li>Prevents rendering protected pages without a token</li>
+        <li>Redirects unauthenticated users to login</li>
+        <li>Hides UI from users who aren't supposed to see it</li>
+      </ul>
+    </div>
+    <div style="background:#fdecea;padding:1.1rem 1.25rem;border-radius:0.875rem;border-left:0.25rem solid #d63031">
+      <strong style="color:#d63031">What it cannot do</strong>
+      <ul style="padding-left:1.2rem;margin-top:0.5rem;font-size:0.9rem;line-height:1.9">
+        <li>Prevent a technical user from calling the API directly (curl, Postman)</li>
+        <li>Guarantee the token is valid — the server verifies that</li>
+        <li>Hide source code — all frontend JS is public</li>
+      </ul>
+    </div>
+  </div>
+
+  <p style="margin-top:1.25rem">The <span class="highlight">real security lives on the backend</span>. Every API endpoint validates the token on every request. Even if someone bypasses the route guard, they cannot get actual data without a valid token that the server accepts.</p>
+  <p>Frontend security = good user experience (no broken pages). Backend security = actual data protection.</p>
+</section>
+
+<!-- SECTION 5 -->
+<section class="section reveal">
+  <span class="section-num fe20-num">05</span>
+  <h2>Page Style Is Always Public</h2>
+  <p>A question that came up: if a user isn't logged in, can they see other pages' styles? Yes — but only the visual design, not data.</p>
+
+  <p>When your app is deployed, the browser downloads all the JavaScript and CSS upfront (or lazily on demand). The HTML structure and CSS of any page is compiled into the bundle — it can be found in DevTools regardless of whether the user is authenticated.</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// What's always publicly visible (just HTML/CSS):</span>
+<span class="code-comment">// - Page layout and design</span>
+<span class="code-comment">// - Button positions, component structure</span>
+<span class="code-comment">// - Class names, CSS rules</span>
+
+<span class="code-comment">// What's protected by route guards + backend auth:</span>
+<span class="code-comment">// - The actual deal data, bid amounts, customer info</span>
+<span class="code-comment">// - API responses that populate the UI</span></pre>
+  </div>
+
+  <p>This is why frontend security alone is never enough. Hiding the UI without protecting the API would be like locking the front door but leaving the back window open.</p>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#fdecea;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #d63031">
+      <strong style="color:#d63031">Route guards</strong> — router.beforeEach() runs before every navigation. Checks for a token. Redirects to login if not found.
+    </div>
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">localStorage</strong> — where the token is stored after login. addAuthorization / removeAuthorization / getAuthorization functions manage it.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">Frontend vs backend security</strong> — guards protect the UI experience. Real data security lives on the backend, which validates every API request.
+    </div>
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">Page styles are public</strong> — CSS and HTML structure are always downloadable. Only data (API responses) requires authorization to access.
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep20f">
+  <span class="section-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
+    <p class="quiz-question">What does router.beforeEach() do in Vue Router?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>It runs after every page renders to check if it loaded correctly</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>It runs before every route change and can redirect the user or allow navigation to proceed</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>It runs only when the user first opens the app</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>It validates the API token with the backend server</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) It runs before every route change and can redirect the user or allow navigation to proceed</strong></div>
+        <p class="quiz-answer-text">router.beforeEach() is a navigation guard — a hook that fires before the router changes to any new route. Inside it, you receive the destination route (to), the current route (from), and a next() function. Calling next() allows navigation; calling next('/login') redirects instead. It runs on every navigation — typing a URL, clicking a link, or calling router.push() from code.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
+    <p class="quiz-question">If a user bypasses the route guard (e.g. with DevTools), can they access deal data?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Yes — the route guard is the only protection, bypassing it grants full access</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Yes — but only read access, not write access</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>No — the API still requires a valid token. The backend validates every request independently</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Only if they also clear localStorage</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) No — the API still requires a valid token. The backend validates every request independently</strong></div>
+        <p class="quiz-answer-text">The route guard only controls what gets rendered in the browser. It has no authority over the backend. Every API call includes the authorization token in the request header — the backend checks that token on every single request and rejects it if it's missing, expired, or invalid. A user could bypass the guard and see the page structure, but the API calls would all return 401 Unauthorized and no data would load.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
+    <p class="quiz-question">Where is the authorization token stored after login, and how does the route guard read it?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>In a Vue component's data() function — read via Vuex</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>In a cookie — the router reads it via document.cookie</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>In localStorage — the guard calls getAuthorization() which reads localStorage.getItem('authorization')</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>In a .env.local file — the guard reads import.meta.env.VITE_AUTH_TOKEN</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) In localStorage — the guard calls getAuthorization() which reads localStorage.getItem('authorization')</strong></div>
+        <p class="quiz-answer-text">After login, addAuthorization(token) calls localStorage.setItem('authorization', token). The route guard calls getAuthorization() which reads that key back. localStorage persists across page reloads and browser restarts — so the user stays logged in even after closing the tab. Logout calls removeAuthorization() which removes the key, causing the guard to redirect to login on the next navigation.</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<!-- NEXT -->
+<section class="next-part" style="background:linear-gradient(135deg,#d63031,#6c5ce7)">
+  <h2>Ready for Episode 21?</h2>
+  <p>The app is built — now how does it actually reach users? Vite creates a /dist folder. What is it, where does it go, and what does a CDN have to do with it?</p>
+  <a href="part21.html" class="btn btn-white">Continue to Episode 21 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How the Frontend Works — Part 20: Authentication & Route Guards | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={20} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

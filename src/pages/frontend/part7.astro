@@ -1,0 +1,252 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { frontendSeries } from '../../data/series';
+const inlineStyle = `
+/* ── Hero ── */
+.fe7-hero{background:linear-gradient(135deg,#0984e3 0%,#6c5ce7 50%,#e17055 100%)}
+
+/* ── ES version ladder animation ── */
+.es-ladder-art{margin:2.5rem auto 0;display:flex;flex-direction:column;gap:0.4rem;align-items:center;max-width:14rem}
+.es-rung{height:1.6rem;border-radius:0.4rem;display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;font-size:0.6rem;font-weight:700;color:#fff;opacity:0;animation:rungRise 0.5s ease forwards}
+.es-rung:nth-child(1){background:rgba(255,255,255,0.15);width:5rem;animation-delay:0s}
+.es-rung:nth-child(2){background:rgba(255,255,255,0.2);width:7rem;animation-delay:0.2s}
+.es-rung:nth-child(3){background:rgba(255,255,255,0.28);width:9rem;animation-delay:0.4s}
+.es-rung:nth-child(4){background:rgba(255,255,255,0.36);width:11rem;animation-delay:0.6s}
+.es-rung:nth-child(5){background:rgba(9,132,227,0.7);width:13rem;animation-delay:0.8s}
+@keyframes rungRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.fe7-num{color:#0984e3;background:#e3f2fd}
+
+/* ── Quiz theming ep7 ── */
+.quiz-ep7f .quiz-q-num{color:#0984e3;background:#e3f2fd}
+.quiz-ep7f .quiz-reveal-btn{color:#0984e3}
+.quiz-ep7f .quiz-opt-letter{color:#0984e3}
+.quiz-ep7f .quiz-option:hover{border-color:#0984e3;background:#e3f2fd}
+.quiz-ep7f .quiz-answer-highlight{background:#e3f2fd;border-left:0.25rem solid #0984e3}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero fe7-hero">
+  <div class="hero-badge">Episode 7 of 22</div>
+  <h1>ECMAScript —<br>The Standard Behind JavaScript</h1>
+  <p style="color:rgba(255,255,255,0.95)">JavaScript had two competing versions. A standards body stepped in and created ECMAScript. ES6 changed everything.</p>
+  <div class="es-ladder-art">
+    <div class="es-rung">ES1 — 1997</div>
+    <div class="es-rung">ES3 — 1999</div>
+    <div class="es-rung">ES5 — 2009</div>
+    <div class="es-rung">ES6 — 2015 ★</div>
+    <div class="es-rung">ES2016+ — yearly</div>
+  </div>
+</section>
+
+<!-- SECTION 1 -->
+<section class="section reveal">
+  <span class="section-num fe7-num">01</span>
+  <h2>The Chaos: JavaScript vs JScript</h2>
+  <p>When Netscape created JavaScript in 1995, Microsoft saw it and copied it for Internet Explorer. Microsoft called their version <span class="highlight">JScript</span>. It was not quite the same — there were subtle differences in behavior between JavaScript in Netscape and JScript in IE.</p>
+  <p>Now developers had two browsers with two slightly incompatible scripting languages. Even the core language was becoming a portability problem, not just the DOM.</p>
+  <p>Netscape wanted to fix this by creating a standard. In 1996, they submitted JavaScript to <span class="highlight-orange">ECMA</span> — the European Computer Manufacturers Association — a standards organization.</p>
+</section>
+
+<!-- SECTION 2: why ECMAScript -->
+<section class="section reveal">
+  <span class="section-num fe7-num">02</span>
+  <h2>Why It's Called ECMAScript (Not JavaScript)</h2>
+  <p>ECMA created a technical committee, TC39, and began writing an official specification. They wanted to call the standard "JavaScript" — but there was a problem.</p>
+  <p>The trademark on the name "JavaScript" was held by <span class="highlight">Sun Microsystems</span> (the company that made Java). Sun had licensed the name "JavaScript" to Netscape, but it was Sun's trademark, not Netscape's. ECMA could not use it for their standard.</p>
+  <p>So the standard got a new name: <span class="highlight-orange">ECMAScript</span>. After ECMA. TC39 committee. The spec number was ECMA-262.</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// To be clear:</span>
+<span class="code-keyword">ECMAScript</span>  = the formal standard (the spec document)
+<span class="code-keyword">JavaScript</span>  = the language developers write (implemented from the spec)
+<span class="code-keyword">ES6</span>         = shorthand for ECMAScript version 6 (2015)</pre>
+  </div>
+
+  <p>When developers say "ES6 syntax" or "ES2015" or "ECMAScript 2015", they all mean the same thing. JavaScript and ECMAScript are the same language — one is the spec, one is the implementation.</p>
+</section>
+
+<!-- SECTION 3: timeline -->
+<section class="section reveal">
+  <span class="section-num fe7-num">03</span>
+  <h2>The Version Timeline</h2>
+</section>
+
+<div class="timeline reveal" style="max-width:43.75rem;margin:2.5rem auto;padding:0 1.5rem 0 4rem">
+  <div class="timeline-item">
+    <div class="timeline-year">1997</div>
+    <div class="timeline-text"><strong>ES1</strong> — first official specification published</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">1999</div>
+    <div class="timeline-text"><strong>ES3</strong> — first widely used version. Regular expressions, better string handling.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">2009</div>
+    <div class="timeline-text"><strong>ES5</strong> — major update. Strict mode, JSON support, Array methods (forEach, map, filter). Adopted everywhere.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">2015 ★</div>
+    <div class="timeline-text"><strong>ES6 / ES2015</strong> — the biggest update in JavaScript history. Also known as ES2015. <span class="timeline-chip">game changer</span></div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">2016+</div>
+    <div class="timeline-text">One new version per year (ES2016, ES2017 … ES2024). Smaller, incremental improvements.</div>
+  </div>
+</div>
+
+<!-- SECTION 4: ES6 features -->
+<section class="section reveal">
+  <span class="section-num fe7-num">04</span>
+  <h2>ES6 (2015): The Game Changer</h2>
+  <p>ES6 is by far the most important JavaScript release. It is why you hear "modern JavaScript" vs "old JavaScript." Almost every new feature developers rely on today came from ES6:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// 1. let and const — block-scoped variables (no more var issues)</span>
+<span class="code-keyword">const</span> name = <span class="code-string">'Alice'</span>;
+<span class="code-keyword">let</span> count = 0;
+
+<span class="code-comment">// 2. Arrow functions — shorter syntax</span>
+<span class="code-keyword">const</span> add = (a, b) <span class="code-arrow">=&gt;</span> a + b;
+
+<span class="code-comment">// 3. Template literals — embed variables in strings</span>
+<span class="code-string">\`Hello, \${name}! Count is \${count}.\`</span>
+
+<span class="code-comment">// 4. Destructuring — unpack values from arrays/objects</span>
+<span class="code-keyword">const</span> { id, title } = user;
+<span class="code-keyword">const</span> [first, second] = items;
+
+<span class="code-comment">// 5. ES Modules — import and export</span>
+<span class="code-keyword">import</span> axios <span class="code-keyword">from</span> <span class="code-string">'axios'</span>;
+<span class="code-keyword">export default</span> MyComponent;
+
+<span class="code-comment">// 6. Classes</span>
+<span class="code-keyword">class</span> Animal {
+  constructor(name) { <span class="code-keyword">this</span>.name = name; }
+}
+
+<span class="code-comment">// 7. Promises — cleaner async code</span>
+fetch(<span class="code-string">'/api/data'</span>).then(r <span class="code-arrow">=&gt;</span> r.json()).then(data <span class="code-arrow">=&gt;</span> ...)</pre>
+  </div>
+</section>
+
+<!-- SECTION 5: ES Modules and Babel -->
+<section class="section reveal">
+  <span class="section-num fe7-num">05</span>
+  <h2>ES Modules and the Babel Problem</h2>
+  <p>Two ES6 features deserve special attention because they are directly relevant to how modern frontend code works:</p>
+
+  <p><strong>ES Modules</strong> — the <code style="font-size:0.875rem">import/export</code> syntax is not just syntactic sugar. It is a built-in module system for JavaScript. Before ES6, there was no official way to split code across multiple files and import between them. This is the exact same import syntax that Vite uses when serving files in development mode. Modern browsers support ES Modules natively.</p>
+
+  <p><strong>The Babel Problem</strong> — ES6 was amazing, but old browsers (especially IE) did not support it. Developers wanted to write modern ES6 code but needed it to run on older browsers. The solution: <span class="highlight">Babel</span>, released in 2014.</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// You write (ES6):</span>
+<span class="code-keyword">const</span> greet = name <span class="code-arrow">=&gt;</span> <span class="code-string">\`Hello, \${name}\`</span>;
+
+<span class="code-comment">// Babel compiles to (ES5 — runs in old browsers):</span>
+<span class="code-keyword">var</span> greet = <span class="code-keyword">function</span>(name) {
+  <span class="code-keyword">return</span> <span class="code-string">'Hello, '</span> + name;
+};</pre>
+  </div>
+
+  <p>Babel was one of the first major "build tools" for JavaScript — a program that transforms JavaScript. It is a key ancestor of the build tool ecosystem that led to Vite, which we will cover in Episode 15.</p>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">ECMAScript</strong> is the formal standard. JavaScript is the language. The name came from the trademark issue — Sun held "JavaScript."
+    </div>
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">ES6 (2015)</strong> was the biggest update ever — let/const, arrow functions, template literals, destructuring, classes, Promises, and ES Modules.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">ES Modules</strong> (import/export) are the module system modern browsers and Vite use natively.
+    </div>
+    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
+      <strong style="color:#6c5ce7">Babel</strong> compiled modern ES6 down to ES5 for older browsers — pioneering the "build tool" concept.
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep7f">
+  <span class="section-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
+    <p class="quiz-question">Why is the official JavaScript standard called "ECMAScript" and not "JavaScript"?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>JavaScript was considered too informal a name for a standard</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Sun Microsystems held the "JavaScript" trademark, so ECMA couldn't use it</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>ECMAScript is for the browser; JavaScript is for the server</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>They are completely different languages</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) Sun Microsystems held the "JavaScript" trademark, so ECMA couldn't use it</strong></div>
+        <p class="quiz-answer-text">Sun Microsystems (the company that made Java) held the trademark on "JavaScript." When Netscape submitted the language to ECMA for standardization, ECMA could not legally name their standard "JavaScript," so they called it ECMAScript instead.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
+    <p class="quiz-question">What year was ES6 released, and why is it considered a game changer?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>2009 — it added JSON support and Array methods</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>1999 — it was the first widely adopted version</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>2015 — it added let/const, arrow functions, ES Modules, Promises, and much more</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>2016 — it introduced async/await</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) 2015 — it added let/const, arrow functions, ES Modules, Promises, and much more</strong></div>
+        <p class="quiz-answer-text">ES6 (2015) was the biggest update in JavaScript's history. Almost every modern feature you use — arrow functions, template literals, destructuring, import/export, Promises — came from ES6.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
+    <p class="quiz-question">What does Babel do?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>It is a package manager like npm</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>It compiles TypeScript to JavaScript</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>It compiles modern ES6+ JavaScript down to ES5 for older browser compatibility</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>It is a JavaScript testing framework</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) It compiles modern ES6+ JavaScript down to ES5 for older browser compatibility</strong></div>
+        <p class="quiz-answer-text">Babel takes your modern ES6 code (arrow functions, const, template literals) and compiles it to older ES5 syntax that IE and older browsers can run. It was one of the first major JavaScript build tools.</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<!-- NEXT -->
+<section class="next-part" style="background:linear-gradient(135deg,#e17055,#0984e3)">
+  <h2>Ready for Episode 8?</h2>
+  <p>JavaScript was now a proper language with a real standard. But it still only ran inside browsers. In 2009, a developer took Chrome's V8 engine and made JavaScript run on the operating system itself. That changed everything.</p>
+  <a href="part8.html" class="btn btn-white">Continue to Episode 8 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How the Frontend Works — Part 7: ECMAScript | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={7} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

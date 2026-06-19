@@ -1,0 +1,245 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { frontendSeries } from '../../data/series';
+const inlineStyle = `
+/* ── Hero ── */
+.fe11-hero{background:linear-gradient(135deg,#e17055 0%,#d63031 40%,#6c5ce7 100%)}
+
+/* ── Data/DOM sync problem visual ── */
+.sync-art{margin:2.5rem auto 0;max-width:18rem;display:flex;flex-direction:column;align-items:center;gap:0.5rem}
+.sync-row{display:flex;align-items:center;gap:0.75rem}
+.sync-box{font-family:'Fira Code',monospace;font-size:0.6rem;font-weight:700;padding:0.3rem 0.6rem;border-radius:0.4rem;white-space:nowrap}
+.sync-data{background:rgba(255,255,255,0.2);color:#fff;border:0.0625rem solid rgba(255,255,255,0.4)}
+.sync-ok{color:#55efc4;font-size:0.8rem}
+.sync-bad{color:#ff6b6b;font-size:0.8rem;animation:wobble 1s ease-in-out infinite}
+.sync-label{font-family:'Fira Code',monospace;font-size:0.55rem;color:rgba(255,255,255,0.5)}
+@keyframes wobble{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
+
+.fe11-num{color:#e17055;background:#fdf2ef}
+
+/* ── Quiz theming ep11 ── */
+.quiz-ep11f .quiz-q-num{color:#e17055;background:#fdf2ef}
+.quiz-ep11f .quiz-reveal-btn{color:#e17055}
+.quiz-ep11f .quiz-opt-letter{color:#e17055}
+.quiz-ep11f .quiz-option:hover{border-color:#e17055;background:#fdf2ef}
+.quiz-ep11f .quiz-answer-highlight{background:#fdf2ef;border-left:0.25rem solid #e17055}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero fe11-hero">
+  <div class="hero-badge">Episode 11 of 22</div>
+  <h1>Why Frameworks Exist —<br>The jQuery Problem</h1>
+  <p style="color:rgba(255,255,255,0.95)">jQuery solved browser inconsistencies. But as apps grew, a deeper problem emerged. One data change, 12 DOM updates — miss one and the UI is broken.</p>
+  <div class="sync-art">
+    <div class="sync-row">
+      <div class="sync-box sync-data">tweets: 6</div>
+      <span class="sync-label">data changed</span>
+    </div>
+    <div class="sync-row" style="gap:0.4rem;flex-wrap:wrap;justify-content:center">
+      <span class="sync-ok">✓</span><div class="sync-box sync-data">tweet list</div>
+      <span class="sync-ok">✓</span><div class="sync-box sync-data">header count</div>
+      <span class="sync-bad">✗</span><div class="sync-box sync-data" style="border-color:rgba(255,107,107,0.6)">sidebar</div>
+      <span class="sync-bad">✗</span><div class="sync-box sync-data" style="border-color:rgba(255,107,107,0.6)">badge</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 1 -->
+<section class="section reveal">
+  <span class="section-num fe11-num">01</span>
+  <h2>jQuery Worked — Until Apps Got Complex</h2>
+  <p>jQuery was genuinely transformative. It normalized the DOM API, made AJAX easy, and let developers write code that worked in every browser. For years, jQuery was the right answer for almost every web project.</p>
+  <p>But jQuery is a <span class="highlight">DOM manipulation library</span>. It gives you excellent tools to find elements and change them. It does not help you manage the relationship between your <span class="highlight-orange">data</span> and your <span class="highlight-orange">UI</span>.</p>
+  <p>As long as web pages were mostly documents with sprinkles of interactivity, this was fine. But the web was growing. Gmail launched in 2004. Google Maps in 2005. Facebook in 2006. These were not documents — they were full applications. And they had state that needed to stay synchronized.</p>
+</section>
+
+<!-- SECTION 2: the core problem -->
+<section class="section reveal">
+  <span class="section-num fe11-num">02</span>
+  <h2>The Core Problem: Manual Synchronization</h2>
+  <p>Here is the real problem, shown concretely. Imagine a Twitter-like feed. A user has 5 tweets. Somewhere in your app, the count changes from 5 to 6 — a new tweet arrived via AJAX.</p>
+  <p>With jQuery, you have to <span class="highlight">manually find and update every DOM element</span> that shows this count:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// Data changes — you must manually update everything</span>
+tweetCount = 6;
+
+<span class="code-comment">// Update the tweet list</span>
+$(<span class="code-string">'#tweet-list'</span>).append(newTweetHtml);
+
+<span class="code-comment">// Update the header counter</span>
+$(<span class="code-string">'#header-count'</span>).text(tweetCount);
+
+<span class="code-comment">// Update the sidebar counter</span>
+$(<span class="code-string">'#sidebar-count'</span>).text(tweetCount);
+
+<span class="code-comment">// Update the browser tab badge</span>
+$(<span class="code-string">'#tab-badge'</span>).text(tweetCount);
+
+<span class="code-comment">// Update the notification panel</span>
+$(<span class="code-string">'#notif-panel'</span>).text(tweetCount);
+
+<span class="code-comment">// Update the profile page total</span>
+$(<span class="code-string">'#profile-total'</span>).text(tweetCount);</pre>
+  </div>
+
+  <p>If you miss <span class="highlight-orange">even one</span>, the UI is out of sync with the data. The header says 5, the sidebar says 6. Your app lies to the user.</p>
+</section>
+
+<div class="analogy reveal">
+  <p>Imagine a <strong>price change at a grocery store</strong>. The price of milk changes from $3 to $4. Now someone has to manually update: the shelf label, the checkout system, the website, the app, the weekly flyer, the receipt printer template, the loyalty program database. Miss one and a customer sees the wrong price. This is exactly what jQuery-heavy apps felt like at scale.</p>
+</div>
+
+<!-- SECTION 3: why it breaks down -->
+<section class="section reveal">
+  <span class="section-num fe11-num">03</span>
+  <h2>Why This Doesn't Scale</h2>
+  <p>The problem compounds as the app grows. A real application has:</p>
+  <ul style="line-height:2;margin-top:0.75rem;padding-left:1.5rem">
+    <li>Hundreds of pieces of state (user data, UI state, server responses, cache, etc.)</li>
+    <li>Thousands of DOM elements that display that state</li>
+    <li>Multiple developers changing code — nobody knows all the DOM elements that depend on a given piece of state</li>
+  </ul>
+
+  <p style="margin-top:1rem">Every time data changed, someone had to mentally map out all the places in the DOM that depended on it and update each one. No tooling enforced this. The bugs were silent — the page rendered, just with wrong data.</p>
+  <p>Codebases with this pattern became what developers call <span class="highlight-orange">spaghetti code</span> — tangled webs of jQuery calls where changing anything could break anything else in unpredictable ways.</p>
+</section>
+
+<!-- SECTION 4: what frameworks solve -->
+<section class="section reveal">
+  <span class="section-num fe11-num">04</span>
+  <h2>What Frameworks Actually Solve</h2>
+  <p>Every major frontend framework — Angular, React, Vue — exists to solve this one core problem: <span class="highlight">when data changes, the UI should update automatically</span>.</p>
+  <p>The mental model shifts completely:</p>
+
+  <div class="compare reveal">
+    <div class="compare-card cc-orange">
+      <span class="emoji">&#128295;</span>
+      <h3>jQuery way</h3>
+      <p><strong>Imperative:</strong> "Do this to the DOM. Now do this. Now find this element and change it."</p>
+      <p>You manage the DOM directly. You are responsible for keeping it in sync.</p>
+    </div>
+    <div class="compare-card cc-blue">
+      <span class="emoji">&#128064;</span>
+      <h3>Framework way</h3>
+      <p><strong>Declarative:</strong> "The DOM should look like this when data is in this state."</p>
+      <p>The framework watches your data. When it changes, the framework updates the DOM.</p>
+    </div>
+  </div>
+
+  <p style="margin-top:1.5rem">With a framework, you <span class="highlight">stop touching the DOM</span>. You update the data. The framework figures out what needs to change in the UI. If tweet count is bound to 12 DOM elements, all 12 update automatically when the count changes. You cannot forget to update one.</p>
+</section>
+
+<div class="code-block reveal" style="max-width:43.75rem;margin:0 auto;padding:0 1.5rem">
+  <pre><span class="code-comment">// Vue way: bind once, update everywhere automatically</span>
+<span class="code-keyword">data</span>() {
+  <span class="code-keyword">return</span> { tweetCount: 5 }
+}
+
+<span class="code-comment">// In your template — bound to data, not DOM elements:</span>
+&lt;span&gt;{{ tweetCount }}&lt;/span&gt;  <span class="code-comment">← header</span>
+&lt;span&gt;{{ tweetCount }}&lt;/span&gt;  <span class="code-comment">← sidebar</span>
+&lt;span&gt;{{ tweetCount }}&lt;/span&gt;  <span class="code-comment">← profile</span>
+
+<span class="code-comment">// Now just update the data:</span>
+<span class="code-keyword">this</span>.tweetCount = 6;
+<span class="code-comment">// All three spans update automatically. You touched nothing.</span></pre>
+</div>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">jQuery's limitation</strong> — excellent DOM manipulation, but no help keeping data and UI in sync.
+    </div>
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">The core problem</strong> — data changes require manually updating every DOM element that shows that data. Miss one, UI is wrong.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">What frameworks solve</strong> — data changes → UI updates automatically. You never touch the DOM directly.
+    </div>
+    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
+      <strong style="color:#6c5ce7">Imperative vs Declarative</strong> — jQuery tells the DOM what to do (imperative). Frameworks describe what it should look like (declarative).
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep11f">
+  <span class="section-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
+    <p class="quiz-question">What is the core problem with the jQuery approach to building complex apps?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>jQuery is too slow for large applications</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>When data changes, you must manually find and update every DOM element — miss one and the UI is wrong</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>jQuery doesn't support AJAX for fetching data</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>jQuery cannot access the DOM</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) When data changes, you must manually find and update every DOM element — miss one and the UI is wrong</strong></div>
+        <p class="quiz-answer-text">jQuery gives you tools to manipulate the DOM, but it doesn't manage the relationship between your data and the UI. Every data change requires manually finding and updating every element that displays that data. In a complex app with hundreds of data values, this becomes unmaintainable.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
+    <p class="quiz-question">What is the key difference between the "jQuery way" and the "framework way"?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>jQuery is declarative; frameworks are imperative</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>jQuery tells the DOM what to do (imperative); frameworks describe what the DOM should look like given the data (declarative)</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>jQuery works with classes; frameworks work with functions</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>jQuery manipulates CSS; frameworks manipulate HTML</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) jQuery tells the DOM what to do (imperative); frameworks describe what the DOM should look like given the data (declarative)</strong></div>
+        <p class="quiz-answer-text">With jQuery you imperatively command the DOM: "find this element, change it, find that one, update it." With a framework you declaratively describe the relationship between data and UI: "this span shows tweetCount." When the data changes, the framework handles the DOM update automatically.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
+    <p class="quiz-question">In a framework, when you update a piece of data, what happens to the DOM?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>You still need to manually update DOM elements after changing data</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>The entire page reloads from the server</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>The framework automatically updates all DOM elements bound to that data</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Nothing — DOM updates are deferred until the user interacts</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) The framework automatically updates all DOM elements bound to that data</strong></div>
+        <p class="quiz-answer-text">Frameworks watch your data. When it changes, they automatically update every DOM element that is bound to it. You never need to manually touch the DOM. If a piece of data is displayed in 12 places, all 12 update automatically.</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<!-- NEXT -->
+<section class="next-part" style="background:linear-gradient(135deg,#e17055,#0984e3)">
+  <h2>Ready for Episode 12?</h2>
+  <p>Three different companies invented three different solutions to this problem. Angular (Google), React (Facebook), and Vue (one developer). They each made different bets. Let's compare them.</p>
+  <a href="part12.html" class="btn btn-white">Continue to Episode 12 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How the Frontend Works — Part 11: Why Frameworks Exist | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={11} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

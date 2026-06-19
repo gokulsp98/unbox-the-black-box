@@ -1,0 +1,248 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { frontendSeries } from '../../data/series';
+const inlineStyle = `
+/* ── Hero ── */
+.fe8-hero{background:linear-gradient(135deg,#00cec9 0%,#0984e3 50%,#6c5ce7 100%)}
+
+/* ── Node.js escaping the browser visual ── */
+.node-escape-art{margin:2.5rem auto 0;position:relative;width:14rem;height:8rem;display:flex;align-items:center;justify-content:center}
+.browser-box{width:5.5rem;height:5.5rem;border:0.125rem solid rgba(255,255,255,0.4);border-radius:0.5rem;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.25rem}
+.browser-label{font-family:'Fira Code',monospace;font-size:0.55rem;font-weight:700;color:rgba(255,255,255,0.6);text-transform:uppercase}
+.v8-badge{background:rgba(255,255,255,0.15);border:0.0625rem solid rgba(255,255,255,0.3);border-radius:0.375rem;padding:0.15rem 0.4rem;font-family:'Fira Code',monospace;font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.9);animation:v8Glow 2s ease-in-out infinite}
+.escape-arrow{font-size:1.5rem;color:rgba(255,255,255,0.6);animation:arrowPulse 1.5s ease-in-out infinite;margin:0 0.5rem}
+.node-badge{background:rgba(0,179,128,0.3);border:0.125rem solid rgba(0,179,128,0.7);border-radius:0.5rem;padding:0.5rem 0.75rem;font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.9);text-align:center;animation:v8Glow 2s ease-in-out infinite alternate}
+@keyframes v8Glow{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}50%{box-shadow:0 0 0.75rem rgba(255,255,255,0.2)}}
+@keyframes arrowPulse{0%,100%{transform:translateX(0);opacity:0.5}50%{transform:translateX(4px);opacity:1}}
+
+.fe8-num{color:#00cec9;background:#e0fafa}
+
+/* ── Quiz theming ep8 ── */
+.quiz-ep8f .quiz-q-num{color:#00cec9;background:#e0fafa}
+.quiz-ep8f .quiz-reveal-btn{color:#00cec9}
+.quiz-ep8f .quiz-opt-letter{color:#00cec9}
+.quiz-ep8f .quiz-option:hover{border-color:#00cec9;background:#e0fafa}
+.quiz-ep8f .quiz-answer-highlight{background:#e0fafa;border-left:0.25rem solid #00cec9}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero fe8-hero">
+  <div class="hero-badge">Episode 8 of 22</div>
+  <h1>Node.js — JavaScript<br>Escapes the Browser</h1>
+  <p style="color:rgba(255,255,255,0.95)">2009. Someone takes Chrome's V8 engine out of the browser and puts it on the operating system. JavaScript never looks back.</p>
+  <div class="node-escape-art">
+    <div class="browser-box">
+      <span class="browser-label">Browser</span>
+      <span class="v8-badge">V8</span>
+    </div>
+    <span class="escape-arrow">&#10132;</span>
+    <div class="node-badge">Node.js<br><span style="font-size:0.5rem;opacity:0.7">runs on OS</span></div>
+  </div>
+</section>
+
+<!-- SECTION 1 -->
+<section class="section reveal">
+  <span class="section-num fe8-num">01</span>
+  <h2>JavaScript's Prison: The Browser</h2>
+  <p>Before 2009, JavaScript lived entirely inside web browsers. That was its one and only home. This was a fundamental constraint on what it could do.</p>
+  <p>JavaScript running in a browser <span class="highlight">could not</span>:</p>
+
+  <div style="display:grid;gap:0.75rem;margin-top:1rem">
+    <div style="background:#e0fafa;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00cec9">
+      <strong style="color:#00cec9">Read or write files</strong> — no file system access. Could not open, save, or delete any files on disk.
+    </div>
+    <div style="background:#e0fafa;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00cec9">
+      <strong style="color:#00cec9">Run a web server</strong> — could not listen on a port or respond to HTTP requests.
+    </div>
+    <div style="background:#e0fafa;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00cec9">
+      <strong style="color:#00cec9">Access databases</strong> — could not connect to MySQL, PostgreSQL, MongoDB, or anything.
+    </div>
+    <div style="background:#e0fafa;padding:1rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00cec9">
+      <strong style="color:#00cec9">Access the operating system</strong> — no environment variables, no process control, no OS calls.
+    </div>
+  </div>
+
+  <p style="margin-top:1.5rem">The browser sandbox was by design — you do not want a random website reading your files. But this meant JavaScript was fundamentally limited to UI manipulation in a browser window.</p>
+</section>
+
+<!-- SECTION 2: V8 -->
+<section class="section reveal">
+  <span class="section-num fe8-num">02</span>
+  <h2>Chrome's V8: The Key That Opened the Door</h2>
+  <p>In 2008, Google launched <span class="highlight">Chrome</span> with a brand new JavaScript engine called <span class="highlight-orange">V8</span>. V8 was dramatically faster than any existing JavaScript engine — it compiled JavaScript to native machine code instead of interpreting it line by line.</p>
+  <p>Crucially, Google made V8 <span class="highlight">open source</span>. Anyone could use it.</p>
+  <p>A developer named <span class="highlight">Ryan Dahl</span> had a key insight: V8 was just a program. It could run outside a browser. If you took V8 and ran it directly on an operating system — and added the OS-level capabilities that browsers deliberately excluded — you would have a JavaScript runtime for general computing.</p>
+</section>
+
+<!-- SECTION 3: Node.js -->
+<section class="section reveal">
+  <span class="section-num fe8-num">03</span>
+  <h2>Node.js: JavaScript on the Operating System</h2>
+  <p>In 2009, Ryan Dahl released <span class="highlight">Node.js</span>. It was built by taking Chrome's V8 engine and wrapping it with a layer that gave JavaScript access to the operating system:</p>
+
+  <div class="flow reveal">
+    <div class="flow-box fb-blue">Your JS code</div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-orange">V8 (JS engine)</div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-green">Node.js (OS layer)</div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-dark">File system, network, OS</div>
+  </div>
+
+  <p style="margin-top:1.5rem">Node.js added what V8 alone did not have:</p>
+  <div class="code-block">
+    <pre><span class="code-keyword">fs</span>      <span class="code-comment">— read, write, delete files</span>
+<span class="code-keyword">http</span>    <span class="code-comment">— create web servers, handle HTTP requests</span>
+<span class="code-keyword">net</span>     <span class="code-comment">— TCP/UDP networking</span>
+<span class="code-keyword">process</span> <span class="code-comment">— environment variables, exit codes, signals</span>
+<span class="code-keyword">child_process</span> <span class="code-comment">— run other programs from JavaScript</span>
+<span class="code-keyword">path</span>    <span class="code-comment">— work with file paths</span></pre>
+  </div>
+
+  <p>With Node.js, you could write a JavaScript file and run it with:</p>
+  <div class="code-block">
+    <pre>node myfile.js</pre>
+  </div>
+  <p>No browser. No HTML. Just JavaScript running directly on your computer, with access to everything the operating system could offer.</p>
+</section>
+
+<!-- SECTION 4: what it's used for -->
+<section class="section reveal">
+  <span class="section-num fe8-num">04</span>
+  <h2>What Node.js Is Used For</h2>
+  <p>Node.js has three main use cases in the frontend world:</p>
+
+  <div style="display:grid;gap:1rem;margin-top:1.5rem">
+    <div style="background:#e0fafa;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00cec9">
+      <strong style="color:#00cec9">1. Running developer tools</strong><br>
+      Vite, ESLint, Sass, TypeScript, Vitest — all are JavaScript programs that run on Node.js. When you run <code style="font-size:0.875rem">npm run dev</code>, Node.js is running the entire time. Invisibly. Every tool in your build pipeline is a Node.js program.
+    </div>
+    <div style="background:#e0fafa;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00cec9">
+      <strong style="color:#00cec9">2. Building backend servers</strong><br>
+      APIs written entirely in JavaScript, running on Node.js. Express.js and Fastify are popular Node.js frameworks for this. You can build a full REST API or a WebSocket server in JavaScript.
+    </div>
+    <div style="background:#e0fafa;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00cec9">
+      <strong style="color:#00cec9">3. Running scripts</strong><br>
+      Deployment scripts, code generators, data transformations, CI/CD pipeline tasks — any automation that was previously written in Python or Bash can be written in JavaScript/Node.js.
+    </div>
+  </div>
+</section>
+
+<div class="analogy reveal">
+  <p>Think of it this way: the <strong>browser</strong> is like a secure office meeting room with glass walls — JavaScript can see everything in the room but cannot leave the building. <strong>Node.js</strong> gives JavaScript a pass to go anywhere in the office: the filing room, the server room, the loading dock. Same language, completely different access.</p>
+</div>
+
+<!-- SECTION 5: npm preview -->
+<section class="section reveal">
+  <span class="section-num fe8-num">05</span>
+  <h2>npm: Built on Node.js</h2>
+  <p><span class="highlight">npm</span> — the Node Package Manager that you use every day — is itself a JavaScript program that runs on Node.js. It reads your package.json, makes HTTP requests to the npm registry, and downloads packages to your disk. All of that requires Node.js.</p>
+  <p>When you install Node.js, npm comes bundled with it. They are inseparable. We will cover npm in full detail in Episode 9.</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// These commands all run Node.js invisibly:</span>
+npm install
+npm run dev
+npm run build
+npx vite        <span class="code-comment">← also Node.js</span></pre>
+  </div>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#e0fafa;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00cec9">
+      <strong style="color:#00cec9">Before Node.js</strong> — JavaScript only ran inside browsers. No file system, no servers, no OS access.
+    </div>
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">Chrome's V8</strong> — an open-source JavaScript engine released in 2008. Fast enough and flexible enough to run outside a browser.
+    </div>
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Node.js (2009)</strong> — V8 + OS capabilities. JavaScript can now read files, run servers, and access the operating system.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">In the frontend</strong> — Node.js runs all your dev tools: Vite, ESLint, TypeScript, Sass. Every <code style="font-size:0.875rem">npm run</code> command uses Node.js.
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep8f">
+  <span class="section-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
+    <p class="quiz-question">What is V8, and which company created it?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>A JavaScript package manager, created by npm Inc.</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>A JavaScript framework, created by Facebook</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>A fast JavaScript engine, created by Google for Chrome</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>A CSS preprocessor, created by Mozilla</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) A fast JavaScript engine, created by Google for Chrome</strong></div>
+        <p class="quiz-answer-text">V8 is Google's open-source JavaScript engine, launched with Chrome in 2008. It compiles JavaScript to native machine code for high performance. Ryan Dahl took V8 and built Node.js around it in 2009.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
+    <p class="quiz-question">What did Node.js add on top of V8?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>A UI framework for building apps</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Access to the file system, networking, and OS capabilities</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>A CSS compiler for Sass files</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Browser compatibility for older JavaScript syntax</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) Access to the file system, networking, and OS capabilities</strong></div>
+        <p class="quiz-answer-text">V8 alone just runs JavaScript. Node.js wraps V8 with modules like fs (file system), http (networking), path, and process — giving JavaScript programs access to everything the operating system can do.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
+    <p class="quiz-question">When you run <code style="font-size:0.875rem">npm run dev</code>, what is actually running the dev server?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Your web browser's built-in server</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>A Python process</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Node.js, running Vite (which is a Node.js program)</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>A Docker container</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) Node.js, running Vite (which is a Node.js program)</strong></div>
+        <p class="quiz-answer-text">npm itself is a Node.js program. When you run npm run dev, Node.js runs npm, npm reads your package.json, and starts Vite — which is also a Node.js program. Node.js is the invisible engine running your entire dev environment.</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<!-- NEXT -->
+<section class="next-part" style="background:linear-gradient(135deg,#e17055,#0984e3)">
+  <h2>Ready for Episode 9?</h2>
+  <p>Node.js made JavaScript packages possible. In 2010, npm was created — a public registry of 2 million+ packages and a CLI to manage them. It changed how software is shared forever.</p>
+  <a href="part9.html" class="btn btn-white">Continue to Episode 9 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How the Frontend Works — Part 8: Node.js | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={8} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

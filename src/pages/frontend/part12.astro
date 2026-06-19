@@ -1,0 +1,254 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { frontendSeries } from '../../data/series';
+const inlineStyle = `
+/* ── Hero ── */
+.fe12-hero{background:linear-gradient(135deg,#0984e3 0%,#6c5ce7 50%,#e17055 100%)}
+
+/* ── Three logos floating ── */
+.fw-logos-art{margin:2.5rem auto 0;display:flex;gap:2rem;justify-content:center;align-items:center}
+.fw-logo{display:flex;flex-direction:column;align-items:center;gap:0.4rem;animation:logoFloat 3s ease-in-out infinite}
+.fw-logo:nth-child(2){animation-delay:1s}
+.fw-logo:nth-child(3){animation-delay:2s}
+.fw-logo-icon{width:3.5rem;height:3.5rem;border-radius:0.5rem;display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:900}
+.fw-logo-angular{background:rgba(221,0,49,0.3);border:0.125rem solid rgba(221,0,49,0.6);color:rgba(255,200,200,0.9)}
+.fw-logo-react{background:rgba(97,218,251,0.2);border:0.125rem solid rgba(97,218,251,0.5);color:rgba(150,240,255,0.9)}
+.fw-logo-vue{background:rgba(65,184,131,0.25);border:0.125rem solid rgba(65,184,131,0.6);color:rgba(160,230,200,0.9)}
+.fw-logo-label{font-family:'Fira Code',monospace;font-size:0.55rem;font-weight:700;color:rgba(255,255,255,0.6)}
+@keyframes logoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+.fe12-num{color:#0984e3;background:#e3f2fd}
+
+/* ── Quiz theming ep12 ── */
+.quiz-ep12f .quiz-q-num{color:#0984e3;background:#e3f2fd}
+.quiz-ep12f .quiz-reveal-btn{color:#0984e3}
+.quiz-ep12f .quiz-opt-letter{color:#0984e3}
+.quiz-ep12f .quiz-option:hover{border-color:#0984e3;background:#e3f2fd}
+.quiz-ep12f .quiz-answer-highlight{background:#e3f2fd;border-left:0.25rem solid #0984e3}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero fe12-hero">
+  <div class="hero-badge">Episode 12 of 22</div>
+  <h1>Angular, React<br>&amp; Vue</h1>
+  <p style="color:rgba(255,255,255,0.95)">Three companies solved the same problem three different ways. Each made different bets.</p>
+  <div class="fw-logos-art">
+    <div class="fw-logo">
+      <div class="fw-logo-icon fw-logo-angular">NG</div>
+      <span class="fw-logo-label">Angular '10</span>
+    </div>
+    <div class="fw-logo">
+      <div class="fw-logo-icon fw-logo-react">⚛</div>
+      <span class="fw-logo-label">React '13</span>
+    </div>
+    <div class="fw-logo">
+      <div class="fw-logo-icon fw-logo-vue">V</div>
+      <span class="fw-logo-label">Vue '14</span>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 1: Angular -->
+<section class="section reveal">
+  <span class="section-num fe12-num">01</span>
+  <h2>Angular (Google, 2010)</h2>
+  <p>Google's internal developers were building complex web applications and running into the same jQuery scalability problems everyone else was. They built Angular in 2010 as a solution for their own needs, then open-sourced it.</p>
+  <p>Angular's big idea: <span class="highlight">two-way data binding</span>. Connect a piece of data to a form input, and changes flow both ways automatically. User types in the input → data updates. Data updates from the server → input updates. The flow is bidirectional with no code.</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">&lt;!-- Angular two-way binding --&gt;</span>
+<span class="code-keyword">&lt;input</span> [(ngModel)]="username"<span class="code-keyword">&gt;</span>
+<span class="code-keyword">&lt;p&gt;</span>Hello, {{ username }}!<span class="code-keyword">&lt;/p&gt;</span>
+<span class="code-comment">&lt;!-- Type in the input → paragraph updates live --&gt;</span></pre>
+  </div>
+
+  <p>Angular was a <span class="highlight-orange">complete framework</span> — it came with opinions on routing, HTTP, dependency injection, forms, testing. You got everything, but you had to do it Angular's way.</p>
+  <p>The problems: Angular's binding system watched every variable for changes on every user interaction. Complex apps got slow as Angular had to check thousands of bindings. And Angular was notoriously complex to learn.</p>
+  <p>Then in 2016, <span class="highlight-orange">Angular 2 completely rewrote everything and broke all existing code</span>. Apps built in Angular 1 could not be upgraded to Angular 2 automatically. Many teams lost months. Community trust collapsed.</p>
+</section>
+
+<!-- SECTION 2: React -->
+<section class="section reveal">
+  <span class="section-num fe12-num">02</span>
+  <h2>React (Facebook, 2013)</h2>
+  <p>Facebook had a specific problem. The Facebook newsfeed, notifications, and message counts had to stay synchronized. jQuery-style code was becoming unmanageable at Facebook's scale — thousands of engineers working on the same codebase.</p>
+  <p>React's two core ideas were different from Angular:</p>
+
+  <p><strong>1. Components</strong> — break the UI into small, reusable pieces. Each component manages its own state and renders its own HTML. Instead of one giant page, you have a tree of components.</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// React component tree</span>
+<span class="code-keyword">App</span>
+  <span class="code-arrow">├─</span> <span class="code-keyword">Header</span>
+  <span class="code-arrow">│    └─</span> <span class="code-keyword">NavLinks</span>
+  <span class="code-arrow">└─</span> <span class="code-keyword">Feed</span>
+       <span class="code-arrow">├─</span> <span class="code-keyword">Tweet</span>  (component, reused for each tweet)
+       <span class="code-arrow">├─</span> <span class="code-keyword">Tweet</span>
+       <span class="code-arrow">└─</span> <span class="code-keyword">Tweet</span></pre>
+  </div>
+
+  <p><strong>2. Virtual DOM + one-way data flow</strong> — React keeps an in-memory copy of the UI tree. When data changes, React compares the old virtual DOM with the new one (called "diffing"), then applies only the minimum necessary changes to the real DOM. Data flows <span class="highlight">one direction only</span>: parent components pass data down to children. Children cannot change parent data directly — they emit events.</p>
+  <p>React is a <span class="highlight">library, not a framework</span>. It only handles the UI — the rendering of components. You pick your own router, your own state manager, your own HTTP library. More flexibility, more decisions.</p>
+</section>
+
+<!-- SECTION 3: Vue -->
+<section class="section reveal">
+  <span class="section-num fe12-num">03</span>
+  <h2>Vue (Evan You, 2014)</h2>
+  <p>Evan You was a developer at Google who had worked with Angular. He liked Angular's two-way binding and ease for forms, but found its complexity and bulk frustrating. He had also studied React and appreciated its virtual DOM and component model.</p>
+  <p>He created Vue as a personal project to take the best from both worlds: Angular's approachability and React's performance, with a much gentler learning curve.</p>
+  <p>Vue's signature feature: <span class="highlight">Single File Components</span> (.vue files). One file contains everything for a component — template (HTML), script (JavaScript), style (CSS). No file juggling.</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">&lt;!-- Button.vue — a complete component in one file --&gt;</span>
+<span class="code-keyword">&lt;template&gt;</span>
+  <span class="code-keyword">&lt;button</span> @click="handleClick"<span class="code-keyword">&gt;</span>{{ label }}<span class="code-keyword">&lt;/button&gt;</span>
+<span class="code-keyword">&lt;/template&gt;</span>
+
+<span class="code-keyword">&lt;script&gt;</span>
+<span class="code-keyword">export default</span> {
+  props: [<span class="code-string">'label'</span>],
+  methods: {
+    handleClick() { <span class="code-keyword">this</span>.$emit(<span class="code-string">'click'</span>); }
+  }
+}
+<span class="code-keyword">&lt;/script&gt;</span>
+
+<span class="code-keyword">&lt;style scoped&gt;</span>
+button { background: blue; }
+<span class="code-keyword">&lt;/style&gt;</span></pre>
+  </div>
+
+  <p>Vue supports two-way binding via <code style="font-size:0.875rem">v-model</code> (like Angular) and uses a Virtual DOM (like React). It positioned itself as the "progressive framework" — you can add Vue to a simple page with a script tag, or use it to build a full SPA. This repo uses <span class="highlight">Vue 2</span>.</p>
+</section>
+
+<!-- SECTION 4: comparison -->
+<section class="section reveal">
+  <span class="section-num fe12-num">04</span>
+  <h2>Side by Side</h2>
+</section>
+
+<div class="compare reveal">
+  <div class="compare-card cc-orange">
+    <span class="emoji">&#128736;</span>
+    <h3>Angular</h3>
+    <p><strong>By:</strong> Google, 2010</p>
+    <p><strong>Style:</strong> Full opinionated framework</p>
+    <p><strong>Language:</strong> TypeScript required</p>
+    <p><strong>Binding:</strong> Two-way</p>
+    <p><strong>Best for:</strong> Large enterprise teams wanting a single prescribed way to do everything</p>
+  </div>
+  <div class="compare-card cc-blue">
+    <span class="emoji">&#9883;</span>
+    <h3>React</h3>
+    <p><strong>By:</strong> Facebook, 2013</p>
+    <p><strong>Style:</strong> UI library (you pick everything else)</p>
+    <p><strong>Language:</strong> JSX</p>
+    <p><strong>Binding:</strong> One-way</p>
+    <p><strong>Best for:</strong> Large teams, maximum flexibility, strong ecosystem</p>
+  </div>
+  <div class="compare-card cc-green">
+    <span class="emoji">&#128994;</span>
+    <h3>Vue</h3>
+    <p><strong>By:</strong> Evan You (solo), 2014</p>
+    <p><strong>Style:</strong> Progressive framework</p>
+    <p><strong>Language:</strong> HTML templates</p>
+    <p><strong>Binding:</strong> Two-way (via v-model)</p>
+    <p><strong>Best for:</strong> Teams wanting an approachable, well-structured framework without Angular's complexity</p>
+  </div>
+</div>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Angular</strong> — complete opinionated framework by Google. Two-way binding. Angular 2 (2016) broke all Angular 1 code, causing community distrust.
+    </div>
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">React</strong> — UI library by Facebook. Components + Virtual DOM + one-way data flow. Handles UI only; pick your own everything else.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">Vue</strong> — progressive framework by Evan You. Single File Components. Best of both Angular (binding ease) and React (Virtual DOM). This repo uses Vue 2.
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep12f">
+  <span class="section-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
+    <p class="quiz-question">What happened when Angular 2 was released in 2016?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>It was backward-compatible with Angular 1</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>It became instantly more popular than React</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>It was a complete rewrite that broke all Angular 1 code — teams could not migrate</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Google abandoned the project and handed it to the community</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) It was a complete rewrite that broke all Angular 1 code — teams could not migrate</strong></div>
+        <p class="quiz-answer-text">Angular 2 was a complete architectural rewrite — new language (TypeScript required), new APIs, new concepts. Apps built in Angular 1 could not be automatically upgraded. Many teams lost months rewriting. This caused a significant loss of community trust in Angular.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
+    <p class="quiz-question">React is described as a "library" rather than a "framework." What does that mean?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>React is smaller in file size than Angular</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>React only handles UI rendering — you must choose your own routing, state management, and HTTP tools</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>React can be used without JavaScript</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>React doesn't use components</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) React only handles UI rendering — you must choose your own routing, state management, and HTTP tools</strong></div>
+        <p class="quiz-answer-text">React focuses on one thing: rendering components and updating the DOM efficiently. It has no built-in router, no HTTP client, no state management beyond component state. You pick React Router, Redux/Zustand, axios etc. separately. This gives flexibility at the cost of more decisions.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
+    <p class="quiz-question">What is a Vue Single File Component?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>A Vue component that only renders a single HTML element</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>A .vue file containing template, script, and style sections for one component</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>A Vue file that imports components from a single npm package</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>A Vue component with no child components</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) A .vue file containing template, script, and style sections for one component</strong></div>
+        <p class="quiz-answer-text">Vue's Single File Component format (.vue) puts the HTML template, JavaScript logic, and CSS styles for one component in a single file. This keeps everything about a component together — no juggling between separate HTML, JS, and CSS files.</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<!-- NEXT -->
+<section class="next-part" style="background:linear-gradient(135deg,#e17055,#0984e3)">
+  <h2>Ready for Episode 13?</h2>
+  <p>Angular uses TypeScript. React uses JSX. Vue uses its own template syntax. None of these run directly in a browser. Let's look at how TypeScript, JSX, and Vue templates all compile down to plain JavaScript.</p>
+  <a href="part13.html" class="btn btn-white">Continue to Episode 13 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How the Frontend Works — Part 12: Angular, React & Vue | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={12} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>
