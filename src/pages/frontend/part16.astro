@@ -1,0 +1,311 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { frontendSeries } from '../../data/series';
+const inlineStyle = `
+.fe16-hero{background:linear-gradient(135deg,#00b894 0%,#0984e3 100%)}
+.fe16-num{color:#00b894;background:#e8f8f5}
+
+/* ── Hero Art: .vue file splitting into three parts ── */
+.vue-split-art{margin:2.5rem auto 0;display:flex;flex-direction:column;align-items:center;gap:0.5rem;animation:fadeInUp 1.5s ease}
+.vue-file{background:rgba(255,255,255,0.12);border:0.0625rem solid rgba(255,255,255,0.3);border-radius:0.625rem;padding:0.625rem 1rem;font-family:'Fira Code',monospace;font-size:0.75rem;font-weight:700;color:#fff;letter-spacing:0.05rem;min-width:10rem;text-align:center}
+.vue-arrow-down{color:rgba(255,255,255,0.6);font-size:1.2rem;animation:arrowPulse 1.5s ease infinite}
+@keyframes arrowPulse{0%,100%{opacity:0.4;transform:translateY(0)}50%{opacity:1;transform:translateY(4px)}}
+.vue-parts{display:flex;gap:0.625rem;flex-wrap:wrap;justify-content:center}
+.vue-part{font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;padding:0.375rem 0.75rem;border-radius:0.375rem;animation:partFade 0.5s ease both}
+.vp-template{background:rgba(116,185,255,0.3);color:#fff;border:0.0625rem solid rgba(116,185,255,0.6);animation-delay:0.3s}
+.vp-script{background:rgba(85,239,196,0.3);color:#fff;border:0.0625rem solid rgba(85,239,196,0.6);animation-delay:0.6s}
+.vp-style{background:rgba(253,203,110,0.3);color:#fff;border:0.0625rem solid rgba(253,203,110,0.6);animation-delay:0.9s}
+@keyframes partFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.vue-result{font-family:'Fira Code',monospace;font-size:0.65rem;color:rgba(255,255,255,0.75);margin-top:0.375rem}
+
+/* ── Transformation flow ── */
+.transform-flow{max-width:40rem;margin:2rem auto;padding:0 1.5rem}
+.tf-box{background:#1e272e;border-radius:1rem;padding:1.5rem;border:0.0625rem solid #485460}
+.tf-title{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#b2bec3;letter-spacing:0.125rem;text-align:center;margin-bottom:1.25rem}
+.tf-step{display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:0.75rem;padding:0.75rem 1rem;border-radius:0.5rem}
+.tf-num{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;color:#b2bec3;min-width:1.5rem;margin-top:0.125rem}
+.tf-content{flex:1}
+.tf-label{font-size:0.75rem;font-weight:700;margin-bottom:0.25rem}
+.tf-desc{font-size:0.8rem;color:#b2bec3;line-height:1.5}
+.tf-s1{background:rgba(116,185,255,0.1);border-left:0.1875rem solid #74b9ff}.tf-s1 .tf-label{color:#74b9ff}
+.tf-s2{background:rgba(85,239,196,0.1);border-left:0.1875rem solid #55efc4}.tf-s2 .tf-label{color:#55efc4}
+.tf-s3{background:rgba(253,203,110,0.1);border-left:0.1875rem solid #fdcb6e}.tf-s3 .tf-label{color:#fdcb6e}
+.tf-s4{background:rgba(162,155,254,0.1);border-left:0.1875rem solid #a29bfe}.tf-s4 .tf-label{color:#a29bfe}
+
+/* ── Quiz theming ep16 ── */
+.quiz-ep16 .quiz-q-num{color:#00b894;background:#e8f8f5}
+.quiz-ep16 .quiz-reveal-btn{color:#00b894}
+.quiz-ep16 .quiz-opt-letter{color:#00b894}
+.quiz-ep16 .quiz-option:hover{border-color:#00b894;background:#e8f8f5}
+.quiz-ep16 .quiz-answer-highlight{background:#e8f8f5;border-left:0.25rem solid #00b894}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero fe16-hero">
+  <div class="hero-badge">Episode 16 of 23</div>
+  <h1>How Vue Files<br>Become JavaScript</h1>
+  <p style="color:rgba(255,255,255,0.95)">You write one .vue file with three sections. The browser receives pure JavaScript. What happens in between?</p>
+  <div class="vue-split-art">
+    <div class="vue-file">Button.vue</div>
+    <div class="vue-arrow-down">&#8595;</div>
+    <div class="vue-parts">
+      <span class="vue-part vp-template">&lt;template&gt;</span>
+      <span class="vue-part vp-script">&lt;script&gt;</span>
+      <span class="vue-part vp-style">&lt;style&gt;</span>
+    </div>
+    <div class="vue-arrow-down">&#8595;</div>
+    <div class="vue-result">plain JavaScript + CSS</div>
+  </div>
+</section>
+
+<!-- SECTION 1 -->
+<section class="section reveal">
+  <span class="section-num fe16-num">01</span>
+  <h2>The Problem: The Browser Has No Idea What a .vue File Is</h2>
+  <p>You open your editor and write a <span class="highlight">Button.vue</span> file. It has three clean sections — template, script, and style. It looks organised and readable.</p>
+  <p>Then you open the browser. The browser sees a request for <code style="font-size:0.875rem">Button.vue</code> and has absolutely no idea what to do with it. The browser only understands <span class="highlight-orange">plain JavaScript, HTML, and CSS</span>. Not Vue. Not .vue files. Not the template syntax with <code style="font-size:0.875rem">@click</code> or <code style="font-size:0.875rem">{{ }}</code>.</p>
+  <p>Something has to transform that .vue file into something the browser can actually run. That something is <span class="highlight">Vite</span> — specifically the <code style="font-size:0.875rem">@vitejs/plugin-vue2</code> plugin configured in vite.config.mjs.</p>
+</section>
+
+<!-- SECTION 2 -->
+<section class="section reveal">
+  <span class="section-num fe16-num">02</span>
+  <h2>What a .vue File Actually Contains</h2>
+  <p>A Vue Single File Component (.vue file) has three sections:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">&lt;!-- Button.vue — what you write --&gt;</span>
+
+<span class="code-keyword">&lt;template&gt;</span>
+  <span class="code-string">&lt;button @click="handleClick"&gt;{{ label }}&lt;/button&gt;</span>
+<span class="code-keyword">&lt;/template&gt;</span>
+
+<span class="code-keyword">&lt;script&gt;</span>
+<span class="code-keyword">export default</span> {
+  data() {
+    <span class="code-keyword">return</span> { <span class="code-string">label: 'Click me'</span> }
+  },
+  methods: {
+    handleClick() { alert(<span class="code-string">'clicked'</span>) }
+  }
+}
+<span class="code-keyword">&lt;/script&gt;</span>
+
+<span class="code-keyword">&lt;style&gt;</span>
+<span class="code-string">button { background: blue; color: white; }</span>
+<span class="code-keyword">&lt;/style&gt;</span></pre>
+  </div>
+
+  <p>The <code style="font-size:0.875rem">&lt;template&gt;</code> uses Vue-specific syntax: <code style="font-size:0.875rem">@click</code> (event binding), <code style="font-size:0.875rem">{{ }}</code> (variable output). These are not valid HTML. A browser cannot parse them.</p>
+</section>
+
+<!-- SECTION 3 -->
+<section class="section reveal">
+  <span class="section-num fe16-num">03</span>
+  <h2>The Transformation — Step by Step</h2>
+  <p>When you run <code style="font-size:0.875rem">npm run dev</code> and the browser requests Button.vue, Vite intercepts that request and runs it through the Vue compiler plugin. Here is exactly what happens:</p>
+</section>
+
+<div class="transform-flow reveal">
+  <div class="tf-box">
+    <div class="tf-title">BUTTON.VUE &#8594; PLAIN JAVASCRIPT</div>
+    <div class="tf-step tf-s1">
+      <span class="tf-num">1</span>
+      <div class="tf-content">
+        <div class="tf-label">Template gets compiled into a render function</div>
+        <div class="tf-desc">&lt;button @click="handleClick"&gt;{{ label }}&lt;/button&gt; becomes: createElement('button', &#123; on: &#123; click: handleClick &#125; &#125;, this.label)</div>
+      </div>
+    </div>
+    <div class="tf-step tf-s2">
+      <span class="tf-num">2</span>
+      <div class="tf-content">
+        <div class="tf-label">Script and render function are merged into one JS module</div>
+        <div class="tf-desc">The component's data(), methods, and the compiled render function are combined into a single export</div>
+      </div>
+    </div>
+    <div class="tf-step tf-s3">
+      <span class="tf-num">3</span>
+      <div class="tf-content">
+        <div class="tf-label">Style section is extracted into CSS</div>
+        <div class="tf-desc">The &lt;style&gt; block is pulled out separately and injected into the page as a &lt;style&gt; tag or a .css file</div>
+      </div>
+    </div>
+    <div class="tf-step tf-s4">
+      <span class="tf-num">4</span>
+      <div class="tf-content">
+        <div class="tf-label">Browser receives pure JavaScript</div>
+        <div class="tf-desc">The browser never sees Button.vue — it only receives the compiled JavaScript module and the extracted CSS</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal">
+  <p>The compiled output looks like this:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// What the browser actually receives</span>
+<span class="code-keyword">export default</span> {
+  render() {
+    <span class="code-keyword">return</span> createElement(<span class="code-string">'button'</span>, {
+      on: { click: <span class="code-keyword">this</span>.handleClick }
+    }, <span class="code-keyword">this</span>.label)
+  },
+  data() {
+    <span class="code-keyword">return</span> { <span class="code-string">label: 'Click me'</span> }
+  },
+  methods: {
+    handleClick() { alert(<span class="code-string">'clicked'</span>) }
+  }
+}</pre>
+  </div>
+
+  <p>No template syntax. No <code style="font-size:0.875rem">@click</code>. No <code style="font-size:0.875rem">{{ }}</code>. Just plain JavaScript objects and functions the browser understands perfectly.</p>
+</section>
+
+<!-- SECTION 4 -->
+<section class="section reveal">
+  <span class="section-num fe16-num">04</span>
+  <h2>Development vs Production</h2>
+  <p>The transformation happens at different times depending on which mode you are in:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// Development: npm run dev</span>
+Browser requests Button.vue
+  <span class="code-arrow">&#8594;</span> Vite intercepts the request
+  <span class="code-arrow">&#8594;</span> Vue compiler transforms just this one file
+  <span class="code-arrow">&#8594;</span> Sends plain JS back immediately
+  <span class="code-arrow">&#8594;</span> Takes milliseconds — only transforms requested files
+
+<span class="code-comment">// Production: npm run build</span>
+Vite transforms ALL .vue files at once
+  <span class="code-arrow">&#8594;</span> Rollup bundles them into chunk files
+  <span class="code-arrow">&#8594;</span> Output lands in /dist folder
+  <span class="code-arrow">&#8594;</span> Browser downloads the pre-built JavaScript</pre>
+  </div>
+
+  <p>In development the browser never waits — each file is transformed on the spot as it is requested. In production everything is pre-transformed before deployment so there is no work to do at request time.</p>
+</section>
+
+<!-- SECTION 5 -->
+<section class="section reveal">
+  <span class="section-num fe16-num">05</span>
+  <h2>Why This Matters</h2>
+  <p>This transformation chain is why Vite must exist. Without it:</p>
+  <div style="display:grid;gap:0.75rem;margin-top:1rem">
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Without the Vue compiler plugin</strong> — the browser would receive a .vue file, have no idea what to do with it, and throw an error. Your entire app would be broken.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">With Vite + the plugin</strong> — you write expressive, well-organised .vue files. The browser gets clean JavaScript. The best of both worlds.
+    </div>
+  </div>
+  <p style="margin-top:1.25rem">The browser only ever runs JavaScript. Vite is the translator that makes your developer-friendly code browser-friendly.</p>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num fe16-num">RECAP</span>
+  <h2>What We Learned</h2>
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">A .vue file has three sections</strong> — template (HTML-like syntax), script (JavaScript), and style (CSS). The browser cannot run any of this directly.
+    </div>
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">Vite intercepts the request</strong> and runs the file through the Vue compiler plugin (@vitejs/plugin-vue2), which transforms it into plain JavaScript.
+    </div>
+    <div style="background:#fef9e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #f9ca24">
+      <strong style="color:#e17055">The template becomes a render function</strong> — @click becomes an event handler object, {{ }} becomes a variable reference. All Vue syntax compiles away.
+    </div>
+    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
+      <strong style="color:#6c5ce7">Dev vs production differ</strong> — in dev, files are transformed on demand. In production, all files are transformed upfront and bundled by Rollup.
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep16">
+  <span class="section-num fe16-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+  <div class="quiz-grid">
+
+    <div class="quiz-card">
+      <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
+      <p class="quiz-question">Why can't the browser run a .vue file directly?</p>
+      <ul class="quiz-options">
+        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Because .vue files are too large for the browser</button></li>
+        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Because Vue is a paid framework requiring a license</button></li>
+        <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Because the browser only understands plain JavaScript, HTML, and CSS — not Vue's template syntax</button></li>
+        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Because .vue files don't contain JavaScript</button></li>
+      </ul>
+      <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+      <div class="quiz-answer"><div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) The browser only understands plain HTML, CSS, and JavaScript</strong></div>
+        <p class="quiz-answer-text">Vue's template syntax (@click, {{ }}, v-for) is not valid HTML or JavaScript. The browser has no idea what to do with it. Vite must transform it first.</p>
+      </div></div>
+    </div>
+
+    <div class="quiz-card">
+      <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
+      <p class="quiz-question">What does the Vue compiler do to the &lt;template&gt; section?</p>
+      <ul class="quiz-options">
+        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Sends it to the browser as-is</button></li>
+        <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Compiles it into a render function (plain JavaScript)</button></li>
+        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Converts it into a CSS file</button></li>
+        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Removes it entirely from the output</button></li>
+      </ul>
+      <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+      <div class="quiz-answer"><div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) Compiles it into a render function</strong></div>
+        <p class="quiz-answer-text">The &lt;template&gt; HTML-like syntax gets compiled into a JavaScript render function that calls createElement() — something the browser's JS engine can actually execute.</p>
+      </div></div>
+    </div>
+
+    <div class="quiz-card">
+      <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
+      <p class="quiz-question">In development mode, when does Vite transform a .vue file?</p>
+      <ul class="quiz-options">
+        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>All files are transformed upfront when the server starts</button></li>
+        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Files are transformed every 30 seconds automatically</button></li>
+        <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Only when the browser requests that specific file</button></li>
+        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Only when you manually run a transform command</button></li>
+      </ul>
+      <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+      <div class="quiz-answer"><div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) Only when the browser requests that specific file</strong></div>
+        <p class="quiz-answer-text">This is Vite's core insight — on-demand transformation. Files are only transformed when requested, so startup is instant regardless of project size.</p>
+      </div></div>
+    </div>
+
+    <div class="quiz-card">
+      <div class="quiz-card-header"><span class="quiz-q-num">Q 04</span></div>
+      <p class="quiz-question">Which Vite plugin handles .vue file transformation in this repo?</p>
+      <ul class="quiz-options">
+        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>vite-plugin-eslint</button></li>
+        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>unplugin-vue-components</button></li>
+        <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>@vitejs/plugin-vue2</button></li>
+        <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>vite-plugin-stylelint</button></li>
+      </ul>
+      <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+      <div class="quiz-answer"><div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) @vitejs/plugin-vue2</strong></div>
+        <p class="quiz-answer-text">@vitejs/plugin-vue2 is the plugin in vite.config.mjs that adds Vue 2 Single File Component support — it contains the Vue compiler that transforms .vue files into JavaScript.</p>
+      </div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- NEXT -->
+<section class="next-part" style="background:linear-gradient(135deg,#e17055,#0984e3)">
+  <h2>Ready for Episode 17?</h2>
+  <p>You know how Vue files transform. Now let's look at styling — Tailwind CSS. What it is, why it exists, and how this repo uses it with the tw- prefix.</p>
+  <a href="part17.html" class="btn btn-white">Continue to Episode 17 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How the Frontend Works — Ep 16: How Vue Files Become JavaScript | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={16} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

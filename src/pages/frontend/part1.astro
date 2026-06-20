@@ -1,0 +1,273 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { frontendSeries } from '../../data/series';
+const inlineStyle = `
+/* ── Hero ── */
+.fe1-hero{background:linear-gradient(135deg,#e17055 0%,#d63031 40%,#0984e3 100%)}
+
+/* ── Typing HTML tag animation ── */
+.html-tag-art{margin:2.5rem auto 0;position:relative;width:18rem;height:6rem;display:flex;align-items:center;justify-content:center}
+.html-tag-text{font-family:'Fira Code',monospace;font-size:1.6rem;font-weight:700;color:rgba(255,255,255,0.95);letter-spacing:0.05rem;overflow:hidden;white-space:nowrap;border-right:0.15rem solid rgba(255,255,255,0.9);width:0;animation:typeTag 3s steps(18,end) 0.5s forwards,blinkCursor 0.75s step-end infinite}
+@keyframes typeTag{from{width:0}to{width:18rem}}
+@keyframes blinkCursor{0%,100%{border-color:rgba(255,255,255,0.9)}50%{border-color:transparent}}
+
+/* ── section num ── */
+.fe1-num{color:#e17055;background:#fdf2ef}
+
+/* ── Quiz theming ep1 ── */
+.quiz-ep1f .quiz-q-num{color:#e17055;background:#fdf2ef}
+.quiz-ep1f .quiz-reveal-btn{color:#e17055}
+.quiz-ep1f .quiz-opt-letter{color:#e17055}
+.quiz-ep1f .quiz-option:hover{border-color:#e17055;background:#fdf2ef}
+.quiz-ep1f .quiz-answer-highlight{background:#fdf2ef;border-left:0.25rem solid #e17055}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero fe1-hero">
+  <div class="hero-badge">Episode 1 of 23</div>
+  <h1>The Web Before<br>JavaScript</h1>
+  <p style="color:rgba(255,255,255,0.95)">1991. Tim Berners-Lee just invented something. It was just a document. No code. No interaction. Just text and links.</p>
+  <div class="html-tag-art">
+    <span class="html-tag-text">&lt;html&gt;Hello, World!&lt;/html&gt;</span>
+  </div>
+</section>
+
+<!-- SECTION 1 -->
+<section class="section reveal">
+  <span class="section-num fe1-num">01</span>
+  <h2>1991 — A Digital Book</h2>
+  <p>In 1991, Tim Berners-Lee, a scientist at <span class="highlight">CERN</span> in Switzerland, invented the World Wide Web. He wanted a better way for researchers to share documents across the internet.</p>
+  <p>His invention was brilliantly simple: documents written in <span class="highlight">HTML</span> (HyperText Markup Language), connected to each other by <span class="highlight-orange">links</span>. Click a link, jump to another document. That was it.</p>
+  <p>Think of the early web as a gigantic library — millions of text documents you could navigate by following references.</p>
+</section>
+
+<div class="analogy reveal">
+  <p>Imagine a <strong>physical book of research papers</strong>. Each paper has footnotes that say "see paper #47 in section B". You walk to the shelf, find paper #47, read it. The early web was exactly this — just digital. A hyperlink was a footnote you could click.</p>
+</div>
+
+<!-- SECTION 2 -->
+<section class="section reveal">
+  <span class="section-num fe1-num">02</span>
+  <h2>What a 1991 Web Page Was</h2>
+  <p>A webpage in 1991 was a plain <span class="highlight">text file</span> with special tags in it. Here is what one looked like:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">&lt;!-- A webpage from 1991 --&gt;</span>
+<span class="code-keyword">&lt;html&gt;</span>
+  <span class="code-keyword">&lt;h1&gt;</span>My Research Paper<span class="code-keyword">&lt;/h1&gt;</span>
+  <span class="code-keyword">&lt;p&gt;</span>Here is my finding about particle physics.<span class="code-keyword">&lt;/p&gt;</span>
+  <span class="code-keyword">&lt;a href=</span><span class="code-string">"paper47.html"</span><span class="code-keyword">&gt;</span>See related paper<span class="code-keyword">&lt;/a&gt;</span>
+<span class="code-keyword">&lt;/html&gt;</span></pre>
+  </div>
+
+  <p>No color. No fonts. No layout. No images. <span class="highlight-orange">No CSS even existed yet.</span> CSS was not invented until 1996. The browser chose whatever default styling it wanted.</p>
+  <p>The file was stored on a server, and when you requested it, the server sent you that file — plain text with tags. The browser parsed the tags and displayed the text.</p>
+</section>
+
+<!-- SECTION 3: server round trips -->
+<section class="section reveal">
+  <span class="section-num fe1-num">03</span>
+  <h2>Every Click Was a Round Trip</h2>
+  <p>This is the single most important thing to understand about the early web. <span class="highlight">Every single action required a full round trip to the server.</span></p>
+</section>
+
+<div class="flow reveal">
+  <div class="flow-box fb-blue">You click a link</div>
+  <div class="flow-arrow">&#10132;</div>
+  <div class="flow-box fb-orange">Browser sends HTTP request to server</div>
+  <div class="flow-arrow">&#10132;</div>
+  <div class="flow-box fb-green">Server builds entire HTML page</div>
+  <div class="flow-arrow">&#10132;</div>
+  <div class="flow-box fb-purple">Server sends full HTML back</div>
+  <div class="flow-arrow">&#10132;</div>
+  <div class="flow-box fb-dark">Browser wipes the screen and displays new page</div>
+</div>
+
+<section class="section reveal">
+  <p>Every click wiped the screen completely and reloaded the whole page from the server. The server did <span class="highlight">all the work</span>. The browser just displayed whatever text it received.</p>
+  <p>For a digital library of research papers, this was fine. You read a paper, click a link, wait a moment, read the next paper. Nobody complained.</p>
+</section>
+
+<!-- SECTION 4: problems -->
+<section class="section reveal">
+  <span class="section-num fe1-num">04</span>
+  <h2>Why This Was Fine — and Why It Wasn't</h2>
+  <p>The web was <span class="highlight">designed for documents</span>. Tim Berners-Lee's goal was document sharing, not interactive applications. So the round-trip model was perfectly adequate.</p>
+  <p>But as the web grew beyond CERN, businesses started to see its potential. They wanted to put <span class="highlight-orange">forms</span> on the web. Shopping carts. Login pages. Sign-up flows.</p>
+  <p>And here is where the problems started:</p>
+
+  <div style="display:grid;gap:1rem;margin-top:1.5rem">
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Form validation required a server round trip</strong><br>
+      <span style="color:#636e72">User fills in a form, clicks Submit. Server checks that the email field is empty and sends back an error page. The whole page reloads. The user re-enters everything.</span>
+    </div>
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">No click reactions</strong><br>
+      <span style="color:#636e72">Hover over a button? Nothing happens. Click something? Full page reload. The page was completely static between loads.</span>
+    </div>
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">No dynamic content</strong><br>
+      <span style="color:#636e72">Content could not change after the page loaded. A live clock? Impossible. Updating a counter without reloading? Impossible.</span>
+    </div>
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">No visual feedback</strong><br>
+      <span style="color:#636e72">No loading spinners, no inline errors, no tooltips, no animations. The page was frozen between server trips.</span>
+    </div>
+  </div>
+</section>
+
+<div class="analogy reveal">
+  <p>Imagine if every time you wanted to <strong>check if a phone number had the right number of digits</strong> in a form, a postal worker had to carry your piece of paper to an office 2,000 miles away, someone there checked it, wrote "Phone number is too short" on it, and mailed it back three seconds later. That is what form validation felt like before JavaScript.</p>
+</div>
+
+<!-- SECTION 5: summary -->
+<section class="section reveal">
+  <span class="section-num fe1-num">05</span>
+  <h2>The Design Document, Not the Application</h2>
+  <p>The early web had a fundamental mismatch with what businesses needed. The web was designed to be like <span class="highlight">a Wikipedia article</span>: read it, follow a link, read the next one. Server does the work, browser displays it.</p>
+  <p>But commerce and interaction required something more like <span class="highlight-orange">a desktop application</span>: click a button, see an immediate response. Enter text, get instant feedback. All of it happening locally, without waiting for a server.</p>
+  <p>The gap between "the web as document system" and "the web as application platform" is exactly the problem that JavaScript was created to solve.</p>
+
+  <div class="timeline reveal" style="max-width:43.75rem;margin:2.5rem auto;padding:0 1.5rem 0 4rem">
+    <div class="timeline-item">
+      <div class="timeline-year">1991</div>
+      <div class="timeline-text">Tim Berners-Lee invents the World Wide Web at CERN — pure HTML documents</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">1993</div>
+      <div class="timeline-text">Mosaic — the first graphical browser — makes the web accessible to everyone</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">1994</div>
+      <div class="timeline-text">Netscape Navigator launches — first major commercial browser. Web explodes in popularity.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">1994</div>
+      <div class="timeline-text">W3C (World Wide Web Consortium) founded by Tim Berners-Lee — sets web standards</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">1995</div>
+      <div class="timeline-text">The problem: even a simple "Email is required" message needs a full server round trip. <span class="timeline-chip">painful</span></div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">1995</div>
+      <div class="timeline-text">Netscape hires Brendan Eich to fix this. JavaScript is born. <span class="timeline-chip">next episode</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">The 1991 web</strong> was a system for sharing documents — HTML text files connected by hyperlinks.
+    </div>
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">Every action</strong> required a full server round trip — click a link, server builds the page, browser displays it.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">No CSS, no scripting, no interaction</strong> — the browser displayed whatever HTML the server sent.
+    </div>
+    <div style="background:#fef9e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #f9ca24">
+      <strong style="color:#e6a817">The problem</strong> — businesses needed forms, validation, and interactivity. The document model could not deliver them.
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep1f">
+  <span class="section-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
+    <p class="quiz-question">Who invented the World Wide Web, and where?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Bill Gates at Microsoft</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Brendan Eich at Netscape</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Tim Berners-Lee at CERN</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Marc Andreessen at the University of Illinois</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) Tim Berners-Lee at CERN</strong></div>
+        <p class="quiz-answer-text">Tim Berners-Lee invented the World Wide Web in 1991 while working at CERN in Switzerland. He wanted a better way for scientists to share research documents.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
+    <p class="quiz-question">In the early web, what happened every time you clicked a link?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>JavaScript ran to update the page</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>A full round trip to the server — full page rebuild and reload</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>The browser fetched just the changed section</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>The browser cached the page locally</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) A full round trip to the server — full page rebuild and reload</strong></div>
+        <p class="quiz-answer-text">Every click sent an HTTP request to the server, which built the entire HTML page and sent it back. The browser then wiped the screen and displayed the new page from scratch.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
+    <p class="quiz-question">When was CSS (Cascading Style Sheets) invented relative to HTML?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>CSS was part of the original web in 1991</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>CSS came out in 1993 alongside early browsers</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>CSS was not invented until 1996 — five years after HTML</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>CSS and JavaScript were invented at the same time</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) CSS was not invented until 1996 — five years after HTML</strong></div>
+        <p class="quiz-answer-text">The 1991 web had no CSS. Browsers chose their own default styling. CSS Level 1 was not published until December 1996, and it took years before browsers properly supported it.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 04</span></div>
+    <p class="quiz-question">What fundamental problem did the early web create for forms and validation?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Forms could not be styled with color</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Forms required a plugin to work</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Even a "field is required" error needed a full server round trip</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Forms only worked in Internet Explorer</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) Even a "field is required" error needed a full server round trip</strong></div>
+        <p class="quiz-answer-text">Without JavaScript, the browser had no way to check a form locally. Even checking if an email field was empty required submitting to the server, waiting for a response, and reloading the whole page with the error.</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<!-- NEXT -->
+<section class="next-part" style="background:linear-gradient(135deg,#e17055,#0984e3)">
+  <h2>Ready for Episode 2?</h2>
+  <p>The year is 1995. Netscape is growing fast. They hire one developer and give him 10 days to solve the interactivity problem. What he built changed the entire web.</p>
+  <a href="part2.html" class="btn btn-white">Continue to Episode 2 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How the Frontend Works — Part 1: The Web Before JavaScript | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={1} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

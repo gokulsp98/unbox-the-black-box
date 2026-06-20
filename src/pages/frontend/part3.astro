@@ -1,0 +1,257 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { frontendSeries } from '../../data/series';
+const inlineStyle = `
+/* ── Hero ── */
+.fe3-hero{background:linear-gradient(135deg,#0984e3 0%,#6c5ce7 50%,#e17055 100%)}
+
+/* ── Timeline art: year dots marching across ── */
+.timeline-art{margin:2.5rem auto 0;position:relative;width:18rem;height:4rem;display:flex;align-items:center;gap:0}
+.tl-year{font-family:'Fira Code',monospace;font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.5);position:relative;display:flex;flex-direction:column;align-items:center;gap:0.4rem;flex:1}
+.tl-year::before{content:'';width:0.625rem;height:0.625rem;border-radius:50%;background:rgba(255,255,255,0.35);display:block}
+.tl-year.active::before{background:#fff;box-shadow:0 0 0 0.25rem rgba(255,255,255,0.2);animation:dotPop 2s ease-in-out infinite}
+.tl-year.active{color:#fff}
+.tl-line{position:absolute;top:0.9rem;left:0;right:0;height:0.125rem;background:rgba(255,255,255,0.2)}
+@keyframes dotPop{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
+
+.fe3-num{color:#0984e3;background:#e3f2fd}
+
+/* ── Quiz theming ep3 ── */
+.quiz-ep3f .quiz-q-num{color:#0984e3;background:#e3f2fd}
+.quiz-ep3f .quiz-reveal-btn{color:#0984e3}
+.quiz-ep3f .quiz-opt-letter{color:#0984e3}
+.quiz-ep3f .quiz-option:hover{border-color:#0984e3;background:#e3f2fd}
+.quiz-ep3f .quiz-answer-highlight{background:#e3f2fd;border-left:0.25rem solid #0984e3}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero fe3-hero">
+  <div class="hero-badge">Episode 3 of 23</div>
+  <h1>Early JavaScript —<br>What It Actually Did</h1>
+  <p style="color:rgba(255,255,255,0.95)">For 10 years, JavaScript was just sprinkles. Small stuff. The real revolution was still a decade away.</p>
+  <div class="timeline-art">
+    <div class="tl-line"></div>
+    <div class="tl-year">1995</div>
+    <div class="tl-year">1997</div>
+    <div class="tl-year active">1999</div>
+    <div class="tl-year">2001</div>
+    <div class="tl-year">2003</div>
+    <div class="tl-year">2005</div>
+  </div>
+</section>
+
+<!-- SECTION 1 -->
+<section class="section reveal">
+  <span class="section-num fe3-num">01</span>
+  <h2>The First 10 Years: Small and Scrappy</h2>
+  <p>JavaScript shipped in Netscape Navigator 2.0 in 1995. But for its first decade of existence, it stayed in a very narrow lane. Developers used it for exactly the small tasks it was designed for — and not much more.</p>
+  <p>The web was still mostly <span class="highlight">documents with a sprinkle of interactivity</span>. The idea that you could build a full application in a browser — like Gmail or Google Maps — had not occurred to anyone yet.</p>
+  <p>Here is what early JavaScript was actually used for:</p>
+</section>
+
+<!-- task 1: form validation -->
+<section class="section reveal">
+  <span class="section-num fe3-num">02</span>
+  <h2>1. Form Validation</h2>
+  <p>The original killer use case. Instead of submitting a form to the server just to get back an error message, JavaScript could check fields in the browser first:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// 1990s form validation</span>
+<span class="code-keyword">function</span> validateForm() {
+  <span class="code-keyword">if</span> (document.forms[0].email.value === <span class="code-string">''</span>) {
+    alert(<span class="code-string">'Email is required!'</span>);
+    <span class="code-keyword">return false</span>;
+  }
+  <span class="code-keyword">return true</span>;
+}</pre>
+  </div>
+
+  <p>Before this, an empty email field meant a server round trip and a full page reload. Now the error appeared instantly, in the browser, with no server involved. This was a genuine improvement in user experience.</p>
+</section>
+
+<!-- task 2: alerts -->
+<section class="section reveal">
+  <span class="section-num fe3-num">03</span>
+  <h2>2. Alerts and Dialogs</h2>
+  <p>JavaScript gave browsers three built-in dialog boxes that could interrupt the user:</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">alert</span>(<span class="code-string">'Welcome to our website!'</span>);
+<span class="code-comment">// Shows a popup — user clicks OK</span>
+
+<span class="code-keyword">confirm</span>(<span class="code-string">'Are you sure you want to delete this?'</span>);
+<span class="code-comment">// Returns true (OK) or false (Cancel)</span>
+
+<span class="code-keyword">prompt</span>(<span class="code-string">'What is your name?'</span>);
+<span class="code-comment">// Shows an input field — returns the typed string</span></pre>
+  </div>
+
+  <p>These were heavily used in the early web — some sites greeted visitors with alert popups. Today they are considered bad practice (they block the entire browser and cannot be styled), but in 1996 they were exciting.</p>
+</section>
+
+<!-- task 3: visual effects -->
+<section class="section reveal">
+  <span class="section-num fe3-num">04</span>
+  <h2>3. Visual Effects and Color Changes</h2>
+  <p>Developers quickly discovered that JavaScript could change the visual appearance of elements on the page. This led to the wave of garish late-1990s web design:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// Change background color dynamically</span>
+document.body.style.backgroundColor = <span class="code-string">'#ff0000'</span>;
+
+<span class="code-comment">// Show or hide an element</span>
+document.getElementById(<span class="code-string">'banner'</span>).style.display = <span class="code-string">'none'</span>;</pre>
+  </div>
+
+  <p>Blinking text. Scrolling marquees. Text that followed your mouse cursor around the page. These effects horrify modern developers — but in 1997, they were impressive demonstrations of a new capability.</p>
+</section>
+
+<!-- task 4: image rollovers -->
+<section class="section reveal">
+  <span class="section-num fe3-num">05</span>
+  <h2>4. Image Rollovers — The 1990s Navigation Menu</h2>
+  <p>Before CSS hover states, the entire navigation menu of a website was built from images. To get a "hover effect" — the button lighting up when you moved your mouse over it — developers used <span class="highlight">JavaScript image swapping</span>:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// Preload both versions of the button image</span>
+<span class="code-keyword">var</span> img_off = <span class="code-keyword">new</span> Image();
+img_off.src = <span class="code-string">'nav_home_off.gif'</span>;
+
+<span class="code-keyword">var</span> img_on = <span class="code-keyword">new</span> Image();
+img_on.src = <span class="code-string">'nav_home_on.gif'</span>;
+
+<span class="code-comment">// On hover: swap the image source</span>
+<span class="code-keyword">function</span> rollover(img) {
+  img.src = <span class="code-string">'nav_home_on.gif'</span>;
+}
+<span class="code-keyword">function</span> rollout(img) {
+  img.src = <span class="code-string">'nav_home_off.gif'</span>;
+}</pre>
+  </div>
+
+  <p>The navigation bar was a row of <code style="font-size:0.875rem">.gif</code> images — one "off" state and one "on" state per button. JavaScript swapped between them on mouse enter and leave. This was considered sophisticated web design in 1998.</p>
+</section>
+
+<!-- task 5: timers -->
+<section class="section reveal">
+  <span class="section-num fe3-num">06</span>
+  <h2>5. Clocks and Timers</h2>
+  <p>JavaScript had <code style="font-size:0.875rem">setInterval</code> from the start, which allowed code to run repeatedly at a set interval. The most popular use: a live clock on the page.</p>
+
+  <div class="code-block">
+    <pre><span class="code-keyword">function</span> updateClock() {
+  <span class="code-keyword">var</span> now = <span class="code-keyword">new</span> Date();
+  document.getElementById(<span class="code-string">'clock'</span>).innerHTML =
+    now.getHours() + <span class="code-string">':'</span> + now.getMinutes() + <span class="code-string">':'</span> + now.getSeconds();
+}
+
+<span class="code-comment">// Update every second</span>
+setInterval(updateClock, 1000);</pre>
+  </div>
+
+  <p>Showing the current time without refreshing the page was treated as a genuinely impressive trick. <span class="highlight">This was the full extent of "dynamic content"</span> in the late 1990s.</p>
+</section>
+
+<!-- SECTION: what was missing -->
+<section class="section reveal">
+  <span class="section-num fe3-num">07</span>
+  <h2>What Was Still Missing</h2>
+  <p>Even with form validation, alerts, visual effects, image swaps, and clocks — JavaScript was still <span class="highlight-orange">not capable of building a real application</span>. The missing ingredient was critical: there was no way to fetch new data from the server without reloading the whole page.</p>
+  <p>If you wanted to show a user's messages without a page reload — impossible. Show live sports scores — impossible. Update a product price — impossible. Everything that required fresh data still required a full round trip.</p>
+  <p>That changed in 2005, with a technique called AJAX. But we will get to that in Episode 6. First, we need to understand the DOM — the bridge that makes any of this possible.</p>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">Early JavaScript (1995–2005)</strong> was used for five narrow tasks: form validation, alerts, visual effects, image rollovers, and timers.
+    </div>
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">No AJAX</strong> — fetching new data from the server without a full reload was not yet possible.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">The web was still document-first</strong> — JavaScript was the garnish, HTML was the meal.
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep3f">
+  <span class="section-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
+    <p class="quiz-question">How were navigation menus built on websites in the late 1990s?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Using CSS hover pseudo-classes</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Using JavaScript to swap .gif images on mouse hover/leave</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>Using SVG animations</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Using Flash animations</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) Using JavaScript to swap .gif images on mouse hover/leave</strong></div>
+        <p class="quiz-answer-text">Before CSS hover states were widely supported, navigation menus were rows of .gif images. JavaScript would swap between an "off" version and an "on" version when the mouse entered or left the button. This was called an image rollover.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
+    <p class="quiz-question">What was the fundamental limitation of JavaScript from 1995 to 2005?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>JavaScript could not access form elements</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>JavaScript ran too slowly to be useful</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>There was no way to fetch new data from the server without a full page reload</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>JavaScript was only supported in Internet Explorer</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) There was no way to fetch new data from the server without a full page reload</strong></div>
+        <p class="quiz-answer-text">JavaScript could modify things already on the page, but any new data — messages, prices, scores — still required a full server round trip and complete page reload. AJAX, introduced in 2005, solved this problem.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
+    <p class="quiz-question">What JavaScript function runs code repeatedly at a time interval?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>setTimeout</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>setInterval</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>setLoop</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>setTimer</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) setInterval</strong></div>
+        <p class="quiz-answer-text">setInterval(callback, ms) runs the callback function repeatedly every ms milliseconds. The classic early JavaScript use case was updating a clock display every 1000ms (1 second). setTimeout runs once after a delay.</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<!-- NEXT -->
+<section class="next-part" style="background:linear-gradient(135deg,#e17055,#0984e3)">
+  <h2>Ready for Episode 4?</h2>
+  <p>All of JavaScript's visual tricks work through one mechanism: the DOM. Let's understand what the DOM actually is — the browser's living, changeable tree of every element on the page.</p>
+  <a href="part4.html" class="btn btn-white">Continue to Episode 4 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How the Frontend Works — Part 3: Early JavaScript | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={3} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

@@ -1,0 +1,230 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { frontendSeries } from '../../data/series';
+const inlineStyle = `
+/* ── Hero ── */
+.fe15-hero{background:linear-gradient(135deg,#e17055 0%,#fdcb6e 40%,#00b894 100%)}
+
+/* ── Lightning bolt + instant art ── */
+.vite-art{margin:2.5rem auto 0;display:flex;flex-direction:column;align-items:center;gap:0.5rem;position:relative}
+.vite-bolt{font-size:4rem;animation:boltPulse 1.5s ease-in-out infinite;filter:drop-shadow(0 0 1rem rgba(255,215,0,0.6))}
+.vite-badge{font-family:'Fira Code',monospace;font-size:0.7rem;font-weight:700;padding:0.3rem 1rem;border-radius:1rem;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);border:0.0625rem solid rgba(255,255,255,0.3);animation:viteSlide 0.6s ease 0.3s both}
+@keyframes boltPulse{0%,100%{transform:scale(1) rotate(-5deg)}50%{transform:scale(1.1) rotate(5deg)}}
+@keyframes viteSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.fe15-num{color:#e17055;background:#fdf2ef}
+
+/* ── Quiz theming ep15 ── */
+.quiz-ep15f .quiz-q-num{color:#e17055;background:#fdf2ef}
+.quiz-ep15f .quiz-reveal-btn{color:#e17055}
+.quiz-ep15f .quiz-opt-letter{color:#e17055}
+.quiz-ep15f .quiz-option:hover{border-color:#e17055;background:#fdf2ef}
+.quiz-ep15f .quiz-answer-highlight{background:#fdf2ef;border-left:0.25rem solid #e17055}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero fe15-hero">
+  <div class="hero-badge">Episode 15 of 23</div>
+  <h1>Vite — The Modern<br>Build Tool</h1>
+  <p style="color:rgba(255,255,255,0.95)">2021. Evan You asks: what if the dev server didn't bundle at all? Near-instant startup. The fastest hot reload imaginable.</p>
+  <div class="vite-art">
+    <div class="vite-bolt">⚡</div>
+    <span class="vite-badge">server ready in 300ms</span>
+  </div>
+</section>
+
+<!-- SECTION 1 -->
+<section class="section reveal">
+  <span class="section-num fe15-num">01</span>
+  <h2>The Key Insight: Browsers Support ES Modules</h2>
+  <p>Vite was created by <span class="highlight">Evan You</span> — the same person who created Vue. He understood the webpack bottleneck intimately and looked for a different approach.</p>
+  <p>The insight came from a browser capability that had existed since 2018: <span class="highlight">native ES Modules</span>. Modern browsers (Chrome, Firefox, Safari, Edge) can handle JavaScript <code style="font-size:0.875rem">import</code> statements directly. They can request each module file independently, without you needing to pre-bundle everything.</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// Modern browsers can load this natively — no bundler needed</span>
+<span class="code-keyword">import</span> { ref } <span class="code-keyword">from</span> <span class="code-string">'/node_modules/vue/dist/vue.esm-browser.js'</span>
+<span class="code-keyword">import</span> App <span class="code-keyword">from</span> <span class="code-string">'/src/App.js'</span>
+
+<span class="code-comment">// Browser sees the import, makes a separate HTTP request for each file</span></pre>
+  </div>
+
+  <p>webpack couldn't take advantage of this because it was designed before browsers had this capability. Vite was designed from the ground up around it.</p>
+</section>
+
+<!-- SECTION 2: dev mode -->
+<section class="section reveal">
+  <span class="section-num fe15-num">02</span>
+  <h2>Development Mode: No Bundling At All</h2>
+  <p>In development, Vite's approach is radical: <span class="highlight">do nothing upfront</span>. Start the server instantly. Wait for the browser to make requests. Then transform only the files being requested — on demand, one at a time.</p>
+
+  <div class="flow reveal">
+    <div class="flow-box fb-blue">Browser requests App.vue</div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-orange">Vite transforms ONLY that file</div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-green">Browser receives plain JS</div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-purple">Browser sees import → requests Button.vue</div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-dark">Vite transforms Button.vue → sends it</div>
+  </div>
+
+  <p style="margin-top:1.5rem">Only files the browser actually requests get transformed. If your app has 800 components but the current page only uses 12, Vite only transforms those 12. Startup is near-instant because there is nothing to do upfront.</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// webpack startup:</span>
+<span class="code-comment">// Process all 800 components → build bundle → start server</span>
+<span class="code-comment">// Time: 30-60 seconds</span>
+
+<span class="code-comment">// Vite startup:</span>
+<span class="code-comment">// Start server → done (transforms happen on demand)</span>
+<span class="code-comment">// Time: ~300ms</span></pre>
+  </div>
+</section>
+
+<!-- SECTION 3: HMR -->
+<section class="section reveal">
+  <span class="section-num fe15-num">03</span>
+  <h2>HMR: Hot Module Replacement</h2>
+  <p>When you save a file in development, Vite's <span class="highlight">HMR</span> (Hot Module Replacement) updates just that one module in the browser:</p>
+
+  <div class="flow reveal">
+    <div class="flow-box fb-blue">You save Button.vue</div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-orange">Vite transforms only Button.vue</div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-green">Sends update to browser via WebSocket</div>
+    <div class="flow-arrow">&#10132;</div>
+    <div class="flow-box fb-dark">Browser swaps just that module in place</div>
+  </div>
+
+  <p style="margin-top:1.5rem">The page does not reload. Your application state is preserved — if you have a form partially filled in, it stays. Only the changed component updates.</p>
+  <p>With webpack: save a file → rebuild the bundle (5-10 seconds) → full page reload.</p>
+  <p>With Vite: save a file → transform one file (&lt;100ms) → module swapped. <span class="highlight">The feedback loop is faster than your eye can process.</span></p>
+</section>
+
+<!-- SECTION 4: production -->
+<section class="section reveal">
+  <span class="section-num fe15-num">04</span>
+  <h2>Production Mode: Rollup Takes Over</h2>
+  <p>Vite's "don't bundle" approach is perfect for development, but not for production. Serving 800 separate files to end users would be extremely inefficient — too many network requests.</p>
+  <p>For production (<code style="font-size:0.875rem">npm run build</code>), Vite uses <span class="highlight">Rollup</span> — a battle-tested bundler — to create an optimized bundle:</p>
+
+  <div class="code-block">
+    <pre><span class="code-comment">// Production build output</span>
+dist/
+  index.html
+  assets/
+    main-abc123.js      <span class="code-comment">← core app code</span>
+    vendor-def456.js    <span class="code-comment">← vue, vuetify, axios — shared libs</span>
+    dashboard-ghi789.js <span class="code-comment">← lazy-loaded chunk</span>
+    main-mno345.css     <span class="code-comment">← all styles combined</span></pre>
+  </div>
+
+  <p><span class="highlight">Code splitting</span> — instead of one giant bundle, Vite creates multiple chunks:</p>
+  <ul style="line-height:2;padding-left:1.5rem;margin-top:0.5rem">
+    <li><strong>main.js</strong> — loads always when user visits the app</li>
+    <li><strong>vendor.js</strong> — Vue, Vuetify, etc. Cached by the browser forever (doesn't change between deploys)</li>
+    <li><strong>dashboard.js</strong> — only loads when the user navigates to /dashboard</li>
+  </ul>
+
+  <p style="margin-top:1rem">User visits the app for the first time: downloads main.js + vendor.js. User comes back tomorrow: vendor.js is already cached. Only main.js (if changed) re-downloads.</p>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Vite's insight</strong> — modern browsers support native ES Modules. In dev, skip bundling entirely. Transform on demand.
+    </div>
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">Dev mode</strong> — near-instant startup (~300ms vs 30-60s). Only files the browser requests get transformed.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">HMR</strong> — save a file → only that module updates → browser swaps it in place. No full reload. App state preserved.
+    </div>
+    <div style="background:#f0efff;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #6c5ce7">
+      <strong style="color:#6c5ce7">Production</strong> — uses Rollup to create an optimized bundle with code splitting and caching.
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep15f">
+  <span class="section-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
+    <p class="quiz-question">Why is Vite's dev server startup so fast compared to webpack?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Vite uses a faster programming language than webpack</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Vite uses a different kind of server hardware</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Vite doesn't bundle anything upfront — it transforms files on demand when the browser requests them</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Vite skips TypeScript compilation</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) Vite doesn't bundle anything upfront — it transforms files on demand when the browser requests them</strong></div>
+        <p class="quiz-answer-text">webpack bundled everything before the dev server could start — 30-60 seconds for large projects. Vite starts the server immediately (nothing to bundle) and only transforms a file when the browser actually requests it. If you have 800 components but only need 12 for the current page, only those 12 are transformed.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
+    <p class="quiz-question">What is HMR (Hot Module Replacement) and what does it preserve?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>HMR bundles the entire app on every save — it preserves nothing</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>HMR is a server-side caching mechanism</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>HMR swaps only the changed module in the browser without a full reload — preserving application state</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>HMR compresses files to make them smaller</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) HMR swaps only the changed module in the browser without a full reload — preserving application state</strong></div>
+        <p class="quiz-answer-text">When you save a file, Vite transforms only that file and sends the update to the browser via WebSocket. The browser swaps just that module in place — no page reload. Any state you had (form values, open dialogs, scroll position) is preserved because the application didn't restart.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
+    <p class="quiz-question">What is "code splitting" and how does it help users?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>It divides a file into multiple copies for redundancy</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Instead of one giant bundle, it creates multiple chunks — so users only download the code they need for the current page</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>It splits the code between server and browser</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>It compresses the JavaScript into binary format</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) Instead of one giant bundle, it creates multiple chunks — so users only download the code they need for the current page</strong></div>
+        <p class="quiz-answer-text">Code splitting creates multiple JS files: main.js (core), vendor.js (libraries — cached forever), and lazy chunks like dashboard.js (only downloaded when the user visits /dashboard). Users download less code up front, and the cached vendor bundle doesn't re-download across visits.</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<!-- NEXT -->
+<section class="next-part" style="background:linear-gradient(135deg,#e17055,#0984e3)">
+  <h2>Ready for Episode 16?</h2>
+  <p>We know Vite transforms .vue files. But what exactly does that transformation look like? Let's trace a Button.vue through the full pipeline — from three sections to plain JavaScript.</p>
+  <a href="part16.html" class="btn btn-white">Continue to Episode 16 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How the Frontend Works — Part 15: Vite | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={15} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>

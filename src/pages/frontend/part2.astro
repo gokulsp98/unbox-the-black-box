@@ -1,0 +1,247 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { frontendSeries } from '../../data/series';
+const inlineStyle = `
+/* ── Hero ── */
+.fe2-hero{background:linear-gradient(135deg,#f9ca24 0%,#e17055 50%,#0984e3 100%)}
+
+/* ── JS logo spark animation ── */
+.js-logo-art{margin:2.5rem auto 0;position:relative;width:10rem;height:10rem}
+.js-logo-box{width:7rem;height:7rem;background:#f0db4f;border-radius:0.75rem;position:absolute;top:1.5rem;left:1.5rem;display:flex;align-items:center;justify-content:center;box-shadow:0 0.5rem 2rem rgba(240,219,79,0.4);animation:jsPulse 2s ease-in-out infinite}
+.js-logo-box::after{content:'JS';font-family:'Fira Code',monospace;font-size:2.2rem;font-weight:900;color:#323330;letter-spacing:-0.05rem}
+.js-spark{position:absolute;width:0.5rem;height:0.5rem;border-radius:50%;background:#fff;opacity:0;animation:sparkFly 2.5s ease-in-out infinite}
+.js-spark:nth-child(1){top:0.5rem;left:0.5rem;animation-delay:0s}
+.js-spark:nth-child(2){top:0.25rem;right:0.75rem;animation-delay:0.4s}
+.js-spark:nth-child(3){bottom:0.75rem;left:0.25rem;animation-delay:0.8s}
+.js-spark:nth-child(4){bottom:0.5rem;right:0.5rem;animation-delay:1.2s}
+.js-spark:nth-child(5){top:50%;left:0;animation-delay:1.6s}
+@keyframes jsPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes sparkFly{0%{opacity:0;transform:scale(0)}20%{opacity:1;transform:scale(1.2)}60%{opacity:0.6;transform:scale(0.8) translate(8px,-8px)}100%{opacity:0;transform:scale(0) translate(16px,-16px)}}
+
+.fe2-num{color:#f9ca24;background:#fef9e7}
+
+/* ── Quiz theming ep2 ── */
+.quiz-ep2f .quiz-q-num{color:#f9ca24;background:#fef9e7}
+.quiz-ep2f .quiz-reveal-btn{color:#e6a817}
+.quiz-ep2f .quiz-opt-letter{color:#e6a817}
+.quiz-ep2f .quiz-option:hover{border-color:#f9ca24;background:#fef9e7}
+.quiz-ep2f .quiz-answer-highlight{background:#fef9e7;border-left:0.25rem solid #f9ca24}
+`;
+const bodyHtml = `
+
+<!-- HERO -->
+<section class="hero fe2-hero">
+  <div class="hero-badge">Episode 2 of 23</div>
+  <h1>JavaScript<br>is Born</h1>
+  <p style="color:rgba(255,255,255,0.95)">1995. One developer. Ten days. The most consequential 10 days in web history.</p>
+  <div class="js-logo-art">
+    <div class="js-spark"></div>
+    <div class="js-spark"></div>
+    <div class="js-spark"></div>
+    <div class="js-spark"></div>
+    <div class="js-spark"></div>
+    <div class="js-logo-box"></div>
+  </div>
+</section>
+
+<!-- SECTION 1 -->
+<section class="section reveal">
+  <span class="section-num fe2-num">01</span>
+  <h2>The Problem That Needed Solving</h2>
+  <p>By 1995, the web had grown well beyond its academic origins. Businesses were putting websites online — shopping sites, information services, early e-commerce. The problem was obvious to anyone who used them.</p>
+  <p>Consider a simple user registration form. You fill in your email address, your password, your name. You click <strong>Submit</strong>. The browser sends all that data to the server. The server checks it and discovers: <span class="highlight-orange">the email field was empty</span>.</p>
+  <p>So it sends back an entirely new HTML page with the message "Email is required." The screen wipes, reloads, and now you have to fill the whole form in again.</p>
+  <p>This was not a theoretical problem. This was what every user experienced on every website in 1995. And Netscape, the dominant browser maker of the time, wanted to fix it.</p>
+</section>
+
+<div class="analogy reveal">
+  <p>Imagine writing a letter, sealing it in an envelope, mailing it to the post office, the post office opens it, reads it, writes back "you forgot your return address", mails it back, and you have to write the entire letter again. That is what submitting a web form was like in 1995.</p>
+</div>
+
+<!-- SECTION 2 -->
+<section class="section reveal">
+  <span class="section-num fe2-num">02</span>
+  <h2>Brendan Eich and the 10-Day Sprint</h2>
+  <p>Netscape's solution: hire a programmer to build a small scripting language that could run inside the browser and handle these small tasks locally — without needing a server.</p>
+  <p>They hired <span class="highlight">Brendan Eich</span> in April 1995. His brief was specific and narrow: build a simple scripting language for browsers. Something non-programmers could use. A way to add small behaviors to web pages.</p>
+  <p>He built the first version of JavaScript in <span class="highlight-orange">10 days in May 1995</span>. Not ten months. Ten days.</p>
+  <p>Eich has been open about the fact that the rush showed. The language has some quirky behaviors that exist because decisions had to be made fast. But the core idea — a scripting language that runs inside the browser — was exactly what the web needed.</p>
+</section>
+
+<div class="timeline reveal" style="max-width:43.75rem;margin:2.5rem auto;padding:0 1.5rem 0 4rem">
+  <div class="timeline-item">
+    <div class="timeline-year">April 1995</div>
+    <div class="timeline-text">Brendan Eich hired at Netscape. Brief: build a browser scripting language.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">May 1995</div>
+    <div class="timeline-text">First version of JavaScript built in 10 days. <span class="timeline-chip">ten days</span></div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">September 1995</div>
+    <div class="timeline-text">Shipped as "LiveScript" in Netscape Navigator 2.0 beta</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">December 1995</div>
+    <div class="timeline-text">Renamed "JavaScript" — a marketing decision to ride the Java hype wave</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">1996</div>
+    <div class="timeline-text">Microsoft copies it, calls it "JScript" — the browser wars begin</div>
+  </div>
+</div>
+
+<!-- SECTION 3: Java vs JavaScript -->
+<section class="section reveal">
+  <span class="section-num fe2-num">03</span>
+  <h2>JavaScript ≠ Java</h2>
+  <p>This is one of the most persistent confusions in all of software. The name "JavaScript" was a <span class="highlight">pure marketing decision</span>.</p>
+  <p>In 1995, Java — created by <span class="highlight-orange">Sun Microsystems</span> — was the hottest technology in the industry. Everyone was talking about Java. Netscape saw an opportunity: by naming their new browser language "JavaScript", they could borrow some of that excitement.</p>
+  <p>But the two languages have <span class="highlight">almost nothing in common</span>:</p>
+</section>
+
+<div class="compare reveal">
+  <div class="compare-card cc-orange">
+    <span class="emoji">☕</span>
+    <h3>Java</h3>
+    <p><strong>Created by:</strong> Sun Microsystems</p>
+    <p><strong>Year:</strong> 1995 (different project)</p>
+    <p><strong>Purpose:</strong> General-purpose compiled language for applications</p>
+    <p><strong>Runs:</strong> Compiled to bytecode, runs on the JVM</p>
+    <p><strong>Style:</strong> Strongly typed, object-oriented</p>
+  </div>
+  <div class="compare-card cc-blue">
+    <span class="emoji">&#128421;</span>
+    <h3>JavaScript</h3>
+    <p><strong>Created by:</strong> Netscape (Brendan Eich)</p>
+    <p><strong>Year:</strong> 1995 (different project)</p>
+    <p><strong>Purpose:</strong> Scripting language for browsers</p>
+    <p><strong>Runs:</strong> Interpreted directly in the browser</p>
+    <p><strong>Style:</strong> Dynamically typed, prototype-based</p>
+  </div>
+</div>
+
+<div class="analogy reveal">
+  <p>Java and JavaScript are about as related as <strong>a car and a carpet</strong>. Both start with "car" — that is where the connection ends. The name was chosen to make JavaScript sound more credible by association with Java's popularity. It has caused confusion ever since.</p>
+</div>
+
+<!-- SECTION 4: original purpose -->
+<section class="section reveal">
+  <span class="section-num fe2-num">04</span>
+  <h2>What JavaScript Was Originally For</h2>
+  <p>The original JavaScript was extremely limited. Eich designed it to handle the small, local tasks that did not need a server:</p>
+
+  <div style="display:grid;gap:1rem;margin-top:1.5rem">
+    <div style="background:#fef9e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #f9ca24">
+      <strong style="color:#e6a817">Form validation</strong><br>
+      <span style="color:#636e72">Check if the email field is filled in before allowing the form to submit. No server round trip needed.</span>
+    </div>
+    <div style="background:#fef9e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #f9ca24">
+      <strong style="color:#e6a817">Simple alerts</strong><br>
+      <span style="color:#636e72">Show a popup message: alert('Welcome!'), confirm('Are you sure you want to delete this?')</span>
+    </div>
+    <div style="background:#fef9e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #f9ca24">
+      <strong style="color:#e6a817">Access to forms and images</strong><br>
+      <span style="color:#636e72">The first version of JavaScript could access the forms and images on a page — and barely anything else.</span>
+    </div>
+  </div>
+
+  <p style="margin-top:1.5rem">Nobody in 1995 — including Brendan Eich — imagined that this little scripting language would become the foundation of every interactive application on the web. The original intent was modest: <span class="highlight">sprinkle small behaviors on top of existing HTML documents</span>.</p>
+</section>
+
+<!-- RECAP -->
+<section class="section reveal">
+  <span class="section-num">RECAP</span>
+  <h2>What We Learned</h2>
+  <div style="display:grid;gap:1rem;margin-top:1.25rem">
+    <div style="background:#fef9e7;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #f9ca24">
+      <strong style="color:#e6a817">JavaScript was created in 10 days</strong> by Brendan Eich at Netscape in May 1995.
+    </div>
+    <div style="background:#e3f2fd;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #0984e3">
+      <strong style="color:#0984e3">The name "JavaScript"</strong> was a marketing decision to ride Java's hype — the two languages are unrelated.
+    </div>
+    <div style="background:#fdf2ef;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #e17055">
+      <strong style="color:#e17055">Original purpose</strong> was narrow: validate forms, show alerts, handle tiny interactions in the browser.
+    </div>
+    <div style="background:#e8f8f5;padding:1.25rem 1.5rem;border-radius:0.875rem;border-left:0.25rem solid #00b894">
+      <strong style="color:#00b894">Nobody imagined</strong> it would become the foundation of the entire interactive web.
+    </div>
+  </div>
+</section>
+
+<!-- CHECKPOINT QUIZ -->
+<section class="section reveal quiz-ep2f">
+  <span class="section-num">CHECKPOINT</span>
+  <h2>Probe Your Thinking</h2>
+  <p class="quiz-subtitle">No pressure. Just see what stuck.</p>
+
+  <div class="quiz-grid">
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 01</span></div>
+    <p class="quiz-question">Who created JavaScript and in approximately how long?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Tim Berners-Lee, in 3 months</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">B</span>Brendan Eich at Netscape, in 10 days</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">C</span>James Gosling at Sun Microsystems, in 1 year</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Bill Gates at Microsoft, in 6 months</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(B) Brendan Eich at Netscape, in 10 days</strong></div>
+        <p class="quiz-answer-text">Brendan Eich was hired at Netscape in April 1995 and built the first version of JavaScript in 10 days in May 1995. The speed was necessitated by competitive pressure from Microsoft.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 02</span></div>
+    <p class="quiz-question">Why is JavaScript called "JavaScript" when it has almost nothing to do with Java?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>JavaScript was originally built on the Java runtime</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Java and JavaScript were created by the same team</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>It was a marketing decision to ride the popularity of Java at the time</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Java and JavaScript share the same syntax</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) It was a marketing decision to ride the popularity of Java at the time</strong></div>
+        <p class="quiz-answer-text">In 1995 Java was the hottest technology in the industry. Netscape renamed their language from "LiveScript" to "JavaScript" to borrow some of that excitement. The two languages are created by different companies and are not technically related.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-card">
+    <div class="quiz-card-header"><span class="quiz-q-num">Q 03</span></div>
+    <p class="quiz-question">What was JavaScript's original, narrow purpose?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">A</span>Building full-featured desktop applications</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">B</span>Connecting to databases directly from the browser</button></li>
+      <li><button class="quiz-option" data-correct="true" type="button"><span class="quiz-opt-letter">C</span>Validating forms and handling small interactions without a server round trip</button></li>
+      <li><button class="quiz-option" type="button"><span class="quiz-opt-letter">D</span>Replacing HTML as the document markup language</button></li>
+    </ul>
+    <button class="quiz-reveal-btn" type="button" aria-expanded="false">Show Answer <span class="quiz-chevron">▾</span></button>
+    <div class="quiz-answer">
+      <div class="quiz-answer-inner">
+        <div class="quiz-answer-highlight">✓ Correct: <strong>(C) Validating forms and handling small interactions without a server round trip</strong></div>
+        <p class="quiz-answer-text">The original goal was modest: check if form fields are filled in, show alert popups, handle tiny interactions. No server trip needed. Nobody imagined it would become the foundation of the entire interactive web.</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<!-- NEXT -->
+<section class="next-part" style="background:linear-gradient(135deg,#e17055,#0984e3)">
+  <h2>Ready for Episode 3?</h2>
+  <p>JavaScript existed. But for the first 10 years, what did developers actually use it for? Let's look at the small, scrappy world of early JavaScript from 1995 to 2005.</p>
+  <a href="part3.html" class="btn btn-white">Continue to Episode 3 &#10132;</a>
+</section>
+`;
+---
+<ArticleLayout title="How the Frontend Works — Part 2: JavaScript is Born | Unbox the Black Box" inlineStyle={inlineStyle} series={frontendSeries} episodeNum={2} hasQuiz={true}>
+<Fragment set:html={bodyHtml} />
+</ArticleLayout>
